@@ -690,23 +690,28 @@
 <!-- END LOCAL -->
 
     
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
 
     
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
             id: 'tags',
-            owner: '',
-            repo: '',
+            owner: 'ruitear',
+            repo: 'blog.github.io',
             
-            lang: "" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            lang: "zh-CN" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
             
             oauth: {
             
             
-                client_secret: 'adfb2032c04874887797d3f19b1139edb8a8f08d',
+                client_secret: 'b936e551a21be28218668d5cb5806d1a03235e80',
             
-                client_id: '4a14df0b958a76ef4b43'
+                client_id: '87eaa7af65a5418ee91f'
             }});
         gitment.render('gitment-container');
       }
