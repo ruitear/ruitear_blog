@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[windows搭建git环境]]></title>
+    <url>%2F2018%2F07%2F14%2Fwindows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83%2F</url>
+    <content type="text"><![CDATA[&emsp;&emsp;Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持. 1. git安装&emsp;&emsp;下载git windows一路安装下来. 2. 注册github账户&emsp;&emsp;访问github官网，注册一个12345678910111213141516##### 3. git bash添加本地仓&amp;emsp;&amp;emsp;通过```git bash```客户端添加添加一个本地文件夹作为本地仓库；可以通过 ```pwd``` 命令来查看当前bash窗口的路径。&lt;br&gt;![image](http://a4.qpic.cn/psb?/V14GctLf1ZS0Ke/GVUH7Yufw3nBNgsMTo9uQ.Ci11tTGpZn2ZsT1NHeKNc!/b/dFcAAAAAAAAA&amp;ek=1&amp;kp=1&amp;pt=0&amp;bo=GQFGAAAAAAADF2w!&amp;tl=1&amp;vuin=791618964&amp;tm=1531494000&amp;sce=60-3-3&amp;rf=viewer_4) &lt;br&gt;&amp;emsp;&amp;emsp;此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用```git init```命令初始化这个文件夹。&lt;br&gt;![image](http://m.qpic.cn/psb?/V14GctLf1ZS0Ke/Tn*w2xrcftLe6hchmUI5qViVRxLwWQKUBOCYvPHwmtY!/b/dGcBAAAAAAAA&amp;bo=jQE9AAAAAAADF4M!&amp;rf=viewer_4)&lt;br&gt;&amp;emsp;&amp;emsp;初始化之后，再调用 ```git config --global``` config 本地仓库关联到远端的 ```github```账户，也就是你注册```github```的时候填的用户名和邮箱。![image](http://m.qpic.cn/psb?/V14GctLf1ZS0Ke/uOpgi6ezU4YjzEh8R7jgfywH6ApTohpmEtajS.pI45s!/b/dDABAAAAAAAA&amp;bo=1wFvAAAAAAADF4s!&amp;rf=viewer_4)&lt;br&gt;&amp;emsp;&amp;emsp;到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 ```ssh key```， 可以根据官网的 [git help](https://help.github.com/categories/ssh/) 创建ssh秘钥。这里首先调用```$ ssh-keygen -t rsa -C &quot;liurui849058284@qq.com&quot; ``` 调用创建秘钥的指令。&lt;br&gt;![image](http://m.qpic.cn/psb?/V14GctLf1ZS0Ke/v.*.gGNp1BZCWAxOBTgAQlzxp69JzHwEu6tg14uUxF0!/b/dDIBAAAAAAAA&amp;bo=ZAKLAQAAAAADF94!&amp;rf=viewer_4)&lt;br&gt;&amp;emsp;&amp;emsp;如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：**1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。** &lt;br&gt;- **关联的到github账户**: 在github账户的setting地方有一个ssh key的你添加输入，生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;- **关联本地客户端**: 根据上述创建的过程中的提示，我们找到相应的.ssh/id_rsa.pub找到文件。首先确保ssh客户端能用，调用 ```evel &quot;$(ssh-agent -s)&quot;``` 命令查看, 有 agent id 即为有用； ![image](http://m.qpic.cn/psb?/V14GctLf1ZS0Ke/3X072oQn7yjn0FATHta1uFIAWoah.C8gfogG2XZOdW4!/b/dDMBAAAAAAAA&amp;bo=lwFEAAAAAAADF.A!&amp;rf=viewer_4)&lt;br&gt;然后, 调用 ```ssh-add ~/.ssh/id_rsa 把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。 4. 从github仓库clone内容&emsp;&emsp;在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用git clone git@github.com:ruitear/C-C-plus-plus.git``` (其中ruitear是账户名)123![image](http://m.qpic.cn/psb?/V14GctLf1ZS0Ke/tm..SxU1lX1f3woSwk6xebcQgwnsVwh.8lTOtwaE668!/b/dDMBAAAAAAAA&amp;bo=BQKrAAAAAAADF54!&amp;rf=viewer_4)##### 5. 在仓库里面创建子文件夹&amp;emsp;&amp;emsp;登陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用```$ git add Sort/``` . 这样就在```C-Cplus-plus```仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：```$ git commit -m &quot;相关说明&quot; &emsp;&emsp;最后调用push把添加之后的仓库push到github仓库了$git push origin master， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在push，如果有冲突就解决冲突，没有的话就直接push。]]></content>
+      <categories>
+        <category>环境搭建</category>
+        <category>git使用</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[利用github/Node.Js/Hexo/git创建个人博客]]></title>
     <url>%2F2017%2F12%2F17%2F%E5%88%A9%E7%94%A8github-Node-Js-Hexo-git%E5%88%9B%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2%2F</url>
     <content type="text"><![CDATA[Git 仓库配置Node.Js 安装Hexo 安装]]></content>
       <categories>
-        <category>环境搭建</category>
+        <category>环境搭建，hexo</category>
       </categories>
       <tags>
-        <tag>blog</tag>
+        <tag>hexo</tag>
       </tags>
   </entry>
 </search>
