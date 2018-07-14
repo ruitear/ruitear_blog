@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/github.png?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="&amp;emsp;&amp;emsp; Matplotlib 是一个 Python 的 2D绘图库, 使用matplotlib能够非常简单的可视化数据。在matplotlib中使用最多的模块就是pyplot。pyplot非常接近Matlab的绘图实现，而且大多数的命令及其类似Matlab。在使用Matplotlib的时候需要import这个模块：1import matplotlib.pyplot as plot">
+<meta name="keywords" content="python,matplotlib,plot">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python工具包之matplotlib的使用--pyplot画图">
+<meta property="og:url" content="http://ruitear.com/2018/07/15/python工具包之matplotlib的使用-pyplot画图/index.html">
+<meta property="og:site_name" content="ruitear&#39;s blogs">
+<meta property="og:description" content="&amp;emsp;&amp;emsp; Matplotlib 是一个 Python 的 2D绘图库, 使用matplotlib能够非常简单的可视化数据。在matplotlib中使用最多的模块就是pyplot。pyplot非常接近Matlab的绘图实现，而且大多数的命令及其类似Matlab。在使用Matplotlib的时候需要import这个模块：1import matplotlib.pyplot as plot">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://ruitear.com/images/pyplot/1.png">
+<meta property="og:image" content="http://ruitear.com/images/pyplot/2.png">
+<meta property="og:image" content="http://ruitear.com/images/pyplot/2.png">
+<meta property="og:updated_time" content="2018-07-14T17:08:25.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python工具包之matplotlib的使用--pyplot画图">
+<meta name="twitter:description" content="&amp;emsp;&amp;emsp; Matplotlib 是一个 Python 的 2D绘图库, 使用matplotlib能够非常简单的可视化数据。在matplotlib中使用最多的模块就是pyplot。pyplot非常接近Matlab的绘图实现，而且大多数的命令及其类似Matlab。在使用Matplotlib的时候需要import这个模块：1import matplotlib.pyplot as plot">
+<meta name="twitter:image" content="http://ruitear.com/images/pyplot/1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://ruitear.com/2018/07/15/python工具包之matplotlib的使用-pyplot画图/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>python工具包之matplotlib的使用--pyplot画图 | ruitear's blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ruitear's blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">活成期待的样子...</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://ruitear.com/2018/07/15/python工具包之matplotlib的使用-pyplot画图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liurui">
+      <meta itemprop="description" content="带着父亲去远行...">
+      <meta itemprop="image" content="/images/liurui.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruitear's blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">python工具包之matplotlib的使用--pyplot画图
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-07-15 01:01:56 / 修改时间：01:08:25" itemprop="dateCreated datePublished" datetime="2018-07-15T01:01:56+08:00">2018-07-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/07/15/python工具包之matplotlib的使用-pyplot画图/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/15/python工具包之matplotlib的使用-pyplot画图/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&emsp;&emsp; <code>Matplotlib</code> 是一个 <code>Python</code> 的 2D绘图库, 使用<code>matplotlib</code>能够非常简单的可视化数据。在<code>matplotlib</code>中使用最多的模块就是<code>pyplot</code>。<code>pyplot</code>非常接近<code>Matlab</code>的绘图实现，而且大多数的命令及其类似<code>Matlab</code>。在使用<code>Matplotlib</code>的时候需要import这个模块：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import matplotlib.pyplot as plot</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;由于<code>matplotlib</code>默认字体没有中文，如果想让画图的标题支持中文的显示，必须手动添加中文字体方可，以下导入<code>SimHei</code>字体：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from pylab import mpl</span><br><span class="line">mpl.rcParams[&apos;font.sans-serif&apos;] = [&apos;SimHei&apos;]</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;画图的时候还会依赖数组和矩阵等科学计算，所以会对<code>numpy</code>产生依赖；所以还需要<code>import numpy</code>；下面将以线图、柱状图、饼图、极坐标图和散点图等几种典型的图表，介绍pyplot这个模块的画图功能。</p>
+<h5 id="1-单个图表的线图"><a href="#1-单个图表的线图" class="headerlink" title="1. 单个图表的线图"></a>1. 单个图表的线图</h5><p>&emsp;&emsp;画单个线图和MATLAB，其实基本是一样的，首先选择一个X轴的范围，然后在这个范围内把[x,y]在对应的坐标区间画出来。完整的代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">## 字体的默认设置没有中文，所以需要手动添加中文字体才能显示中文</span><br><span class="line">from pylab import mpl</span><br><span class="line">mpl.rcParams[&apos;font.sans-serif&apos;] = [&apos;SimHei&apos;]</span><br><span class="line"></span><br><span class="line">import numpy as np</span><br><span class="line">import matplotlib.pyplot as plot</span><br><span class="line"></span><br><span class="line">##画单个图，多根线</span><br><span class="line">def plotSignleImg():</span><br><span class="line">    x=np.arange(0,5,0.2) # X轴的范围，0-5，点的间距是0.2个单位</span><br><span class="line">    plot.plot(x,x**4,&apos;r&apos;,x,x*90,&apos;bs&apos;,x,x**3,&apos;g^&apos;)  ## &apos;r&apos;红 &apos;bs&apos;蓝 &apos;g^&apos;绿</span><br><span class="line">    plot.show() # 显示画图结果</span><br><span class="line">    </span><br><span class="line">if __name__==&apos;__main__&apos;:</span><br><span class="line">    plotSignleImg()</span><br></pre></td></tr></table></figure></p>
+<p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/1.png" alt="image"></p>
+<h5 id="2-多个图表在一个图"><a href="#2-多个图表在一个图" class="headerlink" title="2. 多个图表在一个图"></a>2. 多个图表在一个图</h5><p>&emsp;&emsp;在一个图表中画多个图，合画单个图的方式基本是一致的，唯一的区别就是，画多图的时候需要把画布分割成相应的块数，来放图表。如下例子，画两个图，需要命令<code>plot.subplot(211)</code>和<code>plot.subplot(212)</code>这两行代码中的数字前边两个必须一直，最后一个数代表图的位置，这里<code>1</code>表示上边的位置，<code>2</code>表示下边的例子。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">## 画多个图，多根线</span><br><span class="line">def plotMultiImg():</span><br><span class="line">    x1=np.arange(0,5,0.05)</span><br><span class="line">    x2=np.arange(0,5,0.05)</span><br><span class="line"></span><br><span class="line">    plot.figure(1)  #启一个画布，用来承载图表的渲染，可忽略，默认会加载</span><br><span class="line">    plot.subplot(211) #211 2：水平方向2个图，1：垂直方向1列，1：第1个位置</span><br><span class="line">    plot.plot(x1,x1**4,&apos;r&apos;,x1,x1*90,&apos;bs&apos;,x1,x1**3,&apos;g^&apos;,linewidth=2.0)</span><br><span class="line"></span><br><span class="line">    plot.subplot(212) # 212 2：水平方向2个图，1：垂直方向1列，1：第2个位置</span><br><span class="line">    plot.plot(x2,np.cos(2*np.pi*x2),&apos;k&apos;)</span><br><span class="line"></span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/2.png" alt="image"></p>
+<h5 id="3-画直方图-柱状图"><a href="#3-画直方图-柱状图" class="headerlink" title="3. 画直方图 (柱状图)"></a>3. 画直方图 (柱状图)</h5><p>&emsp;&emsp;正太分布是，平常大家接触最多的一种数据的呈现规则；这里以正态分布为例，介绍一下怎么画一个正太分布图的直方图；首先构造一组满足正态分布的数据，取分布在<code>[0,1]</code>随机的<code>1000</code>组数据，构造正态分布数据。<code>x=mu+sigma*np.random.randn(1000)</code>从标准正态分布中返回n=1000个样本值，这1000个数值的大小随机在[0,1]。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def plotHitImg():</span><br><span class="line">    mu,sigma=100,15</span><br><span class="line">    x=mu+sigma*np.random.randn(1000)  #从标准正态分布中返回n=1000个样本值。</span><br><span class="line">    bins=100</span><br><span class="line">    plot.hist(x,bins,normed=1,histtype=&apos;stepfilled&apos;,facecolor=&apos;b&apos;,alpha=0.75)</span><br><span class="line"></span><br><span class="line">    n,bins,patches=plot.hist(x,100,normed=1,facecolor=&apos;k&apos;) </span><br><span class="line">    #k 表示黑色 b blue g green r red c cyan m magenta y yellow w white</span><br><span class="line">    plot.xlabel(&quot;频率&quot;)</span><br><span class="line">    plot.ylabel(&quot;概率&quot;)</span><br><span class="line">    plot.title(&quot;直方图示例&quot;)</span><br><span class="line">    plot.text(40,0.028,&apos;均值=100 标准差=15&apos;)</span><br><span class="line">    plot.axis([40,160,0,0.03])</span><br><span class="line">    plot.grid()</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里plot.hist()函数中，</p>
+<ul>
+<li>bins将直方图的取值范围进行均等划分bings个区间；</li>
+<li>normed =1 表示将出现频次进行了归一化。 normed=0，则为频次；</li>
+<li>alpha表示直方图的透明度[0, 1] ；</li>
+<li>histtype = ‘stepfilled’  表示去除条柱的黑色边框 , hist柱子类型</li>
+<li>rwidth= :柱子与柱子之间的距离，默认是0</li>
+<li>orientation:水平或垂直方向 <br></li>
+</ul>
+<p>plot.text()函数中，</p>
+<ul>
+<li>text(x,y,string,fontsize=15,verticalalignment=”top”,horizontalalignment=”right”)</li>
+<li>x,y:表示坐标值上的值 也就是字符串在图标的位置；</li>
+<li>string:表示说明文字</li>
+<li>fontsize:表示字体大小</li>
+<li>verticalalignment:垂直对齐方式，参数:[center|top|bottom|baseline]</li>
+<li>horizontalalignment:水平对齐方式，参数:[center|right|left]</li>
+</ul>
+</blockquote>
+<p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/2.png" alt="image"></p>
+<h5 id="4-画饼图"><a href="#4-画饼图" class="headerlink" title="4. 画饼图"></a>4. 画饼图</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def plotPieImg():</span><br><span class="line">    labels=[&apos;苹果&apos;,&apos;西瓜&apos;,&apos;芒果&apos;,&apos;猕猴桃&apos;]</span><br><span class="line">    size=[50,12,18,20]</span><br><span class="line">    explode=(0,0.0,0,0)</span><br><span class="line">    plot.pie(size,explode=explode,labels=labels,autopct=&apos;%1.1f%%&apos;,shadow=True,startangle=90,pctdistance = 0.6)</span><br><span class="line"></span><br><span class="line">    plot.axis(&apos;equal&apos;)</span><br><span class="line">    plot.legend()  #画出标签的图</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
+<h5 id="5-极坐标图"><a href="#5-极坐标图" class="headerlink" title="5. 极坐标图"></a>5. 极坐标图</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">#面向对象的极坐标图绘制</span><br><span class="line">def plotPolorImg():</span><br><span class="line">    N=20</span><br><span class="line">    theta=np.linspace(0.0,2*np.pi,N,endpoint=False)</span><br><span class="line">    radii=10*np.random.rand(N)</span><br><span class="line">    width=np.pi/4*np.random.rand(N)</span><br><span class="line"></span><br><span class="line">    ax=plot.subplot(111,projection=&apos;polar&apos;) #建立一个坐标系，projection=&apos;polar&apos;表示极坐标</span><br><span class="line">    bars=ax.bar(theta,radii,width,bottom=0.0)  #theta,radii,width分别是left，height， width</span><br><span class="line">    #ax.bar(left=x,height=y,width=w,bottom=10,color=color,edgecolor=color)</span><br><span class="line">    #  一个柱状图由left，bottom，height，width四个参数决定位置和大小left决定了左边界，bottom决定了下边界，height决定了长度，width决定了宽度.</span><br><span class="line">    #  对应到笛卡尔坐标系中，left决定了扇形的中线位置，然后height决定扇形的长度，bottom决定了下边界，width决定了扇形的宽度。</span><br><span class="line">    for r,bar in zip(radii,bars):</span><br><span class="line">        bar.set_facecolor(plot.cm.viridis(r/10.))</span><br><span class="line">        bar.set_alpha(0.5)</span><br><span class="line"></span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
+<h5 id="6-散点图"><a href="#6-散点图" class="headerlink" title="6. 散点图"></a>6. 散点图</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#散点图</span><br><span class="line">def plotScatterImg():</span><br><span class="line">    #返回值 fig : matplotlib.figure.Figure object   ax : Axes object or array of Axes objects.</span><br><span class="line">    fig,ax=plot.subplots() </span><br><span class="line">    ax.plot(10*np.random.rand(10),10*np.random.rand(10),&apos;o&apos;)</span><br><span class="line">    ax.set_title(&apos;简单散点图&apos;)</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
+<h5 id="学习文献："><a href="#学习文献：" class="headerlink" title="学习文献："></a>学习文献：</h5><p>[1] 官方教程 : <a href="https://matplotlib.org/users/pyplot_tutorial.html" target="_blank" rel="noopener">https://matplotlib.org/users/pyplot_tutorial.html</a></p>
+
+      
+    </div>
+
+    
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:16px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持创作，坚持分享！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="liurui 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="liurui 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/matplotlib/" rel="tag"># matplotlib</a>
+          
+            <a href="/tags/plot/" rel="tag"># plot</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/14/windows搭建git环境/" rel="next" title="windows搭建git环境">
+                <i class="fa fa-chevron-left"></i> windows搭建git环境
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/liurui.jpg"
+                alt="liurui" />
+            
+              <p class="site-author-name" itemprop="name">liurui</p>
+              <p class="site-description motion-element" itemprop="description">带着父亲去远行...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/ruitear" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:liurui@ruitear.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ifeng.com/" title="ifeng" target="_blank">ifeng</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com" title="github" target="_blank">github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-单个图表的线图"><span class="nav-text"><a href="#1-&#x5355;&#x4E2A;&#x56FE;&#x8868;&#x7684;&#x7EBF;&#x56FE;" class="headerlink" title="1. &#x5355;&#x4E2A;&#x56FE;&#x8868;&#x7684;&#x7EBF;&#x56FE;"></a>1. &#x5355;&#x4E2A;&#x56FE;&#x8868;&#x7684;&#x7EBF;&#x56FE;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-多个图表在一个图"><span class="nav-text"><a href="#2-&#x591A;&#x4E2A;&#x56FE;&#x8868;&#x5728;&#x4E00;&#x4E2A;&#x56FE;" class="headerlink" title="2. &#x591A;&#x4E2A;&#x56FE;&#x8868;&#x5728;&#x4E00;&#x4E2A;&#x56FE;"></a>2. &#x591A;&#x4E2A;&#x56FE;&#x8868;&#x5728;&#x4E00;&#x4E2A;&#x56FE;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-画直方图-柱状图"><span class="nav-text"><a href="#3-&#x753B;&#x76F4;&#x65B9;&#x56FE;-&#x67F1;&#x72B6;&#x56FE;" class="headerlink" title="3. &#x753B;&#x76F4;&#x65B9;&#x56FE; (&#x67F1;&#x72B6;&#x56FE;)"></a>3. &#x753B;&#x76F4;&#x65B9;&#x56FE; (&#x67F1;&#x72B6;&#x56FE;)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-画饼图"><span class="nav-text"><a href="#4-&#x753B;&#x997C;&#x56FE;" class="headerlink" title="4. &#x753B;&#x997C;&#x56FE;"></a>4. &#x753B;&#x997C;&#x56FE;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-极坐标图"><span class="nav-text"><a href="#5-&#x6781;&#x5750;&#x6807;&#x56FE;" class="headerlink" title="5. &#x6781;&#x5750;&#x6807;&#x56FE;"></a>5. &#x6781;&#x5750;&#x6807;&#x56FE;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-散点图"><span class="nav-text"><a href="#6-&#x6563;&#x70B9;&#x56FE;" class="headerlink" title="6. &#x6563;&#x70B9;&#x56FE;"></a>6. &#x6563;&#x70B9;&#x56FE;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#学习文献："><span class="nav-text"><a href="#&#x5B66;&#x4E60;&#x6587;&#x732E;&#xFF1A;" class="headerlink" title="&#x5B66;&#x4E60;&#x6587;&#x732E;&#xFF1A;"></a>&#x5B66;&#x4E60;&#x6587;&#x732E;&#xFF1A;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liurui</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.4.3</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: 'python工具包之matplotlib的使用--pyplot画图',
+            owner: 'ruitear',
+            repo: 'blog.github.io',
+            
+            lang: "zh-CN" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b936e551a21be28218668d5cb5806d1a03235e80',
+            
+                client_id: '87eaa7af65a5418ee91f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
