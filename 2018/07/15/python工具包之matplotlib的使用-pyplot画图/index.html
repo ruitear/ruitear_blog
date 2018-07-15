@@ -122,7 +122,7 @@
 <meta property="og:image" content="http://ruitear.com/images/pyplot/4.png">
 <meta property="og:image" content="http://ruitear.com/images/pyplot/5.png">
 <meta property="og:image" content="http://ruitear.com/images/pyplot/6.png">
-<meta property="og:updated_time" content="2018-07-15T14:49:22.608Z">
+<meta property="og:updated_time" content="2018-07-15T15:37:18.407Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python工具包之matplotlib的使用--pyplot画图">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; Matplotlib 是一个 Python 的 2D绘图库, 使用matplotlib能够非常简单的可视化数据。在matplotlib中使用最多的模块就是pyplot。pyplot非常接近Matlab的绘图实现，而且大多数的命令及其类似Matlab。在使用Matplotlib的时候需要import这个模块：1import matplotlib.pyplot as plot">
@@ -358,7 +358,7 @@
                 
               
 
-              <time title="创建时间：2018-07-15 01:01:56 / 修改时间：22:49:22" itemprop="dateCreated datePublished" datetime="2018-07-15T01:01:56+08:00">2018-07-15</time>
+              <time title="创建时间：2018-07-15 01:01:56 / 修改时间：23:37:18" itemprop="dateCreated datePublished" datetime="2018-07-15T01:01:56+08:00">2018-07-15</time>
             
 
             
@@ -581,7 +581,7 @@
 </blockquote>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#面向对象的极坐标图绘制</span><br><span class="line">def plotPolorImg():</span><br><span class="line">    N=20</span><br><span class="line">    theta=np.linspace(0.0,2*np.pi,N,endpoint=False) #角度</span><br><span class="line">    radii=10*np.random.rand(N) # 随机20个[0,10]的样本</span><br><span class="line">    width=np.pi/4*np.random.rand(N) 随机20个[0,1]*2pi的样本，也就是</span><br><span class="line"></span><br><span class="line">    ax=plot.subplot(111,projection=&apos;polar&apos;) #建立一个坐标系，projection=&apos;polar&apos;表示极坐标</span><br><span class="line">    bars=ax.bar(theta,radii,width,bottom=0.0)  #绘制一个条形图 #theta,radii,width分别是left，height， width</span><br><span class="line">    for r,bar in zip(radii,bars):  #循环为每个bar对象设置颜色和透明度</span><br><span class="line">        bar.set_facecolor(plot.cm.viridis(r/10.))</span><br><span class="line">        bar.set_alpha(0.5) #添加颜色</span><br><span class="line"></span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p><strong>zip()函数</strong> 将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表。<br>zip 方法在 <a href="http://www.runoob.com/python/python-func-zip.html" target="_blank" rel="noopener">Python2</a>和 <a href="http://www.runoob.com/python3/python3-func-zip.html" target="_blank" rel="noopener">Python 3</a> 中的不同：在 Python3 中为了减少内存，<code>zip()</code> 返回的是一个对象。如需展示列表，需手动 list() 转换。<br><code>bar.set_facecolor()</code> 窗口的背景颜色<br><code>bar.set_edgecolor()</code> 窗口的边框颜色<br><code>plot.cm.viridis()</code> 蓝-绿-黄colormap<br><code>set_alpha()</code> 设置透明度，同plot的alpha参数，透明度[0, 1]<br>alpha表示直方图的透明度[0, 1] ；</p>
+<p><strong>zip()函数</strong> 将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表。<br>zip 方法在 <a href="http://www.runoob.com/python/python-func-zip.html" target="_blank" rel="noopener">Python2</a>和 <a href="http://www.runoob.com/python3/python3-func-zip.html" target="_blank" rel="noopener">Python 3</a> 中的不同：在 Python3 中为了减少内存，<code>zip()</code>返回的是一个对象。如需展示列表，需手动 list() 转换。<br><code>bar.set_facecolor()</code> 窗口的背景颜色<br><code>bar.set_edgecolor()</code> 窗口的边框颜色<br><code>plot.cm.viridis()</code> 蓝-绿-黄colormap<br><code>set_alpha()</code> 设置透明度，同plot的alpha参数，透明度[0, 1]<br>alpha表示直方图的透明度[0, 1] ；</p>
 </blockquote>
 <p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/5.png" alt="image"></p>
 <h5 id="6-散点图"><a href="#6-散点图" class="headerlink" title="6. 散点图"></a>6. 散点图</h5><p>&emsp;&emsp;散点图，顾名思义就是在图中分布的各个没有连接的孤点，也就是把某些点在坐标中明晰的表示出来。在数据的二维和三维表示中，用来发现数据分类和排布很有作用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#散点图</span><br><span class="line">def plotScatterImg():</span><br><span class="line">    #返回值 fig : matplotlib.figure.Figure object   ax : Axes object or array of Axes objects.</span><br><span class="line">    fig,ax=plot.subplots() </span><br><span class="line">    ax.plot(10*np.random.rand(10),10*np.random.rand(10),&apos;o&apos;)</span><br><span class="line">    ax.set_title(&apos;简单散点图&apos;) #设置图标标题</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure></p>
