@@ -122,7 +122,7 @@
 <meta property="og:image" content="http://ruitear.com/images/pyplot/4.png">
 <meta property="og:image" content="http://ruitear.com/images/pyplot/5.png">
 <meta property="og:image" content="http://ruitear.com/images/pyplot/6.png">
-<meta property="og:updated_time" content="2018-07-15T16:08:26.364Z">
+<meta property="og:updated_time" content="2018-07-17T16:05:27.603Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python工具包之matplotlib的使用--pyplot画图">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; Matplotlib 是一个 Python 的 2D绘图库, 使用matplotlib能够非常简单的可视化数据。在matplotlib中使用最多的模块就是pyplot。pyplot非常接近Matlab的绘图实现，而且大多数的命令及其类似Matlab。在使用Matplotlib的时候需要import这个模块：1import matplotlib.pyplot as plot">
@@ -375,7 +375,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-07-16 00:08:26" itemprop="dateModified" datetime="2018-07-16T00:08:26+08:00">2018-07-16</time>
+                <time title="修改时间：2018-07-18 00:05:27" itemprop="dateModified" datetime="2018-07-18T00:05:27+08:00">2018-07-18</time>
               
             
           </span>
@@ -596,7 +596,7 @@
 <p><strong>zip()函数</strong> 将可迭代的对象作为参数，将对象中对应的元素打包成一个个元组，然后返回由这些元组组成的列表。<br>zip 方法在 <a href="http://www.runoob.com/python/python-func-zip.html" target="_blank" rel="noopener">Python2</a>和 <a href="http://www.runoob.com/python3/python3-func-zip.html" target="_blank" rel="noopener">Python 3</a> 中的不同：在 Python3 中为了减少内存，<code>zip()</code>返回的是一个对象。如需展示列表，需手动 list() 转换。<br><code>bar.set_facecolor()</code> 窗口的背景颜色<br><code>bar.set_edgecolor()</code> 窗口的边框颜色<br><code>plot.cm.viridis()</code> 蓝-绿-黄colormap<br><code>set_alpha()</code> 设置透明度，同plot的alpha参数，透明度[0, 1]<br>alpha表示直方图的透明度[0, 1] ；</p>
 </blockquote>
 <p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/5.png" alt="image"></p>
-<h5 id="6-散点图"><a href="#6-散点图" class="headerlink" title="6. 散点图"></a>6. <a href="#散点图">散点图</a></h5><p>&emsp;&emsp;散点图，顾名思义就是在图中分布的各个没有连接的孤点，也就是把某些点在坐标中明晰的表示出来。在数据的二维和三维表示中，用来发现数据分类和排布很有作用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#散点图</span><br><span class="line">def plotScatterImg():</span><br><span class="line">    #返回值 fig : matplotlib.figure.Figure object   ax : Axes object or array of Axes objects.</span><br><span class="line">    fig,ax=plot.subplots() </span><br><span class="line">    ax.plot(10*np.random.rand(10),10*np.random.rand(10),&apos;o&apos;)</span><br><span class="line">    ax.set_title(&apos;简单散点图&apos;) #设置图标标题</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure></p>
+<h5 id="6-散点图"><a href="#6-散点图" class="headerlink" title="6. 散点图"></a>6. <a href="#散点图">散点图</a></h5><p>&emsp;&emsp;<a href="#散点图">散点图</a>，顾名思义就是在图中分布的各个没有连接的孤点，也就是把某些点在坐标中明晰的表示出来。在数据的二维和三维表示中，用来发现数据分类和排布很有作用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#散点图</span><br><span class="line">def plotScatterImg():</span><br><span class="line">    #返回值 fig : matplotlib.figure.Figure object   ax : Axes object or array of Axes objects.</span><br><span class="line">    fig,ax=plot.subplots() </span><br><span class="line">    ax.plot(10*np.random.rand(10),10*np.random.rand(10),&apos;o&apos;)</span><br><span class="line">    ax.set_title(&apos;简单散点图&apos;) #设置图标标题</span><br><span class="line">    plot.show()</span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;效果图：<br><img src="/images/pyplot/6.png" alt="image"></p>
 <h5 id="参考附表"><a href="#参考附表" class="headerlink" title="参考附表"></a><a href="#参考附表">参考附表</a></h5><p><strong>python的颜色图</strong>谱(colormap), 例如在<code>matplotlib.pyplot.imshow(X, cmap=None)</code>中</p>
 <ul>
