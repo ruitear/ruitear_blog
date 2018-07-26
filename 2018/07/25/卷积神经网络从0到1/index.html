@@ -120,7 +120,7 @@
 <meta property="og:image" content="http://ruitear.com/images/cnn/局部感受.jpg">
 <meta property="og:image" content="http://ruitear.com/images/cnn/卷积.png">
 <meta property="og:image" content="http://ruitear.com/images/cnn/LeNet-5.jpg">
-<meta property="og:updated_time" content="2018-07-25T15:34:47.122Z">
+<meta property="og:updated_time" content="2018-07-25T16:24:39.143Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="卷积神经网络从0到1">
 <meta name="twitter:description" content="&amp;emsp;&amp;emsp; 1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:  “一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”    为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神">
@@ -356,12 +356,24 @@
                 
               
 
-              <time title="创建时间：2018-07-25 00:15:05 / 修改时间：23:34:47" itemprop="dateCreated datePublished" datetime="2018-07-25T00:15:05+08:00">2018-07-25</time>
+              <time title="创建时间：2018-07-25 00:15:05" itemprop="dateCreated datePublished" datetime="2018-07-25T00:15:05+08:00">2018-07-25</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-07-26 00:24:39" itemprop="dateModified" datetime="2018-07-26T00:24:39+08:00">2018-07-26</time>
               
             
           </span>
@@ -441,12 +453,10 @@
 </ul>
 <p>&emsp;&emsp;卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
 <h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a>1.2 <a href="#什么是神经网络">什么是神经网络</a></h6><p>&emsp;&emsp; 按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Sigmoid(x) = 1/(1+e^&#123;-x&#125;) </span><br><span class="line"></span><br><span class="line">tanh(x)=\frac&#123;1-e^&#123;-2x&#125;&#125; &#123;1+e^&#123;-2x&#125;&#125;</span><br><span class="line"></span><br><span class="line">relu(x)=max(0,x)</span><br></pre></td></tr></table></figure>
+<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) = 1/(1+e^{-x})  \\<br>tanh(x)=\frac{1-e^{-2x}} {1+e^{-2x}}  \\<br>relu(x)=max(0,x)<br>\end{eqnarray}<br>$$</p>
 <p><img src="/images/cnn/激活函数.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>&emsp;&emsp;而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
-<p>$$<br>y=f(w_1<em>x_1+w_2</em>x_2+b)<br>$$</p>
-<p>$$<br>\begin{eqnarray}<br>\nabla\cdot\vec{E} &amp;=&amp; \frac{\rho}{\epsilon_0} \\<br>\nabla\cdot\vec{B} &amp;=&amp; 0 \\<br>\nabla\times\vec{E} &amp;=&amp; -\frac{\partial B}{\partial t} \\<br>\nabla\times\vec{B} &amp;=&amp; \mu_0\left(\vec{J}+\epsilon_0\frac{\partial E}{\partial t} \right)<br>\end{eqnarray}<br>$$</p>
-<p>这就是感知机的数学表达。但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x=(x_1, x_2, x_3, ....)</span><br></pre></td></tr></table></figure></p>
-<p>通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
+<p>$$<br>\begin{equation}<br>y=f(w_1*x_1+w_2*x_2+b)<br>\end{equation}<br>$$</p>
+<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x=(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
 <h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a>1.3 <a href="#什么是卷积神经网络">什么是卷积神经网络</a></h6><p>&emsp;&emsp;卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/局部感受.jpg" alt="全连接与局部连接"><br>&emsp;&emsp;上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/卷积.png" alt="卷积"><br>&emsp;&emsp;上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
 <h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a>1.3 <a href="#卷积神经网络的基本结构">卷积神经网络的基本结构</a></h6><p>&emsp;&emsp;经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
 
