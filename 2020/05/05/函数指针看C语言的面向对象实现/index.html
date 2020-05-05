@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/github.png?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="指针函数、函数指针、回调函数==指针函数==：指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。 ==函数指针==：函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。常见的函数都有其入口，比如main()函数是整个程序的">
+<meta name="keywords" content="函数指针,设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从函数指针看C语言的面向对象实现">
+<meta property="og:url" content="http://liurui.live/2020/05/05/函数指针看C语言的面向对象实现/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="指针函数、函数指针、回调函数==指针函数==：指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。 ==函数指针==：函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。常见的函数都有其入口，比如main()函数是整个程序的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-05T08:12:46.993Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从函数指针看C语言的面向对象实现">
+<meta name="twitter:description" content="指针函数、函数指针、回调函数==指针函数==：指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。 ==函数指针==：函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。常见的函数都有其入口，比如main()函数是整个程序的">
+
+
+
+
+
+
+  <link rel="canonical" href="http://liurui.live/2020/05/05/函数指针看C语言的面向对象实现/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>从函数指针看C语言的面向对象实现 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">liurui's blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">活成期待的样子...</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2020/05/05/函数指针看C语言的面向对象实现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liurui">
+      <meta itemprop="description" content="带着父亲去远行...">
+      <meta itemprop="image" content="/images/liurui.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">从函数指针看C语言的面向对象实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-05 14:28:37 / 修改时间：16:12:46" itemprop="dateCreated datePublished" datetime="2020-05-05T14:28:37+08:00">2020-05-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/函数指针/" itemprop="url" rel="index"><span itemprop="name">函数指针</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/05/05/函数指针看C语言的面向对象实现/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/05/05/函数指针看C语言的面向对象实现/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="指针函数、函数指针、回调函数"><a href="#指针函数、函数指针、回调函数" class="headerlink" title="指针函数、函数指针、回调函数"></a>指针函数、函数指针、回调函数</h5><p>==指针函数==：指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。</p>
+<p>==函数指针==：函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。<br>常见的函数都有其入口，比如main()函数是整个程序的入口，我们调用的其他函数都有其特定的入口，正如我们可以通过地址找到相应的变量一样，我们也可以通过地址找到相应的函数。而这个存储着函数地址的指针就是函数指针。可以通过指针访问相应的变量，函数指针也可以像函数一样用于调用函数、传递参数。</p>
+<p>==回调函数==：函数指针作为某个函数的参数。<br>理解回调函数，我们先要搞清楚回调函数有什么作用。比如老板、经理、你三个角色。老板通常是规则的指定着，经理按照规则指派相应的人去做事，而你就是任务的具体执行者。当老板要求经理去做一个事情，那么老板就是主调函数，经理就是回调函数，你按照规则去处理事情就是相应回调函数。你处理的结果会反馈给经理，经理拿着你的结果再反馈给老板。老板就可以使用这个结果去做相关的事情了。在这个环节中，你只需要按照指定的规则去做事，而经理不需要考虑事情是怎么做的，他只需要把相应的事情分配给对应的人去处理即可，然后将获取的结果反馈给老板。如果规则有变，只需要对应的员工知道哪里改变了，而经理不需要关注这些细节。<br><strong>函数指针的应用场景</strong></p>
+<ul>
+<li>普通的函数指针，指向函数，实现比如勾子函数等</li>
+<li>回调函数，实现在特定情况下需要不同的处理，或者对不同些数据的不同处理</li>
+<li>封装，函数模板，构造对象（类似于C++虚函数）等等</li>
+</ul>
+<p>结构体，是定义了一个用户自定义内型，那么这个内型就可以定义N多的变量，不同的变量拥有不同的值，也包括函数指针的值，这样就实现了”多态”，模拟OOP中的虚函数。</p>
+<p><strong>函数指针声明</strong>， 函数原型<code>int sum(int,int);</code>是一个返回值为int类型, 参数是两个int类型的函数.  如何声明该类型函数的指针呢？将函数名替换成(<em>pf)形式即可，即我们把sum替换成(</em>fp)即可，fp为函数指针名<code>int （*fp）(int,int);</code> 这样就声明了和sum函数类型相同的函数指针fp, ==<em>和fp为一体==，<strong>说明了fp为指针类型</strong>;  ==</em>fp需要用括号括起来==，否则就会变成<code>int *fp(int,int);</code>,这时候意义就变化了，成立一个返回值为一个int指针类型的函数，函数一个函数指针。为了避免每次声明函数指针的时候方便，函数指针可以用typedef定义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">typedef int (*myFun)(int,int);//为该函数指针起一个新名字</span><br><span class="line">myFun f1;       //声明myFun类型的函数指针f1</span><br></pre></td></tr></table></figure>
+<p><strong>函数指针赋值</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func1 = mytest; //表达式1</span><br><span class="line">    fp func2 = &amp;mytest;//表达式2</span><br><span class="line">    printf(&quot;%d\n&quot;,func1);</span><br><span class="line">    printf(&quot;%d\n&quot;,func2);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里，声明返回类型为int，接受两个int类型参数的函数指针func1和func2，分别给它们进行了赋值。表达式1和表达式2在作用上是一样的。由于函数名在被使用时总是由编译器把它转换为函数指针，因此前面加上&amp;只是显式的说明了这一点而已。</p>
+<p><strong>函数指针的调用</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func = mytest; //表达式1</span><br><span class="line">    func(1,2); //表达式1</span><br><span class="line">    (*func)(3,4); //表达式2</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在函数指针后面加括号，并传入参数即可调用，其中表达式1和表达式2似乎都可以成功调用，但是哪个是正确的呢？ANSI C认为这两种形式等价。</p>
+<p>函数指针的用途：<br>1、作为句柄函数传入，<br>以库函数qsort排序函数为例，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void qsort(void *base,size_t nmemb,size_t size , int(*compar)(const void *,const void *));</span><br></pre></td></tr></table></figure>
+<p>拆开来看如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void qsort(void *base, size_t nmemb, size_t size, );</span><br></pre></td></tr></table></figure></p>
+<p>拿掉第四个参数后，它是一个无返回值的函数，接受4个参数，第一个是void*类型，代表原始数组，第二个是size_t类型，代表数据数量，第三个是size_t类型，代表单个数据占用空间大小，而第四个参数是函数指针。这第四个参数，即函数指针指向的是什么类型呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int(*compar)(const void *,const void *)</span><br></pre></td></tr></table></figure></p>
+<p>这是一个接受两个const void*类型入参，返回值为int的函数指针。<br>这个参数告诉qsort，应该使用哪个函数来比较元素，即只要我们告诉qsort比较大小的规则，就可以帮我们对任意数据类型的数组进行排序。</p>
+<p>结构体中包含函数指针,可以像一般变量一样,包含函数指针变量.下面是一种简单的实现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">struct opt  </span><br><span class="line">&#123;  </span><br><span class="line">    int x,y;  </span><br><span class="line">    int (*func)(int,int); //函数指针  </span><br><span class="line">&#125;; </span><br><span class="line">void main()  </span><br><span class="line">&#123;  </span><br><span class="line">    struct opt demo;  </span><br><span class="line">    opt.func=add2; //结构体函数指针赋值  </span><br><span class="line">    //demo.func=&amp;add2; //结构体函数指针赋值  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">    demo.func=add1;  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>C语言中的struct是最接近类的概念，但是在C语言的struct中只有成员，不能有函数，但是可以有指向函数的指针，们使用函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">typedef struct student  </span><br><span class="line">&#123;  </span><br><span class="line">    int id;  </span><br><span class="line">    char name[50];   </span><br><span class="line">    void (*init)();  </span><br><span class="line">    void (*process)(int id, char *name);  </span><br><span class="line">    void (*destroy)();  </span><br><span class="line">&#125;stu; </span><br><span class="line"></span><br><span class="line">void init()  &#123; /*do something*/ &#125;  </span><br><span class="line">void process(int id, char *name)   &#123; /*do something*/ &#125;</span><br><span class="line">void destroy() &#123; /*do something*/ &#125; </span><br><span class="line"></span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">    stu *stu1 = (stu *)malloc(sizeof(stu));  </span><br><span class="line">    stu1-&gt;id=1000;  </span><br><span class="line">    strcpy(stu1-&gt;name,&quot;C++&quot;);  </span><br><span class="line">    stu1-&gt;init=init;  </span><br><span class="line">    stu1-&gt;process=process;  </span><br><span class="line">    stu1-&gt;destroy=destroy;  </span><br><span class="line">    printf(&quot;%d\t%s\n&quot;,stu1-&gt;id,stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;init();  </span><br><span class="line">    stu1-&gt;process(stu1-&gt;id, stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;destroy();  </span><br><span class="line">    free(stu1);  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p><strong>函数指针是解耦对象关系的最佳利器</strong></p>
+</blockquote>
+<h5 id="命令模式-–-设计模式"><a href="#命令模式-–-设计模式" class="headerlink" title="命令模式 – 设计模式"></a>命令模式 – 设计模式</h5><p>命令模式通过增加中转数据结构，使命令下达和命令执行二者依赖于接口，从而达到二者时间上不相关、二者变化方向独立的目的。<br>【好处：代码清晰明了，容易添加和删除，易维护】</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">  uint8_t cmd;</span><br><span class="line">  void (* handle)(char *buffer);</span><br><span class="line">&#125; package;</span><br><span class="line"> </span><br><span class="line">static const package packageItems[] =</span><br><span class="line">&#123;</span><br><span class="line">  &#123;0x01, parse_temperature&#125;,</span><br><span class="line">  &#123;0x02, parse_humidity&#125;,</span><br><span class="line">  &#123;0x03, parse_illumination&#125;,</span><br><span class="line">  &#123;0xFF, NULL&#125;,</span><br><span class="line">&#125;;</span><br><span class="line">static uint8_t parse(void *buffer, uint16_t length)</span><br><span class="line">&#123;</span><br><span class="line">  package *frame = (package *)buffer;</span><br><span class="line">  if (frame == NULL) &#123; // 异常处理 &#125;</span><br><span class="line"></span><br><span class="line">  const package *entry;</span><br><span class="line">  for (entry = packageItems; entry-&gt;handle != NULL; ++entry) &#123;</span><br><span class="line">    if(frame-&gt;cmd == entry-&gt;cmd) &#123;</span><br><span class="line">      entry-&gt;handle(frame-&gt;data);</span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>什么时候会用到这个命令模式呢？</p>
+<ul>
+<li>按键处理</li>
+<li>协议解析（串口，网口，CAN，等等）<h5 id="策略模式-–-设计模式"><a href="#策略模式-–-设计模式" class="headerlink" title="策略模式 – 设计模式"></a>策略模式 – 设计模式</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">//开关配置过程</span><br><span class="line">typedef void (*ProcStrategy)();</span><br><span class="line">ProcStrategy procStrategy;</span><br><span class="line">if (strategy == A)</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStrategyA;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStaregyB;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//核心逻辑处理过程</span><br><span class="line">...</span><br><span class="line">procStrategy();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="观察者模式-–-设计模式"><a href="#观察者模式-–-设计模式" class="headerlink" title="观察者模式 – 设计模式"></a>观察者模式 – 设计模式</h5><p>函数需要抽象出来一个action函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">void Eat() &#123; // do something&#125;</span><br><span class="line">void Drink() &#123; // do something&#125;</span><br><span class="line">void Rest() &#123; // do something&#125;</span><br><span class="line"></span><br><span class="line">typedef void (*lAction)();</span><br><span class="line">lAction flikuiAction[3] = &#123;Eat, Drink, Rest&#125;;</span><br><span class="line"></span><br><span class="line">//命令响应程序</span><br><span class="line">void DoCmd(Cmd *cmd)</span><br><span class="line">&#123;</span><br><span class="line">    for(int i = 0; i &lt; cmd-&gt;cmdNum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flikuiAction[cmd-&gt;cmd[i]]();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="状态模式-–-设计模式"><a href="#状态模式-–-设计模式" class="headerlink" title="状态模式 – 设计模式"></a>状态模式 – 设计模式</h5><p>有这么一个需求，宋江命令李逵杀敌，李逵此时有很多种状态，李逵要根据自己不同的状态做出不同的反应：如果正在吃饭，就扔掉碗进入空闲态，如果处于空闲，就拿起斧子进入战斗状态，如果处于战斗状态，就不做响应。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">typedef void (*LikuiDoAction)();</span><br><span class="line"></span><br><span class="line">LikuiDoAction likuiDoAction[3][3] = </span><br><span class="line">&#123;			/* EATING */		/* FIGHTING */		/* IDLE */</span><br><span class="line">/* EAT */	&#123;DoNothing,			ThrowAxe,			TakeBowl&#125;,</span><br><span class="line">/* FIGHT */	&#123;ThrowBowl,			DoNothing,			TakeAxe&#125;,</span><br><span class="line">/* IDLE */	&#123;ThrowBowl,			ThrowAxe,			DoNothing&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void LikuiAction()</span><br><span class="line">&#123;</span><br><span class="line">    likuiDoAction[SongjiangCmd][LikuiStatus]();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="函数指针与函数调用的性能分析"><a href="#函数指针与函数调用的性能分析" class="headerlink" title="函数指针与函数调用的性能分析"></a>函数指针与函数调用的性能分析</h5><p>直观上看应该是函数调用开销更小。函数指针调用方案中需要先访问数据区，再访问函数，增加指令开销，同时，数据取值与函数指令加载必须串行执行，影响CPU流水性能；函数调用方案可以做内联优化。</p>
+
+      
+    </div>
+
+    
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:16px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持创作，坚持分享！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="liurui 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="liurui 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/函数指针/" rel="tag"># 函数指针</a>
+          
+            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/14/学习资源收集/" rel="next" title="学习资源收集">
+                <i class="fa fa-chevron-left"></i> 学习资源收集
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/liurui.jpg"
+                alt="liurui" />
+            
+              <p class="site-author-name" itemprop="name">liurui</p>
+              <p class="site-description motion-element" itemprop="description">带着父亲去远行...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/ruitear" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:liurui@ruitear.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ifeng.com/" title="ifeng" target="_blank">ifeng</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com" title="github" target="_blank">github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#指针函数、函数指针、回调函数"><span class="nav-text"><a href="#&#x6307;&#x9488;&#x51FD;&#x6570;&#x3001;&#x51FD;&#x6570;&#x6307;&#x9488;&#x3001;&#x56DE;&#x8C03;&#x51FD;&#x6570;" class="headerlink" title="&#x6307;&#x9488;&#x51FD;&#x6570;&#x3001;&#x51FD;&#x6570;&#x6307;&#x9488;&#x3001;&#x56DE;&#x8C03;&#x51FD;&#x6570;"></a>&#x6307;&#x9488;&#x51FD;&#x6570;&#x3001;&#x51FD;&#x6570;&#x6307;&#x9488;&#x3001;&#x56DE;&#x8C03;&#x51FD;&#x6570;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#命令模式-–-设计模式"><span class="nav-text"><a href="#&#x547D;&#x4EE4;&#x6A21;&#x5F0F;-&#x2013;-&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;" class="headerlink" title="&#x547D;&#x4EE4;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;"></a>&#x547D;&#x4EE4;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#策略模式-–-设计模式"><span class="nav-text"><a href="#&#x7B56;&#x7565;&#x6A21;&#x5F0F;-&#x2013;-&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;" class="headerlink" title="&#x7B56;&#x7565;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;"></a>&#x7B56;&#x7565;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#观察者模式-–-设计模式"><span class="nav-text"><a href="#&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F;-&#x2013;-&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;" class="headerlink" title="&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;"></a>&#x89C2;&#x5BDF;&#x8005;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#状态模式-–-设计模式"><span class="nav-text"><a href="#&#x72B6;&#x6001;&#x6A21;&#x5F0F;-&#x2013;-&#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;" class="headerlink" title="&#x72B6;&#x6001;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;"></a>&#x72B6;&#x6001;&#x6A21;&#x5F0F; &#x2013; &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数指针与函数调用的性能分析"><span class="nav-text"><a href="#&#x51FD;&#x6570;&#x6307;&#x9488;&#x4E0E;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x7684;&#x6027;&#x80FD;&#x5206;&#x6790;" class="headerlink" title="&#x51FD;&#x6570;&#x6307;&#x9488;&#x4E0E;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x7684;&#x6027;&#x80FD;&#x5206;&#x6790;"></a>&#x51FD;&#x6570;&#x6307;&#x9488;&#x4E0E;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x7684;&#x6027;&#x80FD;&#x5206;&#x6790;</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liurui</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.4.3</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: '从函数指针看C语言的面向对象实现',
+            owner: 'ruitear',
+            repo: 'blog.github.io',
+            
+            lang: "zh-CN" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b936e551a21be28218668d5cb5806d1a03235e80',
+            
+                client_id: '87eaa7af65a5418ee91f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
