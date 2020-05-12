@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="带着父亲去远行...">
+  <meta name="description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
 <meta name="keywords" content="C,C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C和C++关键特性浅析">
 <meta property="og:url" content="http://liurui.live/2020/05/12/C和C-关键特性浅析/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="带着父亲去远行...">
+<meta property="og:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-11T16:26:37.092Z">
+<meta property="og:updated_time" content="2020-05-11T16:33:44.206Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C和C++关键特性浅析">
-<meta name="twitter:description" content="带着父亲去远行...">
+<meta name="twitter:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
 
 
 
@@ -351,7 +351,7 @@
                 
               
 
-              <time title="创建时间：2020-05-12 00:25:41 / 修改时间：00:26:37" itemprop="dateCreated datePublished" datetime="2020-05-12T00:25:41+08:00">2020-05-12</time>
+              <time title="创建时间：2020-05-12 00:25:41 / 修改时间：00:33:44" itemprop="dateCreated datePublished" datetime="2020-05-12T00:25:41+08:00">2020-05-12</time>
             
 
             
@@ -373,7 +373,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/语言特性/" itemprop="url" rel="index"><span itemprop="name">语言特性</span></a></span>
 
                 
                 
@@ -425,7 +425,55 @@
       
 
       
-        
+        <h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a>1. <a href="#命名空间namespace与static">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
+<ul>
+<li><strong>什么是命名空间？</strong> 一个由程序设计者命名的内存区域，程序设计者可以根据需要指定一些有名字的空间域，把一些全局实体分别放在各个命名空间中，从而与其他全局实体分隔开来。</li>
+<li><strong>命名空间的作用</strong><br>建立一些互相分隔的作用域，把一些全局实体分隔开来。</li>
+<li><p><strong>命名空间的定义</strong><br><code>namespace ns1 {int a；double b; void fun() { //do something};}</code></p>
+</li>
+<li><p><strong>使用命名空间成员</strong><br>命名空间名：：命名空间成员名，例如 <code>std::vector</code></p>
+</li>
+<li><strong>命名空间的使用</strong> (1)使用命名空间中的全部成员<br><code>using namespace std;</code>在本作用域(using语句所在的作用域)中引入命名空间std所有的成员的声明，以备使用；(2)使用命名空间中的特定成员;using后面的命名空间成员名必须是由命名空间限定的名字。<code>using std::string;</code>在本作用域(using语句所在的作用域)中引入命名空间std成员string的声明以备使用；也就是在使用了无命名namespace的文件中，使用命名空间中的成员，不必(也无法)用命名空间名限定。</li>
+<li><strong>无名的命名空间</strong> C++还允许使用没有名字的命名空间，由于命名空间没有名字，在其他文件中显然无法引用，它只在本文件的作用域内有效。</li>
+</ul>
+<h6 id="1-1-编译属性"><a href="#1-1-编译属性" class="headerlink" title="1.1 编译属性"></a>1.1 <a href="编译属性"><strong>编译属性</strong></a></h6><p>在C中，给变量(局部/全局变量)、函数，加上 static表示当前函数和变量的linkage 为 internal，也就是对外部不可见, 这样就可以在不同的unit(源一般指当前文件) 中定义同名的函数和变量了。在C++中，在不同的编译unit中定义同名的函数和变量的，这样就有了命名空间namespace，解决了变量和函数名字冲突问题，同时给函数和变量限定为 internal linkage。</p>
+<h6 id="1-2-static-修饰的对象成员和成员函数"><a href="#1-2-static-修饰的对象成员和成员函数" class="headerlink" title="1.2 static 修饰的对象成员和成员函数"></a>1.2 <a href="修饰的对象成员和成员函数"><strong>static 修饰的对象成员和成员函数</strong></a></h6><p><strong>static修饰的对象成员</strong>不能通过调用构造函数来进行初始化，因此static修饰的数据成员必须在类外进行初始化且只会初始化一次。【静态变量内存分配在 .data段】<br><strong>static修饰的成员函数</strong>为静态成员方法，静态成员方法可以在类内或类外定义，但必须在类内声明；；static成员方法没有this指针，不能直接引用非static数据成员或调用类的非static成员方法，只能调用类的static成员数据和static成员方法；static成员不是任何对象的组成，不依赖对象的调用所以static成员方法不能被声明为const，因为const只限定该类的对象；static成员方法不能同时被声明为虚函数。</p>
+<p>参考文献：</p>
+<ol>
+<li><a href="https://www.cnblogs.com/skullboyer/p/10200039.html" target="_blank" rel="noopener">https://www.cnblogs.com/skullboyer/p/10200039.html</a></li>
+<li><a href="https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html" target="_blank" rel="noopener">https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html</a></li>
+</ol>
+<h5 id="2-虚函数表vtbl与（虚）函数表指针vptr"><a href="#2-虚函数表vtbl与（虚）函数表指针vptr" class="headerlink" title="2. 虚函数表vtbl与（虚）函数表指针vptr"></a>2. <a href="#虚函数表vtbl与（虚）函数表指针vptr">虚函数表vtbl与（虚）函数表指针vptr</a></h5><p><strong>虚函数表</strong>：存储虚函数信息的表； <strong>虚函数表指针</strong>：指向虚函数表的指针。</p>
+<h6 id="2-1-无虚函数的类"><a href="#2-1-无虚函数的类" class="headerlink" title="2.1 无虚函数的类"></a>2.1 <a href="#无虚函数的类"><strong>无虚函数的类</strong></a></h6><p>讲C++的虚函数表之前，先看一下C语言是如何实现一个面向对象的类。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 方法1</span><br><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    </span><br><span class="line">    void (*func)(struct* stu);</span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.func = profile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>要有面向对象的效果，只能给struct里面添加函数指针，然后把函数赋值给指针；实际使用中这种用法比较少，主要因为函数指针的空间成本；每实例化一个结构体对象，就会有一个函数指针，例如8字节吗，如果有这个对象有m个函数指针，n个实例对象，那么消耗额外的内存是<code>m*8*n</code>字节。因此C语言通常不这样用，而是直接用外部定义一个函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 方法2</span><br><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    profile(&amp;jhon);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于一个C++的类，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.profile();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>跟C语言实现对比，看着像第一种方式通过在结构体定义函数指针的方式来实现。但实际相当于第二种方式。为什么呢？<strong>C++中类的操作和封装只是针对程序员的，而编译器还是面向过程的</strong>，编译器会给类的成员函数添加额外的类指针参数，在运行期间传入对象实际的指针。这说明<strong>类的数据成员和成员函数是分离的</strong>。每个函数都有一个地址（指针），不论这个函数是全局函数还是类的成员函数；在类不含虚函数的情况下，编译器在编译的时候就会把函数的地址确定下来，运行期间直接去调用这个地址的函数，这就是<strong>静态绑定</strong>方式（static binding）的函数调用。</p>
+<h6 id="2-有虚函数的类"><a href="#2-有虚函数的类" class="headerlink" title="2. 有虚函数的类"></a>2. <a href="#有虚函数的类">有虚函数的类</a></h6><p>为什么会出现虚函数？为了解决面向对象中多态的实现。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">class seniorStu: public student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    string address;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n address:%s&quot;, height, age, address.c_str());&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student bob(185,20);</span><br><span class="line">    seniorStu jhon(170,25,&quot;四川成都&quot;);</span><br><span class="line">    jhon.profile();</span><br><span class="line">    // 输出 height: 170 age:25 address:四川成都</span><br><span class="line">    bob.profile();</span><br><span class="line">    // 输出 height: 185 age:20</span><br><span class="line">    student* jim = &amp;jhon;</span><br><span class="line">    jim-&gt;profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25 </span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>上述，可以看到用父类指针指向子类的地址，最终调用的profile函数韩式子类的<br>这个现象称之为<strong>动态绑定</strong>（dynamic binding）后者说<strong>延迟绑定</strong>（lazy binding）。这里如果把子类的virtual，这个代码将调用父类的profile，输出：</p>
+<blockquote>
+<p>输出 height: 170 age:25 <br><br>输出 height: 170 age:25 </p>
+</blockquote>
+<p>这是由于<strong>类的数据成员和函数成员是分离的</strong>。</p>
+<h6 id="2-3-虚表指针和虚函数表"><a href="#2-3-虚表指针和虚函数表" class="headerlink" title="2.3 虚表指针和虚函数表"></a>2.3 <a href="#虚表指针和虚函数表">虚表指针和虚函数表</a></h6><p>从内存布局上，只能看到成员变量，看不到成员函数。因为在编译的时候就确定调用哪个函数。<br>将了这么多，可以回归到整体函数虚函数表了，也就是C++多态的实现。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;stdio.h&gt;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123; printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">    virtual void status() &#123; std::cout&lt;&lt;&quot;just student&quot;;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; ;</span><br><span class="line">class seniorStu: public student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    string address;</span><br><span class="line">    virtual void profile() &#123;</span><br><span class="line">    printf(&quot;height:%d age:%d\n address:%s&quot;, height, age, address.c_str());&#125;</span><br><span class="line">    virtual void status() &#123; std::cout&lt;&lt;&quot;senior student&quot;;&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student bob(185,20);</span><br><span class="line">    seniorStu jhon(170,25,&quot;四川成都&quot;);</span><br><span class="line">    jhon.profile();</span><br><span class="line">    // 输出 height: 170 age:25 address:四川成都</span><br><span class="line">    bob.profile();</span><br><span class="line">    // 输出 height: 185 age:20</span><br><span class="line">    student* jim = &amp;jhon;</span><br><span class="line">    jim-&gt;profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个示例父类有两个虚函数，子类重载了这两个虚函数。查看编译器的内存布局，<br>clang有个命令可以输出对象的内存布局（不同编译器内存布局未必相同），</p>
+<blockquote>
+<p>clang -cc1 -fdump-record-layouts -stdlib=libc++ student.cpp</p>
+</blockquote>
+<p>可以看到类似于这样的内存分布：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class student</span><br><span class="line">    0  | (student vtable pointer)</span><br><span class="line">    x  | int height</span><br><span class="line">    x  | int age</span><br><span class="line"></span><br><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class seniorStu</span><br><span class="line">    0  |   class student (primary base)</span><br><span class="line">    0  |     (student vtable pointer)</span><br><span class="line">    x  |     int height</span><br><span class="line">    x  |     int age</span><br><span class="line">    x  |   string status</span><br></pre></td></tr></table></figure></p>
+<p>在父类student的起始位置有一个student vtable pointer；子类seniorStu是在他的基础上多了自己的成员status。对于含有虚函数的类，在编译期间编译器会给这种类自动的在起始位置添加一个<strong>虚表指针</strong>（vptr），让虚表指针vptr指向一个虚表；虚表中存储了实际的函数地址。<strong>那么虚表里面存储了那些详细的内容呢？</strong> g++有打印虚表的操作（请在Linux上使用g++）会自动写到一个文件里：</p>
+<blockquote>
+<p>g++ -fdump-class-hierarchy student.cpp</p>
+</blockquote>
+<p>可以看出如果vptr指向的并不是虚表的表头而是表头加偏移量而获得一个地址，也就是虚函数的位置。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Vtable for student</span><br><span class="line">student::_ZTV7student: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI7student)</span><br><span class="line">    16 (int (*)(...))student::profile</span><br><span class="line">    24 (int (*)(...))student::status</span><br><span class="line"></span><br><span class="line">Class student</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=20 base align=8</span><br><span class="line">    student (0x0x7f9b1fa8c960) 0</span><br><span class="line">    vptr=((&amp; student::_ZTV7Actress) + 16u)</span><br><span class="line"></span><br><span class="line">Vtable for Sensei</span><br><span class="line">    seniorStu::_ZTV6seniorStu: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI6seniorStu)</span><br><span class="line">    16 (int (*)(...))seniorStu::profile</span><br><span class="line">    24 (int (*)(...))seniorStu::status</span><br><span class="line"></span><br><span class="line">Class seniorStu</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=24 base align=8</span><br><span class="line">    seniorStu (0x0x7f9b1fa81138) 0</span><br><span class="line">    vptr=((&amp; seniorStu::_ZTV6seniorStu) + 16u)</span><br><span class="line">    student (0x0x7f9b1fa8c9c0) 0</span><br><span class="line">    primary-for seniorStu (0x0x7f9b1fa81138)</span><br></pre></td></tr></table></figure></p>
+<p>参考文献： </p>
+<ol>
+<li><a href="https://www.zhihu.com/question/389546003/answer/1194780618" target="_blank" rel="noopener">https://www.zhihu.com/question/389546003/answer/1194780618</a></li>
+<li><a href="https://blog.csdn.net/weixin_30552635/article/details/99157190" target="_blank" rel="noopener">https://blog.csdn.net/weixin_30552635/article/details/99157190</a></li>
+</ol>
+
       
     </div>
 
@@ -565,8 +613,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -614,7 +671,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">8</span>
+                      
+                    
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -717,6 +776,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-命名空间namespace与static"><span class="nav-text"><a href="#1-&#x547D;&#x540D;&#x7A7A;&#x95F4;namespace&#x4E0E;static" class="headerlink" title="1. &#x547D;&#x540D;&#x7A7A;&#x95F4;namespace&#x4E0E;static"></a>1. <a href="#&#x547D;&#x540D;&#x7A7A;&#x95F4;namespace&#x4E0E;static">&#x547D;&#x540D;&#x7A7A;&#x95F4;namespace&#x4E0E;static</a></span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-编译属性"><span class="nav-text"><a href="#1-1-&#x7F16;&#x8BD1;&#x5C5E;&#x6027;" class="headerlink" title="1.1 &#x7F16;&#x8BD1;&#x5C5E;&#x6027;"></a>1.1 <a href="&#x7F16;&#x8BD1;&#x5C5E;&#x6027;"><strong>&#x7F16;&#x8BD1;&#x5C5E;&#x6027;</strong></a></span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-static-修饰的对象成员和成员函数"><span class="nav-text"><a href="#1-2-static-&#x4FEE;&#x9970;&#x7684;&#x5BF9;&#x8C61;&#x6210;&#x5458;&#x548C;&#x6210;&#x5458;&#x51FD;&#x6570;" class="headerlink" title="1.2 static &#x4FEE;&#x9970;&#x7684;&#x5BF9;&#x8C61;&#x6210;&#x5458;&#x548C;&#x6210;&#x5458;&#x51FD;&#x6570;"></a>1.2 <a href="&#x4FEE;&#x9970;&#x7684;&#x5BF9;&#x8C61;&#x6210;&#x5458;&#x548C;&#x6210;&#x5458;&#x51FD;&#x6570;"><strong>static &#x4FEE;&#x9970;&#x7684;&#x5BF9;&#x8C61;&#x6210;&#x5458;&#x548C;&#x6210;&#x5458;&#x51FD;&#x6570;</strong></a></span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-虚函数表vtbl与（虚）函数表指针vptr"><span class="nav-text"><a href="#2-&#x865A;&#x51FD;&#x6570;&#x8868;vtbl&#x4E0E;&#xFF08;&#x865A;&#xFF09;&#x51FD;&#x6570;&#x8868;&#x6307;&#x9488;vptr" class="headerlink" title="2. &#x865A;&#x51FD;&#x6570;&#x8868;vtbl&#x4E0E;&#xFF08;&#x865A;&#xFF09;&#x51FD;&#x6570;&#x8868;&#x6307;&#x9488;vptr"></a>2. <a href="#&#x865A;&#x51FD;&#x6570;&#x8868;vtbl&#x4E0E;&#xFF08;&#x865A;&#xFF09;&#x51FD;&#x6570;&#x8868;&#x6307;&#x9488;vptr">&#x865A;&#x51FD;&#x6570;&#x8868;vtbl&#x4E0E;&#xFF08;&#x865A;&#xFF09;&#x51FD;&#x6570;&#x8868;&#x6307;&#x9488;vptr</a></span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-无虚函数的类"><span class="nav-text"><a href="#2-1-&#x65E0;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;" class="headerlink" title="2.1 &#x65E0;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;"></a>2.1 <a href="#&#x65E0;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;"><strong>&#x65E0;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;</strong></a></span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-有虚函数的类"><span class="nav-text"><a href="#2-&#x6709;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;" class="headerlink" title="2. &#x6709;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;"></a>2. <a href="#&#x6709;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;">&#x6709;&#x865A;&#x51FD;&#x6570;&#x7684;&#x7C7B;</a></span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-虚表指针和虚函数表"><span class="nav-text"><a href="#2-3-&#x865A;&#x8868;&#x6307;&#x9488;&#x548C;&#x865A;&#x51FD;&#x6570;&#x8868;" class="headerlink" title="2.3 &#x865A;&#x8868;&#x6307;&#x9488;&#x548C;&#x865A;&#x51FD;&#x6570;&#x8868;"></a>2.3 <a href="#&#x865A;&#x8868;&#x6307;&#x9488;&#x548C;&#x865A;&#x51FD;&#x6570;&#x8868;">&#x865A;&#x8868;&#x6307;&#x9488;&#x548C;&#x865A;&#x51FD;&#x6570;&#x8868;</a></span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
