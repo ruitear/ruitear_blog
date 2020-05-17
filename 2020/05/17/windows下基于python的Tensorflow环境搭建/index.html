@@ -108,20 +108,22 @@
 
 
 
-  <meta name="description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，假设python.exe所在的路径```12从[pypi源](https://pypi.org/project/setuptools/#files)上下载`setuptools">
+  <meta name="description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
 <meta name="keywords" content="环境搭建">
 <meta property="og:type" content="article">
 <meta property="og:title" content="windows下基于python的Tensorflow环境搭建">
 <meta property="og:url" content="http://liurui.live/2020/05/17/windows下基于python的Tensorflow环境搭建/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，假设python.exe所在的路径```12从[pypi源](https://pypi.org/project/setuptools/#files)上下载`setuptools">
+<meta property="og:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://liurui.live/images/imglib/pypi_mirror.png">
+<meta property="og:image" content="http://liurui.live/images/imglib/virtualenv.png">
 <meta property="og:image" content="http://liurui.live/images/imglib/tensorflow.png">
-<meta property="og:updated_time" content="2020-05-17T13:05:46.824Z">
+<meta property="og:updated_time" content="2020-05-17T13:17:46.731Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="windows下基于python的Tensorflow环境搭建">
-<meta name="twitter:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，假设python.exe所在的路径```12从[pypi源](https://pypi.org/project/setuptools/#files)上下载`setuptools">
-<meta name="twitter:image" content="http://liurui.live/images/imglib/tensorflow.png">
+<meta name="twitter:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
+<meta name="twitter:image" content="http://liurui.live/images/imglib/pypi_mirror.png">
 
 
 
@@ -353,7 +355,7 @@
                 
               
 
-              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:05:46" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
+              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:17:46" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
             
 
             
@@ -428,9 +430,25 @@
 
       
         <p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
-<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. <a href="#环境准备">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，<br><figure class="highlight plain"><figcaption><span>假设python.exe所在的路径```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">从[pypi源](https://pypi.org/project/setuptools/#files)上下载`setuptools`，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。</span><br><span class="line">``` D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure></p>
-<p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip<br><figure class="highlight python"><figcaption><span>setup.py install  安装pip ```</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##### 2. [切换pypi源](#切换pypi源)</span></span><br><span class="line">默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</span><br><span class="line">- 清华大学  https://pypi.tuna.tsinghua.edu.cn/simple/</span><br><span class="line">- 中国科大： https://mirrors.ustc.edu.cn/pypi/web/simple/</span><br><span class="line">- 豆瓣：https://pypi.doubanio.com/simple/</span><br><span class="line">- 阿里云：https://mirrors.aliyun.com/pypi/simple/  &lt;br&gt;</span><br><span class="line">打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录</span><br><span class="line">![image](/images/imglib/pypi_mirror.png)&lt;center&gt;图1 pip.ini路径&lt;/center&gt;</span><br><span class="line">在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</span><br></pre></td></tr></table></figure></p>
-<p>[global]<br>trusted-host=tsinghua.edu.cn<br>index-url=<a href="https://pypi.tuna.tsinghua.edu.cn/simple" target="_blank" rel="noopener">https://pypi.tuna.tsinghua.edu.cn/simple</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">##### 3. [安装virtualenv虚拟化环境](#安装virtualenv虚拟化环境)</span><br><span class="line">会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。</span><br><span class="line">以管理员权限打开cmd，安装virtualenv，</span><br><span class="line">1. 安装virtualenv， `pip install virtualenv `;</span><br><span class="line">2. 在一个路径创建一个存放虚拟环境的路径，这里用了`E:\python_lib`这个路径</span><br><span class="line">3. 用命令`virtualenv  web`创建虚拟化环境;</span><br><span class="line">4. 激活该环境,window使用cd web进入当前目录下的web中，然后用`Scripts\activate`激活; </span><br><span class="line">![image](/images/imglib/virtualenv.png)&lt;center&gt;图2 进入虚拟化环境示例&lt;/center&gt;</span><br><span class="line">linux/mac可参考：[Virtualenv 的理解和使用](https://www.v2ex.com/t/354625) </span><br><span class="line">##### 4. [安装tensorflow](#安装tensorflow)</span><br><span class="line">由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow</span><br><span class="line">``` pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure></p>
+<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. <a href="#环境准备">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure></p>
+<p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure></p>
+<p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
+<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a>2. <a href="#切换pypi源">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
+<ul>
+<li>清华大学  <a href="https://pypi.tuna.tsinghua.edu.cn/simple/" target="_blank" rel="noopener">https://pypi.tuna.tsinghua.edu.cn/simple/</a></li>
+<li>中国科大： <a href="https://mirrors.ustc.edu.cn/pypi/web/simple/" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></li>
+<li>豆瓣：<a href="https://pypi.doubanio.com/simple/" target="_blank" rel="noopener">https://pypi.doubanio.com/simple/</a></li>
+<li>阿里云：<a href="https://mirrors.aliyun.com/pypi/simple/" target="_blank" rel="noopener">https://mirrors.aliyun.com/pypi/simple/</a>  <br><br>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录<br><img src="/images/imglib/pypi_mirror.png" alt="image"><center>图1 pip.ini路径</center><br>在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=tsinghua.edu.cn</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure>
+<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a>3. <a href="#安装virtualenv虚拟化环境">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。<br>以管理员权限打开cmd，安装virtualenv，</p>
+<ol>
+<li>安装virtualenv， <code>pip install virtualenv</code>;</li>
+<li>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</li>
+<li>用命令<code>virtualenv  web</code>创建虚拟化环境;</li>
+<li>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"><center>图2 进入虚拟化环境示例</center><br>linux/mac可参考：<a href="https://www.v2ex.com/t/354625" target="_blank" rel="noopener">Virtualenv 的理解和使用</a> <h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a>4. <a href="#安装tensorflow">安装tensorflow</a></h5>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
 <p><img src="/images/imglib/tensorflow.png" alt="image"><center>图2 进入tensorflow示例</center><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
 
       
@@ -745,7 +763,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-环境准备"><span class="nav-text"><a href="#1-&#x73AF;&#x5883;&#x51C6;&#x5907;" class="headerlink" title="1. &#x73AF;&#x5883;&#x51C6;&#x5907;"></a>1. <a href="#&#x73AF;&#x5883;&#x51C6;&#x5907;">&#x73AF;&#x5883;&#x51C6;&#x5907;</a></span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-环境准备"><span class="nav-text"><a href="#1-&#x73AF;&#x5883;&#x51C6;&#x5907;" class="headerlink" title="1. &#x73AF;&#x5883;&#x51C6;&#x5907;"></a>1. <a href="#&#x73AF;&#x5883;&#x51C6;&#x5907;">&#x73AF;&#x5883;&#x51C6;&#x5907;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-切换pypi源"><span class="nav-text"><a href="#2-&#x5207;&#x6362;pypi&#x6E90;" class="headerlink" title="2. &#x5207;&#x6362;pypi&#x6E90;"></a>2. <a href="#&#x5207;&#x6362;pypi&#x6E90;">&#x5207;&#x6362;pypi&#x6E90;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-安装virtualenv虚拟化环境"><span class="nav-text"><a href="#3-&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;" class="headerlink" title="3. &#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;"></a>3. <a href="#&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;">&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-安装tensorflow"><span class="nav-text"><a href="#4-&#x5B89;&#x88C5;tensorflow" class="headerlink" title="4. &#x5B89;&#x88C5;tensorflow"></a>4. <a href="#&#x5B89;&#x88C5;tensorflow">&#x5B89;&#x88C5;tensorflow</a></span></a></li></ol></div>
             
 
           </div>
