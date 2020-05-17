@@ -116,12 +116,12 @@
 <meta property="og:site_name" content="liurui&#39;s blogs">
 <meta property="og:description" content="1. 什么是状态模式&amp;emsp;&amp;emsp;状态模式是一种行为型的设计模式，由一个场景类context驱动；所有的状态都通过state类继承过来。表现为如图1所示的样子。图1 状态模式类图&amp;emsp;&amp;emsp;状态模式允许通过改变对象内部的状态而改变对象的行为，整个对象表现得就好像修改了它的类一样。状态模式的每个状态子类中需要包含环境类（Context）中的所有方法的具体实现——条件语句。通过把">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://liurui.live/images/design_model/state.png">
-<meta property="og:updated_time" content="2020-05-05T14:17:45.114Z">
+<meta property="og:image" content="http://liurui.live/images/imglib/state.png">
+<meta property="og:updated_time" content="2020-05-17T12:18:22.278Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式-状态模式">
 <meta name="twitter:description" content="1. 什么是状态模式&amp;emsp;&amp;emsp;状态模式是一种行为型的设计模式，由一个场景类context驱动；所有的状态都通过state类继承过来。表现为如图1所示的样子。图1 状态模式类图&amp;emsp;&amp;emsp;状态模式允许通过改变对象内部的状态而改变对象的行为，整个对象表现得就好像修改了它的类一样。状态模式的每个状态子类中需要包含环境类（Context）中的所有方法的具体实现——条件语句。通过把">
-<meta name="twitter:image" content="http://liurui.live/images/design_model/state.png">
+<meta name="twitter:image" content="http://liurui.live/images/imglib/state.png">
 
 
 
@@ -353,12 +353,24 @@
                 
               
 
-              <time title="创建时间：2020-05-05 22:08:10 / 修改时间：22:17:45" itemprop="dateCreated datePublished" datetime="2020-05-05T22:08:10+08:00">2020-05-05</time>
+              <time title="创建时间：2020-05-05 22:08:10" itemprop="dateCreated datePublished" datetime="2020-05-05T22:08:10+08:00">2020-05-05</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-05-17 20:18:22" itemprop="dateModified" datetime="2020-05-17T20:18:22+08:00">2020-05-17</time>
               
             
           </span>
@@ -427,7 +439,7 @@
       
 
       
-        <h5 id="1-什么是状态模式"><a href="#1-什么是状态模式" class="headerlink" title="1. 什么是状态模式"></a>1. <a href="#什么是状态模式">什么是状态模式</a></h5><p>&emsp;&emsp;状态模式是一种行为型的设计模式，由一个场景类context驱动；所有的状态都通过state类继承过来。表现为如图1所示的样子。<br><img src="/images/design_model/state.png" alt="image"><center>图1 状态模式类图</center><br>&emsp;&emsp;状态模式允许通过改变对象内部的状态而改变对象的行为，整个对象表现得就好像修改了它的类一样。状态模式的每个状态子类中需要包含环境类（Context）中的所有方法的具体实现——条件语句。通过把行为和行为对应的逻辑包装到状态类里，在环境类里消除大量的逻辑判断，而不同状态的切换由继承（实现）State的状态子类去实现，当发现修改的当前对象的状态不是自己这个状态所对应的参数，则各个状态子类自己给Context类切换状态， 客户端不直接和状态类交互，客户端不需要了解状态。</p>
+        <h5 id="1-什么是状态模式"><a href="#1-什么是状态模式" class="headerlink" title="1. 什么是状态模式"></a>1. <a href="#什么是状态模式">什么是状态模式</a></h5><p>&emsp;&emsp;状态模式是一种行为型的设计模式，由一个场景类context驱动；所有的状态都通过state类继承过来。表现为如图1所示的样子。<br><img src="/images/imglib/state.png" alt="image"><center>图1 状态模式类图</center><br>&emsp;&emsp;状态模式允许通过改变对象内部的状态而改变对象的行为，整个对象表现得就好像修改了它的类一样。状态模式的每个状态子类中需要包含环境类（Context）中的所有方法的具体实现——条件语句。通过把行为和行为对应的逻辑包装到状态类里，在环境类里消除大量的逻辑判断，而不同状态的切换由继承（实现）State的状态子类去实现，当发现修改的当前对象的状态不是自己这个状态所对应的参数，则各个状态子类自己给Context类切换状态， 客户端不直接和状态类交互，客户端不需要了解状态。</p>
 <h5 id="2-状态模式的实现"><a href="#2-状态模式的实现" class="headerlink" title="2. 状态模式的实现"></a>2. <a href="#状态模式的实现">状态模式的实现</a></h5><h6 id="案例1：开灯关灯"><a href="#案例1：开灯关灯" class="headerlink" title="案例1：开灯关灯"></a><strong>案例1：开灯关灯</strong></h6><p>&emsp;&emsp;灯有两种状态，开和关，非开即关。开和关组成一个状态机；状态的变迁由前一个状态的变化触发，可以理解为触发器。定义一个定义一个State类抽象灯的开和关；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class state &#123;</span><br><span class="line">public:</span><br><span class="line">	virtual void turnLightOn() &#123;&#125;;</span><br><span class="line">	virtual void turnLightOff() &#123;&#125;;</span><br><span class="line">	virtual ~state() &#123;&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>&emsp;&emsp;对应开和关分别定义两个类onState和offState:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">class offState : public state &#123;</span><br><span class="line">public:</span><br><span class="line">	offState() &#123; &#125;</span><br><span class="line">	~offState() &#123;&#125;</span><br><span class="line"></span><br><span class="line">	void turnLightOn()  &#123;cout &lt;&lt; &quot;灯开了，可以开始干活了！&quot; &lt;&lt; endl;&#125;</span><br><span class="line">	void turnLightOff() &#123;cout &lt;&lt; &quot;灯已经关了，快点休息吧！&quot; &lt;&lt; endl;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class onState : public state &#123;</span><br><span class="line">public:</span><br><span class="line">	onState() &#123;&#125;</span><br><span class="line">	~onState() &#123;&#125;</span><br><span class="line"></span><br><span class="line">	void turnLightOn()  &#123;cout &lt;&lt; &quot;灯已经开了，不用再开了！&quot; &lt;&lt; endl;&#125;</span><br><span class="line">	void turnLightOff() &#123;cout &lt;&lt; &quot;灯关了，可以休息了！&quot; &lt;&lt; endl;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -621,7 +633,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-count">12</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -652,7 +664,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
