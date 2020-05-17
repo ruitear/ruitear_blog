@@ -119,7 +119,7 @@
 <meta property="og:image" content="http://liurui.live/images/imglib/pypi_mirror.png">
 <meta property="og:image" content="http://liurui.live/images/imglib/virtualenv.png">
 <meta property="og:image" content="http://liurui.live/images/imglib/tensorflow.png">
-<meta property="og:updated_time" content="2020-05-17T13:17:46.731Z">
+<meta property="og:updated_time" content="2020-05-17T13:20:24.700Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="windows下基于python的Tensorflow环境搭建">
 <meta name="twitter:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
@@ -355,7 +355,7 @@
                 
               
 
-              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:17:46" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
+              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:20:24" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
             
 
             
@@ -446,9 +446,9 @@
 <li>安装virtualenv， <code>pip install virtualenv</code>;</li>
 <li>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</li>
 <li>用命令<code>virtualenv  web</code>创建虚拟化环境;</li>
-<li>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"><center>图2 进入虚拟化环境示例</center><br>linux/mac可参考：<a href="https://www.v2ex.com/t/354625" target="_blank" rel="noopener">Virtualenv 的理解和使用</a> <h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a>4. <a href="#安装tensorflow">安装tensorflow</a></h5>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
-</li>
+<li>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"><center>图2 进入虚拟化环境示例</center><br>linux/mac可参考：<a href="https://www.v2ex.com/t/354625" target="_blank" rel="noopener">Virtualenv 的理解和使用</a> </li>
 </ol>
+<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a>4. <a href="#安装tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure></p>
 <p><img src="/images/imglib/tensorflow.png" alt="image"><center>图2 进入tensorflow示例</center><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
 
       
