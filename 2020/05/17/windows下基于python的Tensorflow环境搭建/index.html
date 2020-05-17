@@ -118,7 +118,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://liurui.live/images/imglib/virtualenv.png">
 <meta property="og:image" content="http://liurui.live/images/imglib/tensorflow.png">
-<meta property="og:updated_time" content="2020-05-17T13:33:55.096Z">
+<meta property="og:updated_time" content="2020-05-17T13:35:22.544Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="windows下基于python的Tensorflow环境搭建">
 <meta name="twitter:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
@@ -354,7 +354,7 @@
                 
               
 
-              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:33:55" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
+              <time title="创建时间：2020-05-17 20:52:10 / 修改时间：21:35:22" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
             
 
             
@@ -432,7 +432,34 @@
 <h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. <a href="#环境准备">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure></p>
 <p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure></p>
 <p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
-<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a>2. <a href="#切换pypi源">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；<br>pypi源| 地址<br>—|—<br>清华大学 | <a href="https://pypi.tuna.tsinghua.edu.cn/simple/" target="_blank" rel="noopener">https://pypi.tuna.tsinghua.edu.cn/simple/</a><br>中国科大 | <a href="https://mirrors.ustc.edu.cn/pypi/web/simple/" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/pypi/web/simple/</a><br>豆瓣 | <a href="https://pypi.doubanio.com/simple/" target="_blank" rel="noopener">https://pypi.doubanio.com/simple/</a><br>阿里云 | <a href="https://mirrors.aliyun.com/pypi/simple/" target="_blank" rel="noopener">https://mirrors.aliyun.com/pypi/simple/</a><br>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=tsinghua.edu.cn</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a>2. <a href="#切换pypi源">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
+<table>
+<thead>
+<tr>
+<th>pypi源</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>清华大学</td>
+<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/" target="_blank" rel="noopener">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
+</tr>
+<tr>
+<td>中国科大</td>
+<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
+</tr>
+<tr>
+<td>豆瓣</td>
+<td><a href="https://pypi.doubanio.com/simple/" target="_blank" rel="noopener">https://pypi.doubanio.com/simple/</a></td>
+</tr>
+<tr>
+<td>阿里云</td>
+<td><a href="https://mirrors.aliyun.com/pypi/simple/" target="_blank" rel="noopener">https://mirrors.aliyun.com/pypi/simple/</a></td>
+</tr>
+</tbody>
+</table>
+<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=tsinghua.edu.cn</span><br><span class="line">index-url=https://pypi.tuna.tsinghua.edu.cn/simple</span><br></pre></td></tr></table></figure></p>
 <h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a>3. <a href="#安装virtualenv虚拟化环境">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux/mac可参考：<a href="https://www.v2ex.com/t/354625" target="_blank" rel="noopener">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
 <ol>
 <li>安装virtualenv， <code>pip install virtualenv</code>;</li>
