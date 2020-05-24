@@ -108,34 +108,25 @@
 
 
 
-  <meta name="description" content="&amp;emsp;&amp;emsp;Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持. 1. git安装&amp;emsp;&amp;emsp;下载git windows一路安装下来. 2. 注册github账户&amp;emsp;&amp;emsp;访问github官网，注册一个github账户. 3.">
-<meta name="keywords" content="环境搭建,git">
+  <meta name="description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
+<meta name="keywords" content="C,C++">
 <meta property="og:type" content="article">
-<meta property="og:title" content="windows搭建git环境">
-<meta property="og:url" content="http://liurui.live/2018/07/14/windows搭建git环境/index.html">
+<meta property="og:title" content="C与C++常用函数使用与表达式解析">
+<meta property="og:url" content="http://liurui.live/2020/05/24/C与C-常用函数使用与表达式解析/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="&amp;emsp;&amp;emsp;Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持. 1. git安装&amp;emsp;&amp;emsp;下载git windows一路安装下来. 2. 注册github账户&amp;emsp;&amp;emsp;访问github官网，注册一个github账户. 3.">
+<meta property="og:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://liurui.live/images/windows_git/1.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/3.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/4.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/5.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/6.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/7.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/8.png">
-<meta property="og:image" content="http://liurui.live/images/windows_git/9.png">
-<meta property="og:updated_time" content="2018-07-14T15:10:01.808Z">
+<meta property="og:updated_time" content="2020-05-24T15:44:08.667Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="windows搭建git环境">
-<meta name="twitter:description" content="&amp;emsp;&amp;emsp;Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持. 1. git安装&amp;emsp;&amp;emsp;下载git windows一路安装下来. 2. 注册github账户&amp;emsp;&amp;emsp;访问github官网，注册一个github账户. 3.">
-<meta name="twitter:image" content="http://liurui.live/images/windows_git/1.png">
+<meta name="twitter:title" content="C与C++常用函数使用与表达式解析">
+<meta name="twitter:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
 
 
 
 
 
 
-  <link rel="canonical" href="http://liurui.live/2018/07/14/windows搭建git环境/"/>
+  <link rel="canonical" href="http://liurui.live/2020/05/24/C与C-常用函数使用与表达式解析/"/>
 
 
 
@@ -145,7 +136,7 @@
   };
 </script>
 
-  <title>windows搭建git环境 | liurui's blogs</title>
+  <title>C与C++常用函数使用与表达式解析 | liurui's blogs</title>
   
 
 
@@ -318,7 +309,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liurui.live/2018/07/14/windows搭建git环境/">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2020/05/24/C与C-常用函数使用与表达式解析/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liurui">
@@ -335,7 +326,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">windows搭建git环境
+          <h1 class="post-title" itemprop="name headline">C与C++常用函数使用与表达式解析
               
             
           </h1>
@@ -360,7 +351,7 @@
                 
               
 
-              <time title="创建时间：2018-07-14 00:18:25 / 修改时间：23:10:01" itemprop="dateCreated datePublished" datetime="2018-07-14T00:18:25+08:00">2018-07-14</time>
+              <time title="创建时间：2020-05-24 23:07:17 / 修改时间：23:44:08" itemprop="dateCreated datePublished" datetime="2020-05-24T23:07:17+08:00">2020-05-24</time>
             
 
             
@@ -382,7 +373,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/git使用/" itemprop="url" rel="index"><span itemprop="name">git使用</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/语言特性/" itemprop="url" rel="index"><span itemprop="name">语言特性</span></a></span>
 
                 
                 
@@ -397,8 +388,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2018/07/14/windows搭建git环境/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2018/07/14/windows搭建git环境/" itemprop="commentsCount"></span>
+                <a href="/2020/05/24/C与C-常用函数使用与表达式解析/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/05/24/C与C-常用函数使用与表达式解析/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -434,14 +425,82 @@
       
 
       
-        <p>&emsp;&emsp;Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
-<h5 id="1-git安装"><a href="#1-git安装" class="headerlink" title="1. git安装"></a>1. git安装</h5><p>&emsp;&emsp;下载<a href="https://gitforwindows.org/" target="_blank" rel="noopener">git windows</a>一路安装下来.</p>
-<h5 id="2-注册github账户"><a href="#2-注册github账户" class="headerlink" title="2. 注册github账户"></a>2. 注册github账户</h5><p>&emsp;&emsp;访问<a href="https://github.com/" target="_blank" rel="noopener">github</a>官网，注册一个<code>github</code>账户.</p>
-<h5 id="3-git-bash添加本地仓"><a href="#3-git-bash添加本地仓" class="headerlink" title="3. git bash添加本地仓"></a>3. git bash添加本地仓</h5><p>&emsp;&emsp;通过 <code>git bash</code> 客户端添加添加一个本地文件夹作为本地仓库；可以通过 <code>pwd</code> 命令来查看当前bash窗口的路径。<div align="left"><img src="/images/windows_git/1.png" alt="image">&emsp;&emsp;此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用<code>git init</code>命令初始化这个文件夹。<img src="/images/windows_git/3.png" alt="image">&emsp;&emsp;初始化之后，再调用 <code>git config --global</code> config 本地仓库关联到远端的 <code>github</code> 账户，也就是你注册 <code>github</code> 的时候填的用户名和邮箱。<img src="/images/windows_git/4.png" alt="image">&emsp;&emsp;到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 <code>ssh key</code>， 可以根据官网的 <a href="https://help.github.com/categories/ssh/" target="_blank" rel="noopener">git help</a> 创建ssh秘钥。这里首先调用 <code>$ ssh-keygen -t rsa -C &quot;liuru@host.com&quot;</code> 调用创建秘钥的指令。<br><img src="/images/windows_git/5.png" alt="image">&emsp;&emsp;如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：<strong>1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。</strong> </div></p>
-<ul>
-<li><strong>关联的到github账户</strong>: 在github账户的setting地方有一个ssh key的你添加输入，<br>生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;</li>
-<li><strong>关联本地客户端</strong>: 根据上述创建的过程中的提示，我们找到相应的.ssh/id_rsa.pub找到文件。首先确保ssh客户端能用，调用 <code>evel &quot;$(ssh-agent -s)&quot;</code> 命令查看, 有 agent id 即为有用； <img src="/images/windows_git/6.png" alt="image">然后, 调用 <code>ssh-add ~/.ssh/id_rsa</code> <img src="/images/windows_git/7.png" alt="image">把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。<h5 id="4-从github仓库clone内容"><a href="#4-从github仓库clone内容" class="headerlink" title="4. 从github仓库clone内容"></a>4. 从github仓库clone内容</h5>&emsp;&emsp;在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用 <code>$ git clone git@github.com:ruitear/C-C-plus-plus.git</code>   (其中ruitear是账户名)<br><img src="/images/windows_git/8.png" alt="image"><h5 id="5-在仓库里面创建子文件夹"><a href="#5-在仓库里面创建子文件夹" class="headerlink" title="5. 在仓库里面创建子文件夹"></a>5. 在仓库里面创建子文件夹</h5>&emsp;&emsp;陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用<code>$ git add Sort/</code> . 这样就在<code>C-Cplus-plus</code>仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：<code>$ git commit -m &quot;相关说明&quot;</code><br><img src="/images/windows_git/9.png" alt="image"><br>&emsp;&emsp;最后调用push把添加之后的仓库push到github仓库了 <code>$git push origin master</code> ， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。<br>【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在<br>push，如果有冲突就解决冲突，没有的话就直接push。</li>
-</ul>
+        <h5 id="1-malloc和realloc"><a href="#1-malloc和realloc" class="headerlink" title="1. malloc和realloc"></a>1. <a href="malloc和realloc">malloc和realloc</a></h5><p>这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数.</p>
+<h6 id="1-1-malloc函数"><a href="#1-1-malloc函数" class="headerlink" title="1.1  malloc函数"></a>1.1  <a href="#malloc函数">malloc函数</a></h6><p><code>void *mallco(int size);</code> <code>malloc</code> 向系统申请分配指定size个字节的内存空间。返回类型是 <code>void*</code> 类型。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">malloc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">1、malloc 函数返回的是 void * 类型，定义的哪种类型的指针，必须强转为此类型指针;</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">2、函数的实参为 sizeof(int) ，用于指明一个整型数据需要的大小；</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">3、malloc是必须指定内存大小的空间，比如想分配50个int类型的空间：int<em> p = (int </em>) malloc ( sizeof(int) * 50 )；</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">4、是malloc 只管分配内存，并不能对所得的内存进行初始化，所以得到的一片新内存中，其值将是随机的；</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p> 闲话长谈malloc(0)与malloc(-1)返回值是什么样的？</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;iostream&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">int main()&#123;</span><br><span class="line">    int *ptr1=(int*)malloc(sizeof(int)*(0));</span><br><span class="line">    int *ptr1=(int*)malloc(sizeof(int)*(-1));;</span><br><span class="line">    cout&lt;&lt;(ch==NULL)&lt;&lt;&apos; &apos;&lt;&lt;(c==NULL)&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出：0 1</span><br></pre></td></tr></table></figure>
+<p>先说<strong>malloc(-1)</strong>, 根据定义malloc入参是一个size_t的无符号数，传入有符号的-1，会翻转成无符号数，如果对于int类型就是<strong>INT_MAX-1</strong>大小的正数；显然这么大的一块内存malloc基本上是申请不下来的。再看<strong>malloc(0)</strong>,返回的是一个不确定的指针，有可能是NULL，也有可能是一个无法被解引用的指针；<a href="http://www.cplusplus.com/reference/cstdlib/malloc/?kw=malloc" target="_blank" rel="noopener">翻看C++参考</a>有如下的描述：</p>
+<blockquote>
+<p><strong>If size is zero</strong>, the return value depends on the particular library implementation (it may or may not be a null pointer), but the returned pointer shall not be dereferenced.</p>
+</blockquote>
+<p>表明<strong>malloc(0)</strong>是跟据，不同库的设置有着不同的表现，翻翻glibc(是GNU发布的c运行库,linux系统中最底层的api)的源码瞅瞅，有如下的说明：</p>
+<blockquote>
+<p><strong>If n is zero</strong>, malloc <strong>returns a minumum-sized chunk</strong>. (The minimum size is 16 bytes on most 32bit systems, and 24 or 32 bytes on 64bit systems.)  On most systems, size_t is an unsigned type, so calls with negative arguments are interpreted as requests for huge amounts of space, which will often fail. The maximum supported value of n differs across systems, but is in all cases less than the maximum representable value of a size_t.</p>
+</blockquote>
+<p>也就是说在Linux上执行 malloc(0)时，会拿到一个指向一小块内存的指针，这个指针指向的内存的大小是由机器决定的。这里不再细究，有兴趣可以参考: <a href="https://zhuanlan.zhihu.com/p/40490357" target="_blank" rel="noopener">当你 malloc(0) 时会发生什么</a></p>
+<h6 id="1-2-realloc函数"><a href="#1-2-realloc函数" class="headerlink" title="1.2 realloc函数"></a>1.2 <a href="#realloc函数">realloc函数</a></h6><p><code>void *realloc(void *mem_address, unsigned int newsize);</code><br>作用：重新申请内存空间，不影响原有数据，但是新分配的地址可能不一样。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">realloc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"> 1、当<strong>mem_address为null，size不为0</strong>，则realloc()和malloc()类似。分配一个newsize的内存块，返回一个指向该内存块的指针；如果没有足够可用的内存用来完成重新分配，则返回null而原来的内存块保持不变；</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"> 2、<strong>将分配的内存扩大</strong>，<strong>则有以下情况</strong>：（1）如果当前内存段后面有需要的内存空间，则直接扩展这段内存空间，realloc()将返回原指针；（2）如果当前内存段后面的空闲字节不够，那么就使用堆中的第一个能够满足这一要求的内存块，将目前的数据复制到新的位置，并将原来的数据块释放掉，返回新的内存块位置。（3）如果申请失败，将返回NULL，原来的指针仍然有效；</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left">  3、<strong>如果内存减少</strong>，则仅改变下索引信息，但并不代表被减少的部分内存还可以安全访问，这己经释放；</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left"> 4、如果<strong>newsize大小为 0</strong>，行为是未定义的，受具体实现来说， 目前VC++是相当于free(ptr)，并返回一个空指针，<a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/realloc?redirectedfrom=MSDN&amp;view=vs-2019" target="_blank" rel="noopener">具体描述</a>。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p> <strong>If there is not enough memory</strong>, the old memory block is not freed and null pointer is returned.</p>
+</blockquote>
+<blockquote>
+<p> <strong>If ptr is NULL</strong>, the behavior is the same as calling malloc(new_size).</p>
+</blockquote>
+<blockquote>
+<p> <strong>If new_size is zero</strong>, the behavior is implementation defined (null pointer may be returned (in which case the old memory block may or may not be freed), or some non-null pointer may be returned that may not be used to access storage).</p>
+</blockquote>
+<p> 【参考文献】：<br> 1、<a href="https://en.cppreference.com/w/c/memory/realloc" target="_blank" rel="noopener">https://en.cppreference.com/w/c/memory/realloc</a><br> 2、<a href="https://en.cppreference.com/w/c/memory/malloc" target="_blank" rel="noopener">https://en.cppreference.com/w/c/memory/malloc</a></p>
 
       
     </div>
@@ -503,9 +562,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/环境搭建/" rel="tag"># 环境搭建</a>
+            <a href="/tags/C/" rel="tag"># C</a>
           
-            <a href="/tags/git/" rel="tag"># git</a>
+            <a href="/tags/C/" rel="tag"># C++</a>
           
         </div>
       
@@ -518,15 +577,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2020/05/17/windows下基于python的Tensorflow环境搭建/" rel="next" title="windows下基于python的Tensorflow环境搭建">
+                <i class="fa fa-chevron-left"></i> windows下基于python的Tensorflow环境搭建
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/07/15/python工具包之matplotlib的使用-pyplot画图/" rel="prev" title="python工具包之matplotlib的使用--pyplot画图">
-                python工具包之matplotlib的使用--pyplot画图 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -757,7 +816,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-git安装"><span class="nav-text"><a href="#1-git&#x5B89;&#x88C5;" class="headerlink" title="1. git&#x5B89;&#x88C5;"></a>1. git&#x5B89;&#x88C5;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-注册github账户"><span class="nav-text"><a href="#2-&#x6CE8;&#x518C;github&#x8D26;&#x6237;" class="headerlink" title="2. &#x6CE8;&#x518C;github&#x8D26;&#x6237;"></a>2. &#x6CE8;&#x518C;github&#x8D26;&#x6237;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-git-bash添加本地仓"><span class="nav-text"><a href="#3-git-bash&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x4ED3;" class="headerlink" title="3. git bash&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x4ED3;"></a>3. git bash&#x6DFB;&#x52A0;&#x672C;&#x5730;&#x4ED3;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-从github仓库clone内容"><span class="nav-text"><a href="#4-&#x4ECE;github&#x4ED3;&#x5E93;clone&#x5185;&#x5BB9;" class="headerlink" title="4. &#x4ECE;github&#x4ED3;&#x5E93;clone&#x5185;&#x5BB9;"></a>4. &#x4ECE;github&#x4ED3;&#x5E93;clone&#x5185;&#x5BB9;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-在仓库里面创建子文件夹"><span class="nav-text"><a href="#5-&#x5728;&#x4ED3;&#x5E93;&#x91CC;&#x9762;&#x521B;&#x5EFA;&#x5B50;&#x6587;&#x4EF6;&#x5939;" class="headerlink" title="5. &#x5728;&#x4ED3;&#x5E93;&#x91CC;&#x9762;&#x521B;&#x5EFA;&#x5B50;&#x6587;&#x4EF6;&#x5939;"></a>5. &#x5728;&#x4ED3;&#x5E93;&#x91CC;&#x9762;&#x521B;&#x5EFA;&#x5B50;&#x6587;&#x4EF6;&#x5939;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-malloc和realloc"><span class="nav-text"><a href="#1-malloc&#x548C;realloc" class="headerlink" title="1. malloc&#x548C;realloc"></a>1. <a href="malloc&#x548C;realloc">malloc&#x548C;realloc</a></span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-malloc函数"><span class="nav-text"><a href="#1-1-malloc&#x51FD;&#x6570;" class="headerlink" title="1.1  malloc&#x51FD;&#x6570;"></a>1.1  <a href="#malloc&#x51FD;&#x6570;">malloc&#x51FD;&#x6570;</a></span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-realloc函数"><span class="nav-text"><a href="#1-2-realloc&#x51FD;&#x6570;" class="headerlink" title="1.2 realloc&#x51FD;&#x6570;"></a>1.2 <a href="#realloc&#x51FD;&#x6570;">realloc&#x51FD;&#x6570;</a></span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -969,7 +1028,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: 'windows搭建git环境',
+            id: 'C与C++常用函数使用与表达式解析',
             owner: 'ruitear',
             repo: 'blog.github.io',
             
