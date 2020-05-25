@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
+  <meta name="description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(size_t size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义">
 <meta name="keywords" content="C,C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C与C++常用函数使用与表达式解析">
 <meta property="og:url" content="http://liurui.live/2020/05/24/C与C-常用函数使用与表达式解析/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
+<meta property="og:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(size_t size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-24T15:44:08.667Z">
+<meta property="og:updated_time" content="2020-05-25T14:15:25.182Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C与C++常用函数使用与表达式解析">
-<meta name="twitter:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(int size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义的哪种">
+<meta name="twitter:description" content="1. malloc和realloc这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数. 1.1  malloc函数void *mallco(size_t size); malloc 向系统申请分配指定size个字节的内存空间。返回类型是 void* 类型。    malloc     1、malloc 函数返回的是 void * 类型，定义">
 
 
 
@@ -351,12 +351,24 @@
                 
               
 
-              <time title="创建时间：2020-05-24 23:07:17 / 修改时间：23:44:08" itemprop="dateCreated datePublished" datetime="2020-05-24T23:07:17+08:00">2020-05-24</time>
+              <time title="创建时间：2020-05-24 23:07:17" itemprop="dateCreated datePublished" datetime="2020-05-24T23:07:17+08:00">2020-05-24</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-05-25 22:15:25" itemprop="dateModified" datetime="2020-05-25T22:15:25+08:00">2020-05-25</time>
               
             
           </span>
@@ -426,7 +438,7 @@
 
       
         <h5 id="1-malloc和realloc"><a href="#1-malloc和realloc" class="headerlink" title="1. malloc和realloc"></a>1. <a href="malloc和realloc">malloc和realloc</a></h5><p>这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数.</p>
-<h6 id="1-1-malloc函数"><a href="#1-1-malloc函数" class="headerlink" title="1.1  malloc函数"></a>1.1  <a href="#malloc函数">malloc函数</a></h6><p><code>void *mallco(int size);</code> <code>malloc</code> 向系统申请分配指定size个字节的内存空间。返回类型是 <code>void*</code> 类型。</p>
+<h6 id="1-1-malloc函数"><a href="#1-1-malloc函数" class="headerlink" title="1.1  malloc函数"></a>1.1  <a href="#malloc函数">malloc函数</a></h6><p><code>void *mallco(size_t size);</code> <code>malloc</code> 向系统申请分配指定size个字节的内存空间。返回类型是 <code>void*</code> 类型。</p>
 <table>
 <thead>
 <tr>
@@ -443,7 +455,7 @@
 <td></td>
 </tr>
 <tr>
-<td style="text-align:left">3、malloc是必须指定内存大小的空间，比如想分配50个int类型的空间：int<em> p = (int </em>) malloc ( sizeof(int) * 50 )；</td>
+<td style="text-align:left">3、malloc是必须指定内存大小的空间，比如想分配50个int类型的空间：<code>int* p = (int*) malloc ( sizeof(int) * 50 )</code>；</td>
 <td></td>
 </tr>
 <tr>
