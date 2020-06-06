@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
+  <meta name="description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但">
 <meta name="keywords" content="C,C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C和C++关键特性浅析">
 <meta property="og:url" content="http://liurui.live/2020/05/12/C和C-关键特性浅析/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
+<meta property="og:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-12T16:43:30.745Z">
+<meta property="og:updated_time" content="2020-06-06T12:53:36.941Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C和C++关键特性浅析">
-<meta name="twitter:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意">
+<meta name="twitter:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但">
 
 
 
@@ -368,7 +368,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-05-13 00:43:30" itemprop="dateModified" datetime="2020-05-13T00:43:30+08:00">2020-05-13</time>
+                <time title="修改时间：2020-06-06 20:53:36" itemprop="dateModified" datetime="2020-06-06T20:53:36+08:00">2020-06-06</time>
               
             
           </span>
@@ -437,7 +437,7 @@
       
 
       
-        <h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a>1. <a href="#命名空间namespace与static">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体(enuty)，包括变量、函数和类等。在简单的程序设计中，只要人们小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
+        <h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a>1. <a href="#命名空间namespace与static">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
 <ul>
 <li><strong>什么是命名空间？</strong> 一个由程序设计者命名的内存区域，程序设计者可以根据需要指定一些有名字的空间域，把一些全局实体分别放在各个命名空间中，从而与其他全局实体分隔开来。</li>
 <li><strong>命名空间的作用</strong><br>建立一些互相分隔的作用域，把一些全局实体分隔开来。</li>
@@ -705,7 +705,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-count">14</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
