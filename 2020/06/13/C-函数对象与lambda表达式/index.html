@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/github.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/github.png?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。lambda表达式也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】无入参的">
+<meta name="keywords" content="C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++函数对象与lambda表达式">
+<meta property="og:url" content="http://liurui.live/2020/06/13/C-函数对象与lambda表达式/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。lambda表达式也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】无入参的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://liurui.live/images/imglib/lambda.png">
+<meta property="og:updated_time" content="2020-06-13T15:28:44.787Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C++函数对象与lambda表达式">
+<meta name="twitter:description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。lambda表达式也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】无入参的">
+<meta name="twitter:image" content="http://liurui.live/images/imglib/lambda.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://liurui.live/2020/06/13/C-函数对象与lambda表达式/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>C++函数对象与lambda表达式 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">liurui's blogs</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">活成期待的样子...</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+    <a href="/about/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-user"></i> <br />关于</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2020/06/13/C-函数对象与lambda表达式/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="liurui">
+      <meta itemprop="description" content="带着父亲去远行...">
+      <meta itemprop="image" content="/images/liurui.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">C++函数对象与lambda表达式
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-06-13 22:32:17 / 修改时间：23:28:44" itemprop="dateCreated datePublished" datetime="2020-06-13T22:32:17+08:00">2020-06-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/06/13/C-函数对象与lambda表达式/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/06/13/C-函数对象与lambda表达式/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><strong>函数对象</strong>，一个类如果将<code>()</code>运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。<strong><code>lambda</code>表达式</strong>也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用<code>lambda</code>表达式会比较方便。</p>
+<h5 id="1-函数对象的如何实现"><a href="#1-函数对象的如何实现" class="headerlink" title="1. 函数对象的如何实现?"></a>1. <a href="#函数对象的如何实现?">函数对象的如何实现?</a></h5><p>C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：<br>【1】无入参的函数对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class ObjType</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void operator() ()  // 无参数类型的()重载</span><br><span class="line">    &#123;</span><br><span class="line">        cout&lt;&lt;&quot;Hello C++!&quot;&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>【2】有参数的函数对象：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class ClcAverage</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    double operator()(int a1, int a2, int a3) // 三个入参</span><br><span class="line">    &#123;  </span><br><span class="line">        return (double)(a1 + a2 + a3) / 3;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>【3】函数对像的使用<br>STL有个accumulate函数，在定义函数模板的时候，使用的是一个函数对象；它的功能是对 <code>[first, last)</code> 中的每个迭代器 对象 执行 <code>val = opt(val, *I)</code>，返回最终的 <code>val</code>。Dev C++，定义这样的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">template &lt;class InIt, class T, class Pred&gt;</span><br><span class="line">T accumulate(InIt first, InIt last, T val, Pred opt)</span><br><span class="line">&#123;</span><br><span class="line">    for (; first != last; ++first) &#123;</span><br><span class="line">        init = opt(init, *first);</span><br><span class="line">    &#125;</span><br><span class="line">    return init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>模板被实例化之后，opt(init, *first)需要定义，opt只能是函数指针或者函数对象。在使用时，实参只能传递函数名，函数指针或者函数对象。这里以函数对象为例举例说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;vector&gt;</span><br><span class="line">#include &lt;numeric&gt;</span><br><span class="line">template&lt;class T&gt;</span><br><span class="line">class SumPow</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    SumPow(int pow) :m_pow(pow) &#123; &#125;</span><br><span class="line">    const T operator() (const T&amp; total, const T&amp; value)</span><br><span class="line">    &#123; //计算 value的pow次方和</span><br><span class="line">        T v = value;</span><br><span class="line">        for (int i = 0; i &lt; m_pow - 1; ++i) &#123; v = v * value; &#125;</span><br><span class="line">        return total + v;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    int m_pow;</span><br><span class="line">&#125;;</span><br><span class="line">int SumSquare(int total, int value)</span><br><span class="line">&#123;</span><br><span class="line">    return total + value * value;</span><br><span class="line">&#125;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">    int a1[] = &#123; 1, 2, 3 &#125;;</span><br><span class="line">    vector&lt;int&gt; a2 = &#123; 1, 2, 3 &#125;;</span><br><span class="line">    // 实例化为函数指针</span><br><span class="line">    cout &lt;&lt; &quot;SumSquares: &quot; &lt;&lt; accumulate(a2.begin(), a2.end(), 0, SumSquare) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;SumSquares &quot; &lt;&lt; accumulate(begin(a1), end(a1), 0, SumSquare) &lt;&lt; endl;</span><br><span class="line">    // 实例化为函数对象 </span><br><span class="line">    cout &lt;&lt; &quot;SumPow: &quot; &lt;&lt; accumulate(a2.begin(), a2.end(), 0, SumPow&lt;int&gt;(2)) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; &quot;SumPow: &quot; &lt;&lt; accumulate(begin(a1), end(a1), 0, SumPow&lt;int&gt;(2)) &lt;&lt; endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>示例中，参数是<code>SumSquare</code>编译器实例化成函数的类似于如下的定义：形参<code>opt</code>是函数指针，而<code>opt(init, *first)</code>就调用了指针<code>opt</code>指向的函数<code>SumSquare</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int accumulate(vector &lt;int&gt;::iterator first, vector &lt;int&gt;::iterator last, int init, int(*op)(int, int))</span><br><span class="line">&#123;</span><br><span class="line">    for (; first != last; ++first)</span><br><span class="line">        init = op(init, *first);</span><br><span class="line">    return init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>参数<code>SumPow&lt;int&gt;(2)</code>编译器实例化成了函数对象，有等效于如下定义的形式，形参是函数对象，相当于调用<code>opt.operator()(init, *first);</code>,也就是SumPow类的operator函数；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">int accumulate(vector&lt;int&gt;::iterator first, vector&lt;int&gt;::iterator last, int init, SumPowers&lt;int&gt; op)</span><br><span class="line">&#123;</span><br><span class="line">    for (; first != last; ++first)</span><br><span class="line">        init = op(init, *first);</span><br><span class="line">    return init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="2-lambda表达式"><a href="#2-lambda表达式" class="headerlink" title="2.lambda表达式"></a>2.<a href="#lambda表达式">lambda表达式</a></h5><p>在使用STL的时候，往往需要用很多函数对象或者函数指针。这些对象或者函数指针大部分是一次性，编写在需要的时候编写这样的代码有点浪费。对于只使用一次的函数对象或者函数，lambda表达式是一个有效的解决办法。Lambda表达式也是的闭包的同义词，但是两者也是有区别的，闭包是任何能够访问不在局部和参数列表里定义里面的自由变量的函数实例。<code>C++</code>中的lambda在<code>C++11</code>中才支持。Lambda 表达式的定义形式如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[外部变量访问方式说明符](参数表)-&gt;返回值类型&#123;语句块&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>外部变量访问方式说明符</strong>是<code>=</code>或<code>&amp;</code>，表示{}中用到的按值捕获还是按引用捕获, 按值捕获表示定义在{}外面的变量，在{}中不允许被改变，按引用捕获表示允许修改。当然，在{}中也可以不使用定义在外面的变量。<strong><code>-&gt;</code>返回值类型</strong>可以省略。如下是一个<strong>lambda表达式</strong>：<br>如果上边不够直观的话，看下边这个图，就更一幕了然。其中，1是捕获说明符；2是捕获参数列表；3是可选的<code>mutable</code>声明；4是可选的异常声明；5是返回类型；6是lambda操作域；<br><img src="/images/imglib/lambda.png" alt="image"></p>
+<p><strong>捕获列表 capture clause</strong></p>
+<table>
+<thead>
+<tr>
+<th>捕获</th>
+<th style="text-align:left">作用</th>
+<th style="text-align:left">捕获</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[]</td>
+<td style="text-align:left">不捕获任何变量</td>
+<td style="text-align:left">[]</td>
+<td style="text-align:left">不捕获任何变量 </td>
+</tr>
+<tr>
+<td>[&amp;]</td>
+<td style="text-align:left">引用捕获所有变量</td>
+<td style="text-align:left">[=]</td>
+<td style="text-align:left">以值捕获所有变量</td>
+</tr>
+<tr>
+<td>[&amp;x]</td>
+<td style="text-align:left">引用只捕获x</td>
+<td style="text-align:left">[x]</td>
+<td style="text-align:left">以值只捕获x</td>
+</tr>
+<tr>
+<td>[&amp;, x]</td>
+<td style="text-align:left">引用捕获所有变量，x是例外</td>
+<td style="text-align:left">[=, &amp;x]</td>
+<td style="text-align:left">值捕获所有变量，其中x是例外</td>
+</tr>
+<tr>
+<td>[this]</td>
+<td style="text-align:left">以引用捕获当前对象</td>
+<td style="text-align:left">[*this]</td>
+<td style="text-align:left">以传值方式捕获当前对象</td>
+</tr>
+</tbody>
+</table>
+<p>捕获列表 <strong>capture clause</strong><br>举个例子，如果lambda主体total通过引用捕获变量，factor通过值捕获变量，则以下捕获子句是等效的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[&amp;total, factor]</span><br><span class="line">[factor, &amp;total]</span><br><span class="line">[&amp;, factor]</span><br><span class="line">[factor, &amp;]</span><br><span class="line">[=, &amp;total]</span><br><span class="line">[&amp;total, =]</span><br></pre></td></tr></table></figure></p>
+<p>如果捕获子句默认&amp; 按引用捕获，那么<code>identifier</code>在capture捕捉列表中不能再有以引用捕获的形式也就是<code>&amp; identifier</code>。同样，如果capture默认按值捕获<code>capture-default =</code>，则capture该捕获列表不能有按值捕获的形式<code>= identifier</code>。而且，标识符不能在捕获列表中出现多次。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct S &#123; void f(int i);&#125;;</span><br><span class="line">void S::f(int i) &#123;</span><br><span class="line">    [&amp;, i]&#123;&#125;;      // OK</span><br><span class="line">    [&amp;, &amp;i]&#123;&#125;;     // ERROR: 按引用捕获，在声明i按引用捕获多余</span><br><span class="line">    [=, this]&#123;&#125;;   // ERROR: this when = is the default</span><br><span class="line">    [=, *this]&#123; &#125;; // OK: captures this by value. </span><br><span class="line">    [i, i]&#123;&#125;;      // ERROR: 重复声明捕获</span><br><span class="line">    [=]&#123;++i;&#125;;      // ERROR: 值捕获，不能修改对象</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>说了这么多，<strong>lambda具体怎么用呢</strong>？看一看，下边的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;   </span><br><span class="line">    int a[4] = &#123; 11, 1, 37, 9 &#125;;</span><br><span class="line">    /* 按值捕获 捕获值不可修改*/</span><br><span class="line">    sort(a, a + 4, [=](int x, int y) -&gt; bool &#123;return x &lt; y; &#125;); /* 升序排序 */</span><br><span class="line">    for_each(a, a + 4, [=](int x) &#123; cout &lt;&lt; x &lt;&lt; &quot; &quot;; &#125;); /* 依次遍历输出 */</span><br><span class="line"></span><br><span class="line">    /* 按引用捕获 捕获值不可修改*/</span><br><span class="line">    for_each(a, a + 4, [&amp;](int&amp; x) &#123; x *= 2; &#125;); /* 元素平方 */</span><br><span class="line">    </span><br><span class="line">    int x = 1, y=2, z=3;</span><br><span class="line">    auto lambdaFun = [=,&amp;y,&amp;z](int n) &#123;</span><br><span class="line">        cout &lt;&lt;x &lt;&lt; endl;</span><br><span class="line">        y++; z++;</span><br><span class="line">        return n*n;</span><br><span class="line">    &#125;;</span><br><span class="line">    cout &lt;&lt; lambdaFun(15) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; y &lt;&lt; &quot;,&quot; &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>最后</strong>，说一下lambda的使用的<strong>注意事项</strong>：<strong>1.</strong> <strong>引用捕获</strong>可修改外部变量，但<strong>值捕获</strong>不能。（可变允许修改副本，但不允许修改原件）;2. <strong>引用捕获</strong>反映了外部变量的<strong>更新</strong>，但<strong>值捕获却没有</strong>;3. <strong>引用捕获</strong>引入了<strong>生命周期依赖</strong>，但是值捕获没有生命周期依赖性。当lambda异步运行时，这尤其重要。如果通过异步lambda中的引用捕获本地，则该本地很<strong>可能会在lambda运行时消失</strong>，从而在运行时导致<strong>访问冲突</strong>。</p>
+<p>参考文献：<br>[1]. <a href="https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019</a></p>
+
+      
+    </div>
+
+    
+
+<div>
+  
+    <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:16px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+  
+</div>
+
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持创作，坚持分享！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.png" alt="liurui 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.png" alt="liurui 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/C/" rel="tag"># C++</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/06/华硕主板配置NVIDIA显卡windwos10下采坑实录/" rel="next" title="华硕主板配置NVIDIA显卡windwos10下采坑实录">
+                <i class="fa fa-chevron-left"></i> 华硕主板配置NVIDIA显卡windwos10下采坑实录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/liurui.jpg"
+                alt="liurui" />
+            
+              <p class="site-author-name" itemprop="name">liurui</p>
+              <p class="site-description motion-element" itemprop="description">带着父亲去远行...</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/ruitear" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:liurui@ruitear.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Links
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://ifeng.com/" title="ifeng" target="_blank">ifeng</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://github.com" title="github" target="_blank">github</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-函数对象的如何实现"><span class="nav-text"><a href="#1-&#x51FD;&#x6570;&#x5BF9;&#x8C61;&#x7684;&#x5982;&#x4F55;&#x5B9E;&#x73B0;" class="headerlink" title="1. &#x51FD;&#x6570;&#x5BF9;&#x8C61;&#x7684;&#x5982;&#x4F55;&#x5B9E;&#x73B0;?"></a>1. <a href="#&#x51FD;&#x6570;&#x5BF9;&#x8C61;&#x7684;&#x5982;&#x4F55;&#x5B9E;&#x73B0;?">&#x51FD;&#x6570;&#x5BF9;&#x8C61;&#x7684;&#x5982;&#x4F55;&#x5B9E;&#x73B0;?</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-lambda表达式"><span class="nav-text"><a href="#2-lambda&#x8868;&#x8FBE;&#x5F0F;" class="headerlink" title="2.lambda&#x8868;&#x8FBE;&#x5F0F;"></a>2.<a href="#lambda&#x8868;&#x8FBE;&#x5F0F;">lambda&#x8868;&#x8FBE;&#x5F0F;</a></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">liurui</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.4.3</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv" title="总访客量">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+
+  
+    <span class="site-pv" title="总访问量">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://aimingoo.github.io/gitmint/style/default.css">
+        <script src="https://aimingoo.github.io/gitmint/dist/gitmint.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+      <style>
+        a.gitment-editor-footer-tip { display: none; }
+        .gitment-container.gitment-footer-container { display: none; }
+      </style>
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitmint({
+            id: 'C++函数对象与lambda表达式',
+            owner: 'ruitear',
+            repo: 'blog.github.io',
+            
+            lang: "zh-CN" || navigator.language || navigator.systemLanguage || navigator.userLanguage,
+            
+            oauth: {
+            
+            
+                client_secret: 'b936e551a21be28218668d5cb5806d1a03235e80',
+            
+                client_id: '87eaa7af65a5418ee91f'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      },
+      TeX: {equationNumbers: { autoNumber: "AMS" }}
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    
+  
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/src/clicklove.js"></script>
