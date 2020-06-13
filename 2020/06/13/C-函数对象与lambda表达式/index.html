@@ -117,7 +117,7 @@
 <meta property="og:description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。lambda表达式也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】无入参的">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://liurui.live/images/imglib/lambda.png">
-<meta property="og:updated_time" content="2020-06-13T15:28:44.787Z">
+<meta property="og:updated_time" content="2020-06-13T16:34:45.763Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++函数对象与lambda表达式">
 <meta name="twitter:description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。lambda表达式也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】无入参的">
@@ -353,12 +353,24 @@
                 
               
 
-              <time title="创建时间：2020-06-13 22:32:17 / 修改时间：23:28:44" itemprop="dateCreated datePublished" datetime="2020-06-13T22:32:17+08:00">2020-06-13</time>
+              <time title="创建时间：2020-06-13 22:32:17" itemprop="dateCreated datePublished" datetime="2020-06-13T22:32:17+08:00">2020-06-13</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-06-14 00:34:45" itemprop="dateModified" datetime="2020-06-14T00:34:45+08:00">2020-06-14</time>
               
             
           </span>
@@ -438,7 +450,7 @@
 <h5 id="2-lambda表达式"><a href="#2-lambda表达式" class="headerlink" title="2.lambda表达式"></a>2.<a href="#lambda表达式">lambda表达式</a></h5><p>在使用STL的时候，往往需要用很多函数对象或者函数指针。这些对象或者函数指针大部分是一次性，编写在需要的时候编写这样的代码有点浪费。对于只使用一次的函数对象或者函数，lambda表达式是一个有效的解决办法。Lambda表达式也是的闭包的同义词，但是两者也是有区别的，闭包是任何能够访问不在局部和参数列表里定义里面的自由变量的函数实例。<code>C++</code>中的lambda在<code>C++11</code>中才支持。Lambda 表达式的定义形式如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[外部变量访问方式说明符](参数表)-&gt;返回值类型&#123;语句块&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>外部变量访问方式说明符</strong>是<code>=</code>或<code>&amp;</code>，表示{}中用到的按值捕获还是按引用捕获, 按值捕获表示定义在{}外面的变量，在{}中不允许被改变，按引用捕获表示允许修改。当然，在{}中也可以不使用定义在外面的变量。<strong><code>-&gt;</code>返回值类型</strong>可以省略。如下是一个<strong>lambda表达式</strong>：<br>如果上边不够直观的话，看下边这个图，就更一幕了然。其中，1是捕获说明符；2是捕获参数列表；3是可选的<code>mutable</code>声明；4是可选的异常声明；5是返回类型；6是lambda操作域；<br><img src="/images/imglib/lambda.png" alt="image"></p>
-<p><strong>捕获列表 capture clause</strong></p>
+<p><strong> 捕获列表 capture clause </strong></p>
 <table>
 <thead>
 <tr>
@@ -482,7 +494,7 @@
 </tbody>
 </table>
 <p>捕获列表 <strong>capture clause</strong><br>举个例子，如果lambda主体total通过引用捕获变量，factor通过值捕获变量，则以下捕获子句是等效的：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[&amp;total, factor]</span><br><span class="line">[factor, &amp;total]</span><br><span class="line">[&amp;, factor]</span><br><span class="line">[factor, &amp;]</span><br><span class="line">[=, &amp;total]</span><br><span class="line">[&amp;total, =]</span><br></pre></td></tr></table></figure></p>
-<p>如果捕获子句默认&amp; 按引用捕获，那么<code>identifier</code>在capture捕捉列表中不能再有以引用捕获的形式也就是<code>&amp; identifier</code>。同样，如果capture默认按值捕获<code>capture-default =</code>，则capture该捕获列表不能有按值捕获的形式<code>= identifier</code>。而且，标识符不能在捕获列表中出现多次。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct S &#123; void f(int i);&#125;;</span><br><span class="line">void S::f(int i) &#123;</span><br><span class="line">    [&amp;, i]&#123;&#125;;      // OK</span><br><span class="line">    [&amp;, &amp;i]&#123;&#125;;     // ERROR: 按引用捕获，在声明i按引用捕获多余</span><br><span class="line">    [=, this]&#123;&#125;;   // ERROR: this when = is the default</span><br><span class="line">    [=, *this]&#123; &#125;; // OK: captures this by value. </span><br><span class="line">    [i, i]&#123;&#125;;      // ERROR: 重复声明捕获</span><br><span class="line">    [=]&#123;++i;&#125;;      // ERROR: 值捕获，不能修改对象</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果捕获子句默认&amp; 按引用捕获，那么<code>identifier</code>在capture捕捉列表中不能再有以引用捕获的形式也就是<code>&amp; identifier</code>。同样，如果capture默认按值捕获<code>capture-default =</code>，则capture该捕获列表不能有按值捕获的形式<code>= identifier</code>。而且，标识符不能在捕获列表中出现多次。<strong>需要注意的是</strong>默认在捕获列表没有明确捕获方式的时候<code>[]</code>，根据捕获参数列表传参形式决定是值捕获还是引用捕获, 形如<code>[](int &amp;x){x=x*2;}</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struct S &#123; void f(int i);&#125;;</span><br><span class="line">void S::f(int i) &#123;</span><br><span class="line">    [&amp;, i]&#123;&#125;;      // OK</span><br><span class="line">    [&amp;, &amp;i]&#123;&#125;;     // ERROR: 按引用捕获，在声明i按引用捕获多余</span><br><span class="line">    [=, this]&#123;&#125;;   // ERROR: this when = is the default</span><br><span class="line">    [=, *this]&#123; &#125;; // OK: captures this by value. </span><br><span class="line">    [i, i]&#123;&#125;;      // ERROR: 重复声明捕获</span><br><span class="line">    [=]&#123;++i;&#125;;      // ERROR: 值捕获，不能修改对象</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>说了这么多，<strong>lambda具体怎么用呢</strong>？看一看，下边的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">int main()</span><br><span class="line">&#123;   </span><br><span class="line">    int a[4] = &#123; 11, 1, 37, 9 &#125;;</span><br><span class="line">    /* 按值捕获 捕获值不可修改*/</span><br><span class="line">    sort(a, a + 4, [=](int x, int y) -&gt; bool &#123;return x &lt; y; &#125;); /* 升序排序 */</span><br><span class="line">    for_each(a, a + 4, [=](int x) &#123; cout &lt;&lt; x &lt;&lt; &quot; &quot;; &#125;); /* 依次遍历输出 */</span><br><span class="line"></span><br><span class="line">    /* 按引用捕获 捕获值不可修改*/</span><br><span class="line">    for_each(a, a + 4, [&amp;](int&amp; x) &#123; x *= 2; &#125;); /* 元素平方 */</span><br><span class="line">    </span><br><span class="line">    int x = 1, y=2, z=3;</span><br><span class="line">    auto lambdaFun = [=,&amp;y,&amp;z](int n) &#123;</span><br><span class="line">        cout &lt;&lt;x &lt;&lt; endl;</span><br><span class="line">        y++; z++;</span><br><span class="line">        return n*n;</span><br><span class="line">    &#125;;</span><br><span class="line">    cout &lt;&lt; lambdaFun(15) &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; y &lt;&lt; &quot;,&quot; &lt;&lt; z &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p><strong>最后</strong>，说一下lambda的使用的<strong>注意事项</strong>：<strong>1.</strong> <strong>引用捕获</strong>可修改外部变量，但<strong>值捕获</strong>不能。（可变允许修改副本，但不允许修改原件）;2. <strong>引用捕获</strong>反映了外部变量的<strong>更新</strong>，但<strong>值捕获却没有</strong>;3. <strong>引用捕获</strong>引入了<strong>生命周期依赖</strong>，但是值捕获没有生命周期依赖性。当lambda异步运行时，这尤其重要。如果通过异步lambda中的引用捕获本地，则该本地很<strong>可能会在lambda运行时消失</strong>，从而在运行时导致<strong>访问冲突</strong>。</p>
 <p>参考文献：<br>[1]. <a href="https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019" target="_blank" rel="noopener">https://docs.microsoft.com/en-us/cpp/cpp/lambda-expressions-in-cpp?view=vs-2019</a></p>
