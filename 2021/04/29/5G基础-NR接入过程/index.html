@@ -118,7 +118,7 @@
 <meta property="og:image" content="http://42.192.236.236/NR/Initial_Attach_Sequence.png">
 <meta property="og:image" content="http://42.192.236.236/NR/RAR调度流程.png">
 <meta property="og:image" content="http://42.192.236.236/NR/SA_Initial_Registration.png">
-<meta property="og:updated_time" content="2021-04-28T17:08:33.691Z">
+<meta property="og:updated_time" content="2021-04-29T14:19:47.393Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5G基础-NR接入过程">
 <meta name="twitter:description" content="UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程： 1. 初始接入UE通过基站广播的PSS/SSS信息对齐频率、时间以及获得接入所需要的参数：  基站广播PSS/SSS/PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS/SSS/PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB">
@@ -354,7 +354,7 @@
                 
               
 
-              <time title="创建时间：2021-04-29 00:52:43 / 修改时间：01:08:33" itemprop="dateCreated datePublished" datetime="2021-04-29T00:52:43+08:00">2021-04-29</time>
+              <time title="创建时间：2021-04-29 00:52:43 / 修改时间：22:19:47" itemprop="dateCreated datePublished" datetime="2021-04-29T00:52:43+08:00">2021-04-29</time>
             
 
             
@@ -414,25 +414,37 @@
 <h5 id="1-初始接入"><a href="#1-初始接入" class="headerlink" title="1. 初始接入"></a>1. <a href="#初始接入">初始接入</a></h5><p>UE通过基站广播的PSS/SSS信息对齐频率、时间以及获得接入所需要的参数：</p>
 <ol>
 <li>基站广播PSS/SSS/PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS/SSS/PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB12个子载波），协议38.211 7.4.2章节描述定义；</li>
-<li>UE检测到一个SS/PBCH Block,定位到PSS和SSS之后，UE便可以在时频域知道MIB消息的位置，应为MIB消息的位置是相对PSS和SSS固定的，<strong>MIB消息的内容</strong>有子载波间隔、<strong>PBCH的DMRS符号位</strong>置、<strong>SIB1所在的时频位置</strong>（由L3的PDCCH-Config SIB1配置）和<strong>频带大</strong>小、<strong>是否禁止用户驻留</strong>、是否容许用户直选到同频邻区等；解到MIB之后就可以解码PBCH的内容，获取SS/PBCH index、定时等信息；<strong>SSB Block Pattern有五种case A-E</strong>（1）SUB3G（A-C）其中FDD频段最大4个SSB Block，每个对应一个SSB Index；（2）sub3G-sub6G A-C定义8个SSB；（3）Above 6G （D-E）定义64个SSB；<blockquote>
-<p><strong>38.321 6.1.4 MIB/SIB/OSI消息格式</strong><br><strong>SIB1消息</strong>提供了UE准许接入和OSI调度的信息，以及初始BWP相关的频域位置和带宽，寻呼，PRACH接入等关键信息；SI-SchedingInfo 中 SIB1字段中的==valueTag字段在SI消息发生变化时都是加1==，用于指示SI消息是否发生变化，UE使用这个字段检测自己之前保存的SI消息是否发生了变化；</p>
+<li>UE检测到一个SS/PBCH Block,定位到PSS和SSS之后，UE便可以在时频域知道MIB消息的位置，应为MIB消息的位置是相对PSS和SSS固定的，<strong>MIB消息的内容</strong>有子载波间隔、<strong>PBCH的DMRS符号位</strong>置、<strong>SIB1所在的时频位置</strong>（由L3的PDCCH-Config SIB1配置）和<strong>频带大</strong>小、<strong>是否禁止用户驻留</strong>、是否容许用户直选到同频邻区等；解到MIB之后就可以解码PBCH的内容，获取SS/PBCH index、定时等信息；<strong>SSB Block Pattern有五种case A-E</strong>（1）SUB3G（A-C）其中FDD频段最大4个SSB Block，每个对应一个SSB Index；（2）sub3G-sub6G A-C定义8个SSB；（3）Above 6G （D-E）定义64个SSB；</li>
+</ol>
+<blockquote>
+<p><strong>38.321 6.1.4 MIB/SIB/OSI消息格式</strong> </p>
 </blockquote>
-</li>
-<li>UE根据mib中中内容获取RSMI所在的频域位置（初始BWP的位置，PDCCH common coreset的视频位置），然后获取RMSI，并从RMSI中获取RACH的位置信息，上下行初始BWP的信息、PUCCH的配置等信息。<blockquote>
+<blockquote>
+<p><strong>SIB1消息</strong>提供了UE准许接入和OSI调度的信息，以及初始BWP相关的频域位置和带宽，寻呼，PRACH接入等关键信息；SI-SchedingInfo 中SIB1字段中的valueTag字段在SI消息发生变化时都是加1，用于指示SI消息是否发生变化，UE使用这个字段检测自己之前保存的SI消息是否发生了变化；</p>
+</blockquote>
+<ol start="3">
+<li>UE根据mib中中内容获取RSMI所在的频域位置（初始BWP的位置，PDCCH common coreset的视频位置），然后获取RMSI，并从RMSI中获取RACH的位置信息，上下行初始BWP的信息、PUCCH的配置等信息。</li>
+</ol>
+<blockquote>
 <p>BWP0阶段 PDCCH信道频域RB的位置与PDSCH信道是一致的</p>
 </blockquote>
-</li>
+<ol start="4">
 <li>UE在对应的RACH occasion上发送RACH Preamble。</li>
 </ol>
 <h5 id="2-随机接入"><a href="#2-随机接入" class="headerlink" title="2. 随机接入"></a>2. <a href="#随机接入">随机接入</a></h5><ol>
-<li><strong>随机选择preamble Id发送preamble</strong>：UE从SS_RSRP大于RSRP_ThreadSSB选一个SSB-RSRP最好的SSB波束。如果没有最好的额，就随机选一个SSB波束，在从SSB的preambles中随机选择一个preamble Id发送preamble，告诉基站有一个随机接入请求，并使基站估计与UE之间的传输时延，以便基站校准uplink timing并通过RAR的timing advance command告知UE；基站通过sib1广播告知UE，基站的RACH信道的视频位置、preamble序列格式、序列产生的参数等信息，用来解答UE在<strong>什么时候</strong>（prach-configuration-Index）以<strong>在什么位置</strong>（prach-frequencyOffset）以<strong>什么格式</strong>（prach-configuration-index）<strong>多大的功率</strong>（min(Pmax, PREAMBLE_RECEIVED_TAR_GET_POWER+Rl)）<strong>发送RA</strong>。<blockquote>
+<li><strong>随机选择preamble Id发送preamble</strong>：UE从SS_RSRP大于RSRP_ThreadSSB选一个SSB-RSRP最好的SSB波束。如果没有最好的额，就随机选一个SSB波束，在从SSB的preambles中随机选择一个preamble Id发送preamble，告诉基站有一个随机接入请求，并使基站估计与UE之间的传输时延，以便基站校准uplink timing并通过RAR的timing advance command告知UE；基站通过sib1广播告知UE，基站的RACH信道的视频位置、preamble序列格式、序列产生的参数等信息，用来解答UE在<strong>什么时候</strong>（prach-configuration-Index）以<strong>在什么位置</strong>（prach-frequencyOffset）以<strong>什么格式</strong>（prach-configuration-index）<strong>多大的功率</strong>（min(Pmax, PREAMBLE_RECEIVED_TAR_GET_POWER+Rl)）<strong>发送RA</strong>。</li>
+</ol>
+<blockquote>
 <p><strong>preamble的作用</strong>：告诉基站有一个随机接入请求，并使基站估计其余UE之间的传输时延，以便在RAR中下发TAC；</p>
 </blockquote>
-</li>
-<li><strong>基站下发RAR</strong>：基站对不同的preamble分配不同（的TC-RNTI和UL-Grant资源等，并通过preamble测量到初始的TA值，在RAR中发送给UE；UE在发送Preamble之后，会在RAR的响应时间窗内，监听PDCCH以接收对应RA-RNTI的RAR；基站侧用RA-RNTI加扰的PDCCH的公共搜索空间中的的DCI1-0告诉UE。<strong>如果UE在时间窗时间内发生</strong>：<br>(1)<strong>在时间窗内用RA-RNTI没有盲检到DCI</strong>；<br>(2)<strong>没有盲检到PDCCH CRC错误</strong>；<br>(3)R<strong>AR中的RA-PID与preambleId不一致</strong>；<br>就认为本次<strong>RA接入失败</strong>；UE RA失败后重发preamble与RAR PDU中的BI(backoff Indicator)字段相关，如果RAR PDU中的携带了BI，那么UE会在0-BI中随机选取一个时刻重新发preamble接入；<strong>BI的大小反映了小区的负载</strong>；<blockquote>
+<ol start="2">
+<li><strong>基站下发RAR</strong>：基站对不同的preamble分配不同（的TC-RNTI和UL-Grant资源等，并通过preamble测量到初始的TA值，在RAR中发送给UE；UE在发送Preamble之后，会在RAR的响应时间窗内，监听PDCCH以接收对应RA-RNTI的RAR；基站侧用RA-RNTI加扰的PDCCH的公共搜索空间中的的DCI1-0告诉UE。<strong>如果UE在时间窗时间内发生</strong>：<br>(1)<strong>在时间窗内用RA-RNTI没有盲检到DCI</strong>；<br>(2)<strong>没有盲检到PDCCH CRC错误</strong>；<br>(3)R<strong>AR中的RA-PID与preambleId不一致</strong>；<br>就认为本次<strong>RA接入失败</strong>；UE RA失败后重发preamble与RAR PDU中的BI(backoff Indicator)字段相关，如果RAR PDU中的携带了BI，那么UE会在0-BI中随机选取一个时刻重新发preamble接入；<strong>BI的大小反映了小区的负载</strong>；</li>
+</ol>
+<blockquote>
 <p><strong>RAR的响应时间窗</strong>（RA Response Window）在rach-configGeneric中配置，配置项为ra-ResponseWindows单位是slot；</p>
 </blockquote>
-<center><img src="http://42.192.236.236/NR/RAR调度流程.png" alt="RAR调度流程"></center></li>
+<p><center><img src="http://42.192.236.236/NR/RAR调度流程.png" alt="RAR调度流程"></center></p>
+<ol start="3">
 <li><p><strong>UE发msg3 RRC_SETUP_REQ RRC承载建立请求</strong>：UE收到RAR之后，通过解析，RAR的payload获取msg3发送时刻的视频资源，采用的mcs和功率等信息，UE在这个过程中会发送一个39bit的随机值（申请RRC Setup请求）；首次发送msg3时以RV版本号0发送（默认顺序0-2-3-1），若基站收到msg3 CRC错，则会基站通过以TC-RNTI加扰的DCI format0-0将信息告知UE；==<strong>UE发送完成后msg3后会启动Ra-COntentResolution定时器</strong>（这个定时器在sib1中的RACH-Config-Common中配置），在这个定时器期间UE会等待基站是否让自己接入，也就是冲突解决的过程；</p>
 </li>
 <li><p><strong>基站发发msg4 RRC_CONN_SETUP，并进行冲突解决</strong>: 在CCCH上发送，携带SIB1资源的配置的详细信息，同时如果有竞争接入会有竞争解决的过程，（冲突解决）基站把msg3的钱48bit作为UE Contention Resolution Identity MAC CE发送，其中包括了mcs的39bit随机值；msg4通过preamble Id和Tc-RNTI发送，终端收到ms4之后，会把竞争解决的MAC CE解析出来，和自己的msg3的前48bit对比，如果相等则认为自己竞争成功，否则竞争失败，在sib1的定时器之后再重新发起接入；</p>
