@@ -108,28 +108,24 @@
 
 
 
-  <meta name="description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
-<meta name="keywords" content="环境搭建">
+  <meta name="description" content="1. SR达到最大重传次数 check UE的盲检位置能否对上 BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI 聚集级别是否正确  1CCE = 6REG  2.  DCI漏检问题 检查PDCCH是否存在问题-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RAC">
 <meta property="og:type" content="article">
-<meta property="og:title" content="windows下基于python的Tensorflow环境搭建">
-<meta property="og:url" content="http://liurui.live/2020/05/17/windows下基于python的Tensorflow环境搭建/index.html">
+<meta property="og:title" content="5G常见问题定位">
+<meta property="og:url" content="http://liurui.live/2021/04/29/5G常见问题定位/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
+<meta property="og:description" content="1. SR达到最大重传次数 check UE的盲检位置能否对上 BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI 聚集级别是否正确  1CCE = 6REG  2.  DCI漏检问题 检查PDCCH是否存在问题-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RAC">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://liurui.live/images/imglib/virtualenv.png">
-<meta property="og:image" content="http://liurui.live/images/imglib/tensorflow.png">
-<meta property="og:updated_time" content="2020-06-06T12:47:14.798Z">
+<meta property="og:updated_time" content="2021-04-28T17:20:12.359Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="windows下基于python的Tensorflow环境搭建">
-<meta name="twitter:description" content="windows下搭建python的tensorflow环境，最简单地是利用pip安装。 1. 环境准备下载python，setuptools，pip. 安装python后在，将python.exe所在的路径添加到环境变量中，1D:\Python\Python37  假设python.exe所在的路径 从pypi源上下载setuptools，下载压缩包版本的，解压之后，将setuptools拷贝到p">
-<meta name="twitter:image" content="http://liurui.live/images/imglib/virtualenv.png">
+<meta name="twitter:title" content="5G常见问题定位">
+<meta name="twitter:description" content="1. SR达到最大重传次数 check UE的盲检位置能否对上 BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI 聚集级别是否正确  1CCE = 6REG  2.  DCI漏检问题 检查PDCCH是否存在问题-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RAC">
 
 
 
 
 
 
-  <link rel="canonical" href="http://liurui.live/2020/05/17/windows下基于python的Tensorflow环境搭建/"/>
+  <link rel="canonical" href="http://liurui.live/2021/04/29/5G常见问题定位/"/>
 
 
 
@@ -139,7 +135,7 @@
   };
 </script>
 
-  <title>windows下基于python的Tensorflow环境搭建 | liurui's blogs</title>
+  <title>5G常见问题定位 | liurui's blogs</title>
   
 
 
@@ -312,7 +308,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liurui.live/2020/05/17/windows下基于python的Tensorflow环境搭建/">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2021/04/29/5G常见问题定位/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liurui">
@@ -329,7 +325,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">windows下基于python的Tensorflow环境搭建
+          <h1 class="post-title" itemprop="name headline">5G常见问题定位
               
             
           </h1>
@@ -354,46 +350,16 @@
                 
               
 
-              <time title="创建时间：2020-05-17 20:52:10" itemprop="dateCreated datePublished" datetime="2020-05-17T20:52:10+08:00">2020-05-17</time>
+              <time title="创建时间：2021-04-29 01:12:31 / 修改时间：01:20:12" itemprop="dateCreated datePublished" datetime="2021-04-29T01:12:31+08:00">2021-04-29</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-06-06 20:47:14" itemprop="dateModified" datetime="2020-06-06T20:47:14+08:00">2020-06-06</time>
               
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python/" itemprop="url" rel="index"><span itemprop="name">Python</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -403,8 +369,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/05/17/windows下基于python的Tensorflow环境搭建/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/05/17/windows下基于python的Tensorflow环境搭建/" itemprop="commentsCount"></span>
+                <a href="/2021/04/29/5G常见问题定位/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2021/04/29/5G常见问题定位/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -440,47 +406,43 @@
       
 
       
-        <p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
-<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a>1. <a href="#环境准备">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure></p>
-<p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure></p>
-<p>从<a href="https://pypi.org/project/setuptools/#files" target="_blank" rel="noopener">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
-<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a>2. <a href="#切换pypi源">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
-<table>
-<thead>
-<tr>
-<th>pypi源</th>
-<th>地址</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>清华大学</td>
-<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/" target="_blank" rel="noopener">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
-</tr>
-<tr>
-<td>中国科大</td>
-<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/" target="_blank" rel="noopener">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
-</tr>
-<tr>
-<td>豆瓣</td>
-<td><a href="https://pypi.doubanio.com/simple/" target="_blank" rel="noopener">https://pypi.doubanio.com/simple/</a></td>
-</tr>
-<tr>
-<td>阿里云</td>
-<td><a href="https://mirrors.aliyun.com/pypi/simple/" target="_blank" rel="noopener">https://mirrors.aliyun.com/pypi/simple/</a></td>
-</tr>
-</tbody>
-</table>
-<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=aliyun.com</span><br><span class="line">index-url=https://mirrors.aliyun.com/pypi/simple</span><br></pre></td></tr></table></figure></p>
-<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a>3. <a href="#安装virtualenv虚拟化环境">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux/mac可参考：<a href="https://www.v2ex.com/t/354625" target="_blank" rel="noopener">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
-<ol>
-<li>安装virtualenv， <code>pip install virtualenv</code>;</li>
-<li>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</li>
-<li>用命令<code>virtualenv  web</code>创建虚拟化环境;</li>
-<li>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"></li>
+        <h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a>1. <a href="#SR达到最大重传次数">SR达到最大重传次数</a></h5><ul>
+<li>check UE的盲检位置能否对上</li>
+<li>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</li>
+<li>聚集级别是否正确  1CCE = 6REG</li>
+</ul>
+<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a>2.  <a href="#DCI漏检问题">DCI漏检问题</a></h5><ul>
+<li>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</li>
+<li>check DCI类型数值value是否正确</li>
+<li>L2下发的L1报文是否被L1校验</li>
+<li>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</li>
+</ul>
+<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a>3. <a href="#影响峰值速率的因素">影响峰值速率的因素</a></h5><ol>
+<li><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl/ul grant 分别是1600次和400次；</li>
+<li><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；<blockquote>
+<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR/QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：<br>协议栈 | 影响因素<br>—|—<br>PDCP| 入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够<br>RLC | RLC入口流量不足，RLC重传，RLC窗口满停止调度<br>MAC | harq资源耗尽，DCI漏检 </p>
+</blockquote>
+</li>
+<li><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，<strong>(1)当CQI比较低</strong>，MCS会比较低，要跑满调度，就需要提升CQI；<strong>(2)当基站接收功率过高</strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；<strong>(3)时频偏问题</strong>；<strong>(4)干扰问题</strong>，主要分为邻区干扰、越区干扰和外部干扰。<strong>邻区干扰</strong>一般由于邻区过覆盖对当前小区产生干扰；<strong>越区干扰</strong>，需要看是否有较远距离的小区越至服务小区的范围；<strong>外部干扰</strong>，需要进行扫描人工分析；<strong>当出现高RSRP低SINR（如：RSRP均值&gt;=-80dBm，SINR均值&lt;=15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查</strong>；</li>
+<li><strong>mcs/rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</li>
+<li><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI/CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI/PMI/RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</li>
+<li><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</li>
+<li><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</li>
+<li><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</li>
 </ol>
-<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a>4. <a href="#安装tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure></p>
-<p><img src="/images/imglib/tensorflow.png" alt="image"><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
+<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a>4. <a href="#切换后流量不足掉坑">切换后流量不足掉坑</a></h5><ul>
+<li>检查切换前后流量是否已经降低；</li>
+<li>切换的时延是否异常，如时延过大；</li>
+<li>切换后来水不足导致调度不足；</li>
+<li>切换后MCS异常，rank异常；</li>
+<li>切换前后是否存在多径，频偏过大；</li>
+<li>其他，比如干扰等；</li>
+</ul>
+<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a>5. <a href="#rank和mcs不符合预期">rank和mcs不符合预期</a></h6><ul>
+<li><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</li>
+<li><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</li>
+</ul>
+<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
 
       
     </div>
@@ -540,12 +502,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/环境搭建/" rel="tag"># 环境搭建</a>
-          
-        </div>
-      
 
       
       
@@ -555,8 +511,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/05/12/C和C-关键特性浅析/" rel="next" title="C和C++关键特性浅析">
-                <i class="fa fa-chevron-left"></i> C和C++关键特性浅析
+              <a href="/2021/04/29/5G基础-NR接入过程/" rel="next" title="5G基础-NR接入过程">
+                <i class="fa fa-chevron-left"></i> 5G基础-NR接入过程
               </a>
             
           </div>
@@ -564,10 +520,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/05/24/C与C-常用函数使用与表达式解析/" rel="prev" title="C与C++常用函数使用与表达式解析">
-                C与C++常用函数使用与表达式解析 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -800,7 +752,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-环境准备"><span class="nav-text"><a href="#1-&#x73AF;&#x5883;&#x51C6;&#x5907;" class="headerlink" title="1. &#x73AF;&#x5883;&#x51C6;&#x5907;"></a>1. <a href="#&#x73AF;&#x5883;&#x51C6;&#x5907;">&#x73AF;&#x5883;&#x51C6;&#x5907;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-切换pypi源"><span class="nav-text"><a href="#2-&#x5207;&#x6362;pypi&#x6E90;" class="headerlink" title="2. &#x5207;&#x6362;pypi&#x6E90;"></a>2. <a href="#&#x5207;&#x6362;pypi&#x6E90;">&#x5207;&#x6362;pypi&#x6E90;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-安装virtualenv虚拟化环境"><span class="nav-text"><a href="#3-&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;" class="headerlink" title="3. &#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;"></a>3. <a href="#&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;">&#x5B89;&#x88C5;virtualenv&#x865A;&#x62DF;&#x5316;&#x73AF;&#x5883;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-安装tensorflow"><span class="nav-text"><a href="#4-&#x5B89;&#x88C5;tensorflow" class="headerlink" title="4. &#x5B89;&#x88C5;tensorflow"></a>4. <a href="#&#x5B89;&#x88C5;tensorflow">&#x5B89;&#x88C5;tensorflow</a></span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-SR达到最大重传次数"><span class="nav-text"><a href="#1-SR&#x8FBE;&#x5230;&#x6700;&#x5927;&#x91CD;&#x4F20;&#x6B21;&#x6570;" class="headerlink" title="1. SR&#x8FBE;&#x5230;&#x6700;&#x5927;&#x91CD;&#x4F20;&#x6B21;&#x6570;"></a>1. <a href="#SR&#x8FBE;&#x5230;&#x6700;&#x5927;&#x91CD;&#x4F20;&#x6B21;&#x6570;">SR&#x8FBE;&#x5230;&#x6700;&#x5927;&#x91CD;&#x4F20;&#x6B21;&#x6570;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-DCI漏检问题"><span class="nav-text"><a href="#2-DCI&#x6F0F;&#x68C0;&#x95EE;&#x9898;" class="headerlink" title="2.  DCI&#x6F0F;&#x68C0;&#x95EE;&#x9898;"></a>2.  <a href="#DCI&#x6F0F;&#x68C0;&#x95EE;&#x9898;">DCI&#x6F0F;&#x68C0;&#x95EE;&#x9898;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-影响峰值速率的因素"><span class="nav-text"><a href="#3-&#x5F71;&#x54CD;&#x5CF0;&#x503C;&#x901F;&#x7387;&#x7684;&#x56E0;&#x7D20;" class="headerlink" title="3. &#x5F71;&#x54CD;&#x5CF0;&#x503C;&#x901F;&#x7387;&#x7684;&#x56E0;&#x7D20;"></a>3. <a href="#&#x5F71;&#x54CD;&#x5CF0;&#x503C;&#x901F;&#x7387;&#x7684;&#x56E0;&#x7D20;">&#x5F71;&#x54CD;&#x5CF0;&#x503C;&#x901F;&#x7387;&#x7684;&#x56E0;&#x7D20;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-切换后流量不足掉坑"><span class="nav-text"><a href="#4-&#x5207;&#x6362;&#x540E;&#x6D41;&#x91CF;&#x4E0D;&#x8DB3;&#x6389;&#x5751;" class="headerlink" title="4. &#x5207;&#x6362;&#x540E;&#x6D41;&#x91CF;&#x4E0D;&#x8DB3;&#x6389;&#x5751;"></a>4. <a href="#&#x5207;&#x6362;&#x540E;&#x6D41;&#x91CF;&#x4E0D;&#x8DB3;&#x6389;&#x5751;">&#x5207;&#x6362;&#x540E;&#x6D41;&#x91CF;&#x4E0D;&#x8DB3;&#x6389;&#x5751;</a></span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#5-rank和mcs不符合预期"><span class="nav-text"><a href="#5-rank&#x548C;mcs&#x4E0D;&#x7B26;&#x5408;&#x9884;&#x671F;" class="headerlink" title="5. rank&#x548C;mcs&#x4E0D;&#x7B26;&#x5408;&#x9884;&#x671F;"></a>5. <a href="#rank&#x548C;mcs&#x4E0D;&#x7B26;&#x5408;&#x9884;&#x671F;">rank&#x548C;mcs&#x4E0D;&#x7B26;&#x5408;&#x9884;&#x671F;</a></span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献："><span class="nav-text"><a href="#&#x53C2;&#x8003;&#x6587;&#x732E;&#xFF1A;" class="headerlink" title="&#x53C2;&#x8003;&#x6587;&#x732E;&#xFF1A;"></a>&#x53C2;&#x8003;&#x6587;&#x732E;&#xFF1A;</span></a></li></ol></div>
             
 
           </div>
@@ -1012,7 +964,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: 'windows下基于python的Tensorflow环境搭建',
+            id: '5G常见问题定位',
             owner: 'ruitear',
             repo: 'blog.github.io',
             
