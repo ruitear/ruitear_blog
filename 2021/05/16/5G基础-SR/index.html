@@ -108,24 +108,35 @@
 
 
 
-  <meta name="description" content="以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。 1. 组合问题【从n个元素中取m个元素–子集】例题1. LeetCode-78-子集   给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。说明：解集不能包含重复的子集。示例:输入: nums = [1,2,3]输出: [[3],[1],[2],[1,2,3],[1,3],[2,3">
+  <meta name="description" content="1. SR(Scheduling Request))SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR； 2. SR的配置在基站中SR的配置在SchedulingRequestResourceId IE中定">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leetcode刷题-排列和组合问题">
-<meta property="og:url" content="http://liurui.live/2020/05/05/leetcode刷题-排列和组合问题/index.html">
+<meta property="og:title" content="5G基础--SR">
+<meta property="og:url" content="http://liurui.live/2021/05/16/5G基础-SR/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。 1. 组合问题【从n个元素中取m个元素–子集】例题1. LeetCode-78-子集   给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。说明：解集不能包含重复的子集。示例:输入: nums = [1,2,3]输出: [[3],[1],[2],[1,2,3],[1,3],[2,3">
+<meta property="og:description" content="1. SR(Scheduling Request))SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR； 2. SR的配置在基站中SR的配置在SchedulingRequestResourceId IE中定">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-05T12:42:29.271Z">
+<meta property="og:image" content="http://42.192.236.236/NR/SR_0.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SchedulingRequestId_0.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SchedulingRequestConfig.jpg">
+<meta property="og:image" content="http://42.192.236.236/NR/pucch_config.png">
+<meta property="og:image" content="http://42.192.236.236/NR/逻辑信道SR_1.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SchedulingRequestResourceConfig.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SchedulingRequestId_1.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SR周期发送1.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SR发送机会.png">
+<meta property="og:image" content="http://42.192.236.236/NR/SR流程_0.png">
+<meta property="og:updated_time" content="2021-05-16T13:30:47.012Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="leetcode刷题-排列和组合问题">
-<meta name="twitter:description" content="以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。 1. 组合问题【从n个元素中取m个元素–子集】例题1. LeetCode-78-子集   给定一组不含重复元素的整数数组 nums，返回该数组所有可能的子集（幂集）。说明：解集不能包含重复的子集。示例:输入: nums = [1,2,3]输出: [[3],[1],[2],[1,2,3],[1,3],[2,3">
+<meta name="twitter:title" content="5G基础--SR">
+<meta name="twitter:description" content="1. SR(Scheduling Request))SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR； 2. SR的配置在基站中SR的配置在SchedulingRequestResourceId IE中定">
+<meta name="twitter:image" content="http://42.192.236.236/NR/SR_0.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://liurui.live/2020/05/05/leetcode刷题-排列和组合问题/"/>
+  <link rel="canonical" href="http://liurui.live/2021/05/16/5G基础-SR/"/>
 
 
 
@@ -135,7 +146,7 @@
   };
 </script>
 
-  <title>leetcode刷题-排列和组合问题 | liurui's blogs</title>
+  <title>5G基础--SR | liurui's blogs</title>
   
 
 
@@ -308,7 +319,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liurui.live/2020/05/05/leetcode刷题-排列和组合问题/">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2021/05/16/5G基础-SR/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liurui">
@@ -325,7 +336,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">leetcode刷题-排列和组合问题
+          <h1 class="post-title" itemprop="name headline">5G基础--SR
               
             
           </h1>
@@ -350,7 +361,7 @@
                 
               
 
-              <time title="创建时间：2020-05-05 20:35:54 / 修改时间：20:42:29" itemprop="dateCreated datePublished" datetime="2020-05-05T20:35:54+08:00">2020-05-05</time>
+              <time title="创建时间：2021-05-16 21:29:28 / 修改时间：21:30:47" itemprop="dateCreated datePublished" datetime="2021-05-16T21:29:28+08:00">2021-05-16</time>
             
 
             
@@ -369,8 +380,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/05/05/leetcode刷题-排列和组合问题/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2020/05/05/leetcode刷题-排列和组合问题/" itemprop="commentsCount"></span>
+                <a href="/2021/05/16/5G基础-SR/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2021/05/16/5G基础-SR/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -406,29 +417,33 @@
       
 
       
-        <p> 以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
-<h5 id="1-组合问题"><a href="#1-组合问题" class="headerlink" title="1. 组合问题"></a>1. 组合问题</h5><p>【从n个元素中取m个元素–子集】<br><strong>例题1.</strong> LeetCode-78-<a href="https://leetcode-cn.com/problems/subsets/" target="_blank" rel="noopener">子集</a> </p>
-<blockquote>
-<p>给定一组<strong>不含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: nums = [1,2,3]<br>输出: [[3],[1],[2],[1,2,3],[1,3],[2,3],[1,2],[] ]</p>
-</blockquote>
-<p><strong>题解</strong>：从数组中连续至少0个元素，构成的子集问题，可以模拟成一个层次遍历的过程；从空集合开始，然后空集合的基础上依次插入元素，先是1个元素的集合，接着是2个元素的集合，依次类推。<br>首先，创建一个局部变量存放结果，把空集合插入存进去<code>vector&lt;vector&lt;int&gt; &gt; res(1)</code>；遍历整个数组，同事嵌套遍历结果数组，往结果数组中依次插入当前遍历到的数组元素，由于结果数组中有一个空子集，嵌套遍历结果数组的时候，就是往空子集中插入第1个元素，此时这个结果肯定是没有出现的排列，再把这个排列插入结果数组；这样结果中就存入了[]和[1];此时进去下一次迭代，数组的第二个元组，在依次往结果数组中的子集插入，也就是[2]依次插入[]和[1]中；以此类推，就可以遍历完所有的排列。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">/**代码实现**/</span><br><span class="line">vector&lt;vector&lt;int&gt;&gt; subsets(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">    vector&lt;vector&lt;int&gt; &gt; res(1);</span><br><span class="line">    for(int i=0;i&lt;nums.size();i++)&#123;</span><br><span class="line">        int cnt=res.size();</span><br><span class="line">        //注意这里不能用res.size(), 因为在不断的往res插入</span><br><span class="line">        //会导致迭代器对象操作等失效，也就是</span><br><span class="line">        for(int j=0;j&lt;cnt;j++)&#123;  </span><br><span class="line">            vector&lt;int&gt; tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>例题2.</strong> LeetCode-90-<a href="https://leetcode-cn.com/problems/subsets-ii/" target="_blank" rel="noopener">子集II</a></p>
-<blockquote>
-<p>给定一个可能<strong>包含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: [1,2,2]<br>输出: [[2],[1],[1,2,2],[2,2],[1,2],[]]</p>
-</blockquote>
-<p><strong>题解</strong> 题目中描述有重复元素，所以去重是在排列里面很关键，在上一题的基础上增加去重的操作即可，这里用一个set去去重，由于排列不考虑数的顺序，所以需要排序一下，进行归一化，然后设计一个hash表去重，这里hash表示就是unordered_map,键值用排序后的数组字符化表示；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">string clcHashValue(vector&lt;int&gt;&amp; nums)&#123;</span><br><span class="line">    string res = &quot;&quot;;</span><br><span class="line">    sort(nums.begin(),nums.end());</span><br><span class="line">    for(int i=0; i &lt; nums.size(); i++)&#123;</span><br><span class="line">        res+=to_string(nums[i])+&quot;+&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;vector&lt;int&gt;&gt; subsetsWithDup(vector&lt;int&gt;&amp; nums) &#123;</span><br><span class="line">    vector&lt;vector&lt;int&gt; &gt; res(1);</span><br><span class="line">    unordered_set&lt;string&gt; numstt;</span><br><span class="line">    for(int i=0;i&lt;nums.size();i++)&#123;</span><br><span class="line">        int cnt=res.size();</span><br><span class="line">        //注意这里不能用res.size(), 因为在不断的往res插入</span><br><span class="line">        //会导致迭代器对象操作等失效，也就是</span><br><span class="line">        for(int j=0;j&lt;cnt;j++)&#123;</span><br><span class="line">            vector&lt;int&gt; tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            string tempHash = clcHashValue(tmp);</span><br><span class="line">            if(numstt.find(tempHash) == numstt.end())&#123;</span><br><span class="line">                res.push_back(tmp);</span><br><span class="line">                numstt.insert(tempHash);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="2-排列问题"><a href="#2-排列问题" class="headerlink" title="2. 排列问题"></a>2. 排列问题</h5><p><strong>例题1.</strong> 面试题 08.07. <a href="https://leetcode-cn.com/problems/permutation-i-lcci/" target="_blank" rel="noopener">无重复字符串的排列组合</a></p>
-<blockquote>
-<p>无重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合，字符串每个字符均不相同。<br><strong>示例1</strong>:<br> 输入：S = “qwe”<br> 输出：[“qwe”,”qew”,”wqe”,”weq”,”ewq”,”eqw”]<br><strong>示例2</strong>:<br> 输入：S = “ab”<br> 输出：[“ab”,”ba”]</p>
-</blockquote>
-<p> <strong>题解</strong> 我们把字符串看成两部分，第一部分是它的第一个字符，第二部分是后边的字符。求整个字符串的排列，可以就可以看成两部分，首先求所有可能出现在第一个位置的字符，也就是把第一个字符和后边所有的字符交换。第二部分固定第一个字符求后面字符的排列。在第二部分的时候仍把后边的字符分成2部分，依次类推。这样就是很典型的递归了。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">void strPerm(vector&lt;string&gt; &amp;result, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(beginIndex == s.size()-1) &#123;</span><br><span class="line">        result.push_back(s);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i&lt;s.size(); i++) &#123;</span><br><span class="line">        //交换第一个字符，交换从第一个开始，beginIndex从0开始</span><br><span class="line">        char temp = s[beginIndex];</span><br><span class="line">        s[beginIndex] = s[i];</span><br><span class="line">        s[i] = temp;</span><br><span class="line"></span><br><span class="line">        strPerm(result, s, beginIndex+1);</span><br><span class="line">        //下次递归前恢复刚才的交换的字符</span><br><span class="line">        temp = s[beginIndex];</span><br><span class="line">        s[beginIndex] = s[i];</span><br><span class="line">        s[i] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;string&gt; permutation(string s) &#123;</span><br><span class="line">    vector&lt;string&gt; result;</span><br><span class="line">    if(s.empty()) &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    strPerm(result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>例题2.</strong> 面试题 08.08. <a href="https://leetcode-cn.com/problems/permutation-ii-lcci/" target="_blank" rel="noopener">有重复字符串的排列组合</a></p>
-<blockquote>
-<p>有重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合。<br>示例1: 输入：S = “qqe”  输出：[“eqq”,”qeq”,”qqe”]<br>示例2: 输入：S = “ab”  输出：[“ab”, “ba”]<br>提示: 字符都是英文字母。字符串长度在[1, 9]之间。</p>
-</blockquote>
-<p> <strong>题解</strong> 如上题一样，这里主要去重，去重，可以简单地额用一个hash表来解决，这里用unordered_set来创建hash。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">void strPermu(unordered_set&lt;string&gt;&amp; perLib, vector&lt;string&gt;&amp; res, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(s.size()-1 == beginIndex) &#123;</span><br><span class="line">        if(perLib.find(s)==perLib.end()) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">            perLib.insert(s);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i&lt;s.size(); i++) &#123;</span><br><span class="line">        char temp = s[i];</span><br><span class="line">        s[i] = s[beginIndex];</span><br><span class="line">        s[beginIndex] = temp;</span><br><span class="line"></span><br><span class="line">        strPermu(perLib, res, s, beginIndex+1);</span><br><span class="line"></span><br><span class="line">        temp = s[i];</span><br><span class="line">        s[i] = s[beginIndex];</span><br><span class="line">        s[beginIndex] = temp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;string&gt; permutation(string s) &#123;</span><br><span class="line">    vector&lt;string&gt; result;</span><br><span class="line">    if(s.empty()) &#123;return result;&#125;</span><br><span class="line">    unordered_set&lt;string&gt; perLib;</span><br><span class="line">    strPermu(perLib, result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        <h5 id="1-SR-Scheduling-Request"><a href="#1-SR-Scheduling-Request" class="headerlink" title="1. SR(Scheduling Request))"></a>1. <a href="#SR(Scheduling_Request">SR(Scheduling Request)</a>)</h5><p>SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR；<br><img src="http://42.192.236.236/NR/SR_0.png" alt="SR"></p>
+<h5 id="2-SR的配置"><a href="#2-SR的配置" class="headerlink" title="2. SR的配置"></a>2. SR的配置</h5><p>在基站中SR的配置在<font color="red">SchedulingRequestResourceId IE</font>中定义了SR资源的数量，<font color="red">最大8个SR资源，对应的SchedulingRequestResourceId就是0-7 </font>；<br><img src="http://42.192.236.236/NR/SchedulingRequestId_0.png" alt="SchedulingRequestId"><br>MAC的配置中，<font color="red"> 逻辑信道可以分别关联SR配置，一个MAC实体可以配置0个、1个或者多个SR配置，不同的逻辑信道可以关联相同的schedulingRequestID</font>，<strong>如果没有给相应的逻辑信道配置SR</strong>，当该逻辑信道有数据发送时只能通过随机接入获得上行调度。<br>一个mac实体通过<font color="red">MAC-CellGroupConfig</font>-&gt;<strong>schedulingRequestConfig</strong>-&gt;schedulingRequestToAddModList配置一个SR列表。其中每个SR配置对应一个schedulingRequestConfig；<br><img src="http://42.192.236.236/NR/SchedulingRequestConfig.jpg" alt="SchedulingRequestConfig"></p>
+<p>一个SR配置(SchedulingRequestConfig)包含了分布在不同bwp或者小区中用于传输SR的一组PUCCH资源，也就是SR资源，目前SR只支持PUCCH format0或者PUCCH format1. 从协议38.331的描述可以看到一个SchedulingRequestConfig中对应一组SchedulingRequestResourceConfig，也就是一个SR配置可以对应多个SR资源，他们实际使用是分布在不同的小区或者BWP上。在特定逻辑信道上，每个BWP最多配置1个用于SR的PUCCH资源。</p>
+<p>上行BWP通过BWP-UplinkDedicated-&gt;pucch-Config-&gt;schedulingRequestResourceToAddModList配置一个SR资源表，每个SR资源对应一个SchedulingRequestResourceConfig，这个SR资源有一个schedulingRequestID指示它被哪个SR配置使用，<font color="red"><strong>schedulingRequestID</strong> </font>是区分不同的SR配置的唯一值，关联了<strong>sr-ProhibitTimer</strong>和<strong>sr-TransMax</strong>。通过BWP与小区的对应关系，可以确定一个SR配置在特定小区的特定上行BWP上使用的SR资源。</p>
+<p><strong>在pucch-config中为各个上行bwp配置了sr资源</strong>，<strong>使用schedulingRequestResourceId来区分不同的资源配置</strong>，schedulingRequestResourceId会关联schedulingRequestID，还包括SR发送时间点配置，以及对应的pucch resource配置。<br><img src="http://42.192.236.236/NR/pucch_config.png" alt="SchedulingRequestResourceId"></p>
+<p>下图是SR在接入过程的对逻辑信道的配置的示例，信令中对SRB1/SRB2/DRB都配置了响应的相同的SR资源。</p>
+<p><img src="http://42.192.236.236/NR/逻辑信道SR_1.png" alt="SchedulingRequestId"></p>
+<h5 id="3-SR的发送"><a href="#3-SR的发送" class="headerlink" title="3. SR的发送"></a>3. SR的发送</h5><p>针对每个SR资源，基站通过<strong>SchedulingRequestResourceConfig-&gt;resource</strong>告诉UE使用PUCCH format0还是 format1来发送SR。<br><img src="http://42.192.236.236/NR/SchedulingRequestResourceConfig.png" alt="SchedulingRequestConfig"><br><img src="http://42.192.236.236/NR/SchedulingRequestId_1.png" alt="SchedulingRequestId"></p>
+<p>在SchedulingRequestResourceConfig中的<strong>periodicityAndOffSet</strong>字段指定传送SR的PUCCH资源的周期,以符号或者slot为单位，确定了SR的发送时间位置[TS38.331 9.2.4]。可以看到SR的最小周期是2符号。<br>基于SR周期的差异，把SR对应三种场景来，如下图case所示：<br><img src="http://42.192.236.236/NR/SR周期发送1.png" alt="SchedulingRequestId"></p>
+<p>从协议指示的配置范围可以看出，根据不同的子载波间隔，可选择的周期偏移有所不同；当UE发现一个SR传输机会对应PUCCH资源所在的slot，用于改pucch传输的符号数小于对应pucch资源所需的符号数，UE不会在该slot上发送pucch资源；<br>SR资源是UE专用，UE发送SR时不需要指定自己的CRNTI，基站通过SR资源的时域、频域和码分复用信息就知道哪个UE请求上行资源。<br><img src="http://42.192.236.236/NR/SR发送机会.png" alt="SchedulingRequestId"></p>
+<p>协议描述中有<strong>Positive SR</strong>和<strong>Negative SR</strong>的概念，UE并不是一直有发送SR请求的需求，对于Positive SR即UE有SR请求发送，需要物理层发送<strong>SR/PUCCH</strong>，而对于无SR发送请求的UE，在SR资源的时间点，则该SR为Negative SR。基站不知道UE什么时候发送SR，需要在已经分配的SR资源上检测是否有SR上报，会在每个SR上来的时刻监测是否有SR资源，具体的SR调度流程如下图所示：<br><img src="http://42.192.236.236/NR/SR流程_0.png" alt="SR调度流程"><br>SR调度流程注意事项：</p>
+<ol>
+<li>只有在pucch资源上配置了SR才能发送SR请求上行调度，不然只能通过随机接入申请上行资源；</li>
+<li>SR发送实际在PUCCH的特定位置，以便基站能检测到SR；</li>
+<li>SR发送实际不能和测量GAP重合；</li>
+<li>如果sr-ProhibitTimer未超时，则不能发送SR，此时定时器放置SR发送过多，降低PUCCH负载；</li>
+<li>当UEUESR的传输实际和测量gap重叠或者sr-ProhibitTimer未超时等原因不能发送SR时，需要循环检测，指导条件满足；</li>
+<li>SR-COUNTER为计数器，只有当SR-COUNTER&lt;sr-TransMax时，才能发送。为了放置SR重传发送过多，当SR成功触发UL GRANT后，SR-COUNTER会置零；</li>
+<li>UE触发SR后，这个SR级处于pending态，意思是为UE准备单是还没有发送SR，如果已经准备发送BSR，或者PUSCH资源足够，那么pending的SR会被取消。 </li>
+</ol>
+<p>UE发送SR之后，无法确定基站什么时候会下发UL Grant，如果UE等待超时（由果sr-ProhibitTimer定时器配置）就会尝试重发SR，每个SR都有自己的果sr-ProhibitTimer<br><strong>当SR请求发送达到最大次数仍然不能获得上行调度后，通过发送PRACH触发随机接入过程来获得上行调</strong>；当SR的到达最大发送次数后无上行调度，除了发送PRACH外，MAC执行的操作还包括：</p>
+<ul>
+<li>1.通知RRC Release所有服务小区PUCCH配置;</li>
+<li>2.通知RRC Release所有服务小区SRS配置; </li>
+<li>3.清除Configured DL assignments和 Configured UL Grants.  </li>
+<li>4.清除用于发送semi-persistent CSI的PUSCH Resource.</li>
+</ul>
 
       
     </div>
@@ -497,8 +512,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/05/05/LeetCode刷题-典型字符串问题/" rel="next" title="LeetCode刷题--典型字符串问题">
-                <i class="fa fa-chevron-left"></i> LeetCode刷题--典型字符串问题
+              <a href="/2021/04/30/LTE和NR共存之动态频谱共享/" rel="next" title="LTE和NR共存之动态频谱共享">
+                <i class="fa fa-chevron-left"></i> LTE和NR共存之动态频谱共享
               </a>
             
           </div>
@@ -506,10 +521,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/05/05/设计模式-状态模式/" rel="prev" title="设计模式-状态模式">
-                设计模式-状态模式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -742,7 +753,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-组合问题"><span class="nav-text"><a href="#1-&#x7EC4;&#x5408;&#x95EE;&#x9898;" class="headerlink" title="1. &#x7EC4;&#x5408;&#x95EE;&#x9898;"></a>1. &#x7EC4;&#x5408;&#x95EE;&#x9898;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-排列问题"><span class="nav-text"><a href="#2-&#x6392;&#x5217;&#x95EE;&#x9898;" class="headerlink" title="2. &#x6392;&#x5217;&#x95EE;&#x9898;"></a>2. &#x6392;&#x5217;&#x95EE;&#x9898;</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-SR-Scheduling-Request"><span class="nav-text"><a href="#1-SR-Scheduling-Request" class="headerlink" title="1. SR(Scheduling Request))"></a>1. <a href="#SR(Scheduling_Request">SR(Scheduling Request)</a>)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-SR的配置"><span class="nav-text"><a href="#2-SR&#x7684;&#x914D;&#x7F6E;" class="headerlink" title="2. SR&#x7684;&#x914D;&#x7F6E;"></a>2. SR&#x7684;&#x914D;&#x7F6E;</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-SR的发送"><span class="nav-text"><a href="#3-SR&#x7684;&#x53D1;&#x9001;" class="headerlink" title="3. SR&#x7684;&#x53D1;&#x9001;"></a>3. SR&#x7684;&#x53D1;&#x9001;</span></a></li></ol></div>
             
 
           </div>
@@ -954,7 +965,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: 'leetcode刷题-排列和组合问题',
+            id: '5G基础--SR',
             owner: 'ruitear',
             repo: 'blog.github.io',
             
