@@ -50,8 +50,8 @@
         <category>语言特性</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>C</tag>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -73,8 +73,8 @@
         <category>语言特性</category>
       </categories>
       <tags>
-        <tag>C++</tag>
         <tag>C</tag>
+        <tag>C++</tag>
       </tags>
   </entry>
   <entry>
@@ -184,8 +184,8 @@
         <category>git使用</category>
       </categories>
       <tags>
-        <tag>git</tag>
         <tag>环境搭建</tag>
+        <tag>git</tag>
       </tags>
   </entry>
 </search>
