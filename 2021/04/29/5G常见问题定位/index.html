@@ -115,7 +115,7 @@
 <meta property="og:site_name" content="liurui&#39;s blogs">
 <meta property="og:description" content="1. SR达到最大重传次数 check UE的盲检位置能否对上 BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI 聚集级别是否正确  1CCE = 6REG  2.  DCI漏检问题 检查PDCCH是否存在问题-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RAC">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2021-04-28T17:20:12.359Z">
+<meta property="og:updated_time" content="2021-05-16T12:56:38.806Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5G常见问题定位">
 <meta name="twitter:description" content="1. SR达到最大重传次数 check UE的盲检位置能否对上 BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI 聚集级别是否正确  1CCE = 6REG  2.  DCI漏检问题 检查PDCCH是否存在问题-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RAC">
@@ -350,12 +350,24 @@
                 
               
 
-              <time title="创建时间：2021-04-29 01:12:31 / 修改时间：01:20:12" itemprop="dateCreated datePublished" datetime="2021-04-29T01:12:31+08:00">2021-04-29</time>
+              <time title="创建时间：2021-04-29 01:12:31" itemprop="dateCreated datePublished" datetime="2021-04-29T01:12:31+08:00">2021-04-29</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2021-05-16 20:56:38" itemprop="dateModified" datetime="2021-05-16T20:56:38+08:00">2021-05-16</time>
               
             
           </span>
@@ -420,9 +432,33 @@
 <h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a>3. <a href="#影响峰值速率的因素">影响峰值速率的因素</a></h5><ol>
 <li><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl/ul grant 分别是1600次和400次；</li>
 <li><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；<blockquote>
-<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR/QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：<br>协议栈 | 影响因素<br>—|—<br>PDCP| 入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够<br>RLC | RLC入口流量不足，RLC重传，RLC窗口满停止调度<br>MAC | harq资源耗尽，DCI漏检 </p>
+<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR/QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
 </blockquote>
 </li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>协议栈</th>
+<th>影响因素 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PDCP</td>
+<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够 </td>
+</tr>
+<tr>
+<td>RLC</td>
+<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度 </td>
+</tr>
+<tr>
+<td>MAC</td>
+<td>harq资源耗尽，DCI漏检 </td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
 <li><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，<strong>(1)当CQI比较低</strong>，MCS会比较低，要跑满调度，就需要提升CQI；<strong>(2)当基站接收功率过高</strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；<strong>(3)时频偏问题</strong>；<strong>(4)干扰问题</strong>，主要分为邻区干扰、越区干扰和外部干扰。<strong>邻区干扰</strong>一般由于邻区过覆盖对当前小区产生干扰；<strong>越区干扰</strong>，需要看是否有较远距离的小区越至服务小区的范围；<strong>外部干扰</strong>，需要进行扫描人工分析；<strong>当出现高RSRP低SINR（如：RSRP均值&gt;=-80dBm，SINR均值&lt;=15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查</strong>；</li>
 <li><strong>mcs/rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</li>
 <li><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI/CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI/PMI/RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</li>
