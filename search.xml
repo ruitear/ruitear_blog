@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[5G基础-上行调度的BSR]]></title>
+    <url>%2F2021%2F05%2F20%2F5G%E5%9F%BA%E7%A1%80-%E4%B8%8A%E8%A1%8C%E8%B0%83%E5%BA%A6%E7%9A%84BSR%2F</url>
+    <content type="text"><![CDATA[BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源； 1. BSR的配置和内容UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在LogicalChannelConfig-&gt;logicalChannelGroup中配置。 在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示： 从配置中可以看到BSR-Config有几个定时器相关的参数，分别是： [1] retxBSR定时器，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况； [2] periodicBSR定时器，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况； [3] logicalChannelSR-DelayTimer，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR； BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR/短截断BSR，长BSR/长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示： 需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。 短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示： 长BSR/长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。 长/短BSR的buffersize分别是8bit和5bit，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多。 2. BSR分类协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：]]></content>
+  </entry>
+  <entry>
     <title><![CDATA[5G基础--SR]]></title>
     <url>%2F2021%2F05%2F16%2F5G%E5%9F%BA%E7%A1%80-SR%2F</url>
     <content type="text"><![CDATA[1. SR(Scheduling Request))SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR； 2. SR的配置在基站中SR的配置在SchedulingRequestResourceId IE中定义了SR资源的数量，最大8个SR资源，对应的SchedulingRequestResourceId就是0-7 ；MAC的配置中， 逻辑信道可以分别关联SR配置，一个MAC实体可以配置0个、1个或者多个SR配置，不同的逻辑信道可以关联相同的schedulingRequestID，如果没有给相应的逻辑信道配置SR，当该逻辑信道有数据发送时只能通过随机接入获得上行调度。一个mac实体通过MAC-CellGroupConfig-&gt;schedulingRequestConfig-&gt;schedulingRequestToAddModList配置一个SR列表。其中每个SR配置对应一个schedulingRequestConfig； 一个SR配置(SchedulingRequestConfig)包含了分布在不同bwp或者小区中用于传输SR的一组PUCCH资源，也就是SR资源，目前SR只支持PUCCH format0或者PUCCH format1. 从协议38.331的描述可以看到一个SchedulingRequestConfig中对应一组SchedulingRequestResourceConfig，也就是一个SR配置可以对应多个SR资源，他们实际使用是分布在不同的小区或者BWP上。在特定逻辑信道上，每个BWP最多配置1个用于SR的PUCCH资源。 上行BWP通过BWP-UplinkDedicated-&gt;pucch-Config-&gt;schedulingRequestResourceToAddModList配置一个SR资源表，每个SR资源对应一个SchedulingRequestResourceConfig，这个SR资源有一个schedulingRequestID指示它被哪个SR配置使用，schedulingRequestID 是区分不同的SR配置的唯一值，关联了sr-ProhibitTimer和sr-TransMax。通过BWP与小区的对应关系，可以确定一个SR配置在特定小区的特定上行BWP上使用的SR资源。 在pucch-config中为各个上行bwp配置了sr资源，使用schedulingRequestResourceId来区分不同的资源配置，schedulingRequestResourceId会关联schedulingRequestID，还包括SR发送时间点配置，以及对应的pucch resource配置。 下图是SR在接入过程的对逻辑信道的配置的示例，信令中对SRB1/SRB2/DRB都配置了响应的相同的SR资源。 3. SR的发送针对每个SR资源，基站通过SchedulingRequestResourceConfig-&gt;resource告诉UE使用PUCCH format0还是 format1来发送SR。 在SchedulingRequestResourceConfig中的periodicityAndOffSet字段指定传送SR的PUCCH资源的周期,以符号或者slot为单位，确定了SR的发送时间位置[TS38.331 9.2.4]。可以看到SR的最小周期是2符号。基于SR周期的差异，把SR对应三种场景来，如下图case所示： 从协议指示的配置范围可以看出，根据不同的子载波间隔，可选择的周期偏移有所不同；当UE发现一个SR传输机会对应PUCCH资源所在的slot，用于改pucch传输的符号数小于对应pucch资源所需的符号数，UE不会在该slot上发送pucch资源；SR资源是UE专用，UE发送SR时不需要指定自己的CRNTI，基站通过SR资源的时域、频域和码分复用信息就知道哪个UE请求上行资源。 协议描述中有Positive SR和Negative SR的概念，UE并不是一直有发送SR请求的需求，对于Positive SR即UE有SR请求发送，需要物理层发送SR/PUCCH，而对于无SR发送请求的UE，在SR资源的时间点，则该SR为Negative SR。基站不知道UE什么时候发送SR，需要在已经分配的SR资源上检测是否有SR上报，会在每个SR上来的时刻监测是否有SR资源，具体的SR调度流程如下图所示：SR调度流程注意事项： 只有在pucch资源上配置了SR才能发送SR请求上行调度，不然只能通过随机接入申请上行资源； SR发送实际在PUCCH的特定位置，以便基站能检测到SR； SR发送实际不能和测量GAP重合； 如果sr-ProhibitTimer未超时，则不能发送SR，此时定时器放置SR发送过多，降低PUCCH负载； 当UEUESR的传输实际和测量gap重叠或者sr-ProhibitTimer未超时等原因不能发送SR时，需要循环检测，指导条件满足； SR-COUNTER为计数器，只有当SR-COUNTER&lt;sr-TransMax时，才能发送。为了放置SR重传发送过多，当SR成功触发UL GRANT后，SR-COUNTER会置零； UE触发SR后，这个SR级处于pending态，意思是为UE准备单是还没有发送SR，如果已经准备发送BSR，或者PUSCH资源足够，那么pending的SR会被取消。 UE发送SR之后，无法确定基站什么时候会下发UL Grant，如果UE等待超时（由果sr-ProhibitTimer定时器配置）就会尝试重发SR，每个SR都有自己的果sr-ProhibitTimer当SR请求发送达到最大次数仍然不能获得上行调度后，通过发送PRACH触发随机接入过程来获得上行调；当SR的到达最大发送次数后无上行调度，除了发送PRACH外，MAC执行的操作还包括： 1.通知RRC Release所有服务小区PUCCH配置; 2.通知RRC Release所有服务小区SRS配置; 3.清除Configured DL assignments和 Configured UL Grants. 4.清除用于发送semi-persistent CSI的PUSCH Resource.]]></content>
@@ -153,8 +158,8 @@
         <category>网络编程</category>
       </categories>
       <tags>
-        <tag>python</tag>
         <tag>socket</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -189,8 +194,8 @@
         <category>git使用</category>
       </categories>
       <tags>
-        <tag>环境搭建</tag>
         <tag>git</tag>
+        <tag>环境搭建</tag>
       </tags>
   </entry>
 </search>
