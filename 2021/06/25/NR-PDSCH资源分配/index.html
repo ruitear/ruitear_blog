@@ -127,7 +127,7 @@
 <meta property="og:image" content="http://42.192.236.236/NR/pdsch_common.png">
 <meta property="og:image" content="http://42.192.236.236/NR/pdsch-TimeDomainAllocationList.png">
 <meta property="og:image" content="http://42.192.236.236/NR/38214-5.1.2.1.1-1.png">
-<meta property="og:updated_time" content="2021-06-25T16:10:00.394Z">
+<meta property="og:updated_time" content="2021-06-25T16:12:28.498Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NR PDSCH资源分配">
 <meta name="twitter:description" content="1. PDSCH频域资源分配PDSCH频域资源分配方式有两种，称为type0和type1，支持动态和静态配置；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示； 1.1 终端如何获取频域资源分配方式的信息 如果终端通过DCI 1_0接收调度，那么只能是Type 1； 如果终端通过DCI 1_1接收调度，需要参考RRC参">
@@ -380,7 +380,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-06-26 00:10:00" itemprop="dateModified" datetime="2021-06-26T00:10:00+08:00">2021-06-26</time>
+                <time title="修改时间：2021-06-26 00:12:28" itemprop="dateModified" datetime="2021-06-26T00:12:28+08:00">2021-06-26</time>
               
             
           </span>
@@ -454,7 +454,7 @@
 </blockquote>
 </li>
 </ul>
-<p><font color="red">协议38214中表5.1.2.1.1-2/3/4/5给出了PDSCH的时域信息配置表，可以通过row index去获取</font>，表格信息如下图所示：<br><img src="http://42.192.236.236/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><br><img src="http://42.192.236.236/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
+<p><font color="red">协议38214中表5.1.2.1.1-2/3/4/5给出了PDSCH的时域信息配置表，可以通过row index去获取</font>，表格信息如下图所示：<br><img src="http://42.192.236.236/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://42.192.236.236/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
 <ul>
 <li><font color="red">通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息</font>，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
 </ul>
