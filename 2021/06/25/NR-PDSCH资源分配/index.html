@@ -127,7 +127,7 @@
 <meta property="og:image" content="http://42.192.236.236/NR/pdsch_common.png">
 <meta property="og:image" content="http://42.192.236.236/NR/pdsch-TimeDomainAllocationList.png">
 <meta property="og:image" content="http://42.192.236.236/NR/38214-5.1.2.1.1-1.png">
-<meta property="og:updated_time" content="2021-06-25T16:12:28.498Z">
+<meta property="og:updated_time" content="2021-06-25T16:15:22.988Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NR PDSCH资源分配">
 <meta name="twitter:description" content="1. PDSCH频域资源分配PDSCH频域资源分配方式有两种，称为type0和type1，支持动态和静态配置；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示； 1.1 终端如何获取频域资源分配方式的信息 如果终端通过DCI 1_0接收调度，那么只能是Type 1； 如果终端通过DCI 1_1接收调度，需要参考RRC参">
@@ -380,7 +380,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-06-26 00:12:28" itemprop="dateModified" datetime="2021-06-26T00:12:28+08:00">2021-06-26</time>
+                <time title="修改时间：2021-06-26 00:15:22" itemprop="dateModified" datetime="2021-06-26T00:15:22+08:00">2021-06-26</time>
               
             
           </span>
@@ -458,7 +458,7 @@
 <ul>
 <li><font color="red">通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息</font>，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
 </ul>
-<p><img src="http://42.192.236.236/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png"><br>SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://42.192.236.236/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
+<p><img src="http://42.192.236.236/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://42.192.236.236/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
 <p><font color="red">例如</font>：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S=1，L=12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html" target="_blank" rel="noopener">5G-SLIV</a>.</p>
 <h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a>2.2 <a href="#什么时候使用DCI或者RRC配置获取时域pdsch信息">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0/ DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2/3/4/5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://42.192.236.236/NR/pdsch_common.png" alt="pdsch_common.png"></p>
 <p><font color="red">pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；</font><br><img src="http://42.192.236.236/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
