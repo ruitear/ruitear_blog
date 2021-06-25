@@ -108,34 +108,31 @@
 
 
 
-  <meta name="description" content="1. 时隙结构LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：  无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。 在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载">
+  <meta name="description" content="1. mcs的选择和码率的确定对月PDSCH的调度，主要有两种方式的一种是有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；另一种是在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。PDSCH调制阶数通过DCI中5b">
 <meta property="og:type" content="article">
-<meta property="og:title" content="5G基础-时隙和帧结构">
-<meta property="og:url" content="http://liurui.live/2021/04/28/5G基础-时隙和帧结构/index.html">
+<meta property="og:title" content="PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估">
+<meta property="og:url" content="http://liurui.live/2021/05/21/PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
-<meta property="og:description" content="1. 时隙结构LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：  无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。 在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载">
+<meta property="og:description" content="1. mcs的选择和码率的确定对月PDSCH的调度，主要有两种方式的一种是有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；另一种是在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。PDSCH调制阶数通过DCI中5b">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://42.192.236.236/NR/numerologles.png">
-<meta property="og:image" content="http://42.192.236.236/NR/numerologles.png">
-<meta property="og:image" content="http://42.192.236.236/NR/slot_format.png">
-<meta property="og:image" content="http://42.192.236.236/NR/tdd_ul_dl_pattern.png">
-<meta property="og:image" content="http://42.192.236.236/NR/PDCCH_ServingCellConfig.png">
-<meta property="og:image" content="http://42.192.236.236/NR/SlotFormatIndicator_information_1.png">
-<meta property="og:image" content="http://42.192.236.236/NR/SlotFormatIndicator_information_2.png">
-<meta property="og:image" content="http://42.192.236.236/NR/SlotFormatCombinationsPerCell_1.png">
-<meta property="og:image" content="http://42.192.236.236/NR/SlotFormatCombinationsPerCell_2.png">
-<meta property="og:updated_time" content="2021-04-28T15:53:08.421Z">
+<meta property="og:image" content="http://42.192.236.236/NR/pdsch_mcsTable2.png">
+<meta property="og:image" content="http://42.192.236.236/NR/pdsch_mcsTable3.png">
+<meta property="og:image" content="http://42.192.236.236/NR/pdsch_mcsTable1.png">
+<meta property="og:image" content="http://42.192.236.236/NR/tbs_low_3824.png">
+<meta property="og:image" content="http://42.192.236.236/NR/tbs_Scaling_factor.png">
+<meta property="og:image" content="http://42.192.236.236/NR/pdsch_pusch_type.png">
+<meta property="og:updated_time" content="2021-05-20T16:38:37.826Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="5G基础-时隙和帧结构">
-<meta name="twitter:description" content="1. 时隙结构LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：  无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。 在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载">
-<meta name="twitter:image" content="http://42.192.236.236/NR/numerologles.png">
+<meta name="twitter:title" content="PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估">
+<meta name="twitter:description" content="1. mcs的选择和码率的确定对月PDSCH的调度，主要有两种方式的一种是有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；另一种是在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。PDSCH调制阶数通过DCI中5b">
+<meta name="twitter:image" content="http://42.192.236.236/NR/pdsch_mcsTable2.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://liurui.live/2021/04/28/5G基础-时隙和帧结构/"/>
+  <link rel="canonical" href="http://liurui.live/2021/05/21/PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估/"/>
 
 
 
@@ -145,7 +142,7 @@
   };
 </script>
 
-  <title>5G基础-时隙和帧结构 | liurui's blogs</title>
+  <title>PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估 | liurui's blogs</title>
   
 
 
@@ -318,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://liurui.live/2021/04/28/5G基础-时隙和帧结构/">
+    <link itemprop="mainEntityOfPage" href="http://liurui.live/2021/05/21/PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="liurui">
@@ -335,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">5G基础-时隙和帧结构
+          <h1 class="post-title" itemprop="name headline">PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估
               
             
           </h1>
@@ -360,7 +357,7 @@
                 
               
 
-              <time title="创建时间：2021-04-28 23:44:49 / 修改时间：23:53:08" itemprop="dateCreated datePublished" datetime="2021-04-28T23:44:49+08:00">2021-04-28</time>
+              <time title="创建时间：2021-05-21 00:00:13 / 修改时间：00:38:37" itemprop="dateCreated datePublished" datetime="2021-05-21T00:00:13+08:00">2021-05-21</time>
             
 
             
@@ -379,8 +376,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2021/04/28/5G基础-时隙和帧结构/#comments" itemprop="discussionUrl">
-                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2021/04/28/5G基础-时隙和帧结构/" itemprop="commentsCount"></span>
+                <a href="/2021/05/21/PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估/#comments" itemprop="discussionUrl">
+                  <span class="post-meta-item-text">评论数：</span> <span class="post-comments-count gitment-comments-count" data-xid="/2021/05/21/PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -416,48 +413,43 @@
       
 
       
-        <h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a>1. <a href="#时隙结构">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
-<p><img src="http://42.192.236.236/NR/numerologles.png" alt="image"></p>
-<p>无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。<br><img src="http://42.192.236.236/NR/numerologles.png" alt="image"></p>
-<p>在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载波间隔越大（即频域越宽），相应的slot时间越短（即时域越窄），相应的每个symb符号长度也越短。<br>上表列出了NR支持的5中不同的帧结构，对应不同的μ，有着不同的帧结构。</p>
-<h5 id="2-slot-Format"><a href="#2-slot-Format" class="headerlink" title="2. slot Format"></a>2. <a href="#slot Format">slot Format</a></h5><p>时隙格式slot format，是用来表示一个时隙里的每个OFDM符号的传输方向是什么；在NR中，一个时隙里的OFDM符号，被分类为三种：DL符号、flexible符号和UL符号。在TDD的系统就对应成DL slot、S slot 和UL slot；下行数据可以在DL符合和flexible符号中传输，上行数据可以在UL和flexible中传输。在38.213-f60协议中，定义了56中时隙格式，如下表所示：</p>
-<p><img src="http://42.192.236.236/NR/slot_format.png" alt="image"></p>
-<p>为了能够<strong>调度的更加灵</strong>活，定义这么多的时隙格式，当前下行的数据负载很大，可以配置Slot Format 28#；当前上行的数据负载很大可以配置SlotFormat 34#。<strong>有这么多slot format，系统是怎么下发这个Slot Format配置？UE收到Slot Format配置之后，是怎么处理的呢？</strong></p>
-<h5 id="3-UE如何获取基站的slot-format"><a href="#3-UE如何获取基站的slot-format" class="headerlink" title="3. UE如何获取基站的slot format"></a>3. <a href="#UE如何获取基站的slot format">UE如何获取基站的slot format</a></h5><p>上表的第一列是Slot Format Indicator，指示当前基站采用的时隙格式，该参数由基站侧配置并下发到UE。UE可以通过解析<strong>系统信息</strong>来获取小区的时隙格式Slot Format，也可以通过<strong>解析特定的DCI</strong>来更新时隙格式。</p>
-<blockquote>
-<p><strong>系统消息获取slot format</strong> ?</p>
-</blockquote>
-<p>SIB1中<strong>ServingCellConfigCommonSIB</strong>信元用于配置UE所在服务小区的小区特定参数，<strong>ServingCellConfigCommonSIB</strong>信元里有名为<strong>TDD-UL-DL-ConfigCommon</strong>的信元，该信元用于确定小区特定的上下行TDD配置；时隙格式相关的参数就可以通过解析<strong>TDD-UL-DL-ConfigCommon</strong>信元中的<strong>TDD-UL-DL-Pattern</strong>信元得到。UE获取到这些参数后，就可以得到当前基站的上下行时隙格式。<br><strong>TDD-UL-DL-Pattern</strong><br><img src="http://42.192.236.236/NR/tdd_ul_dl_pattern.png" alt="image"></p>
+        <h5 id="1-mcs的选择和码率的确定"><a href="#1-mcs的选择和码率的确定" class="headerlink" title="1. mcs的选择和码率的确定"></a>1. <a href="#mcs的选择和码率的确定">mcs的选择和码率的确定</a></h5><p>对月PDSCH的调度，主要有两种方式的<strong>一种是</strong>有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；<strong>另一种是</strong>在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。<br>PDSCH调制阶数通过DCI中5bit的字段<font color="red"><code>I_MCS</code></font>来指数，5bit最大32，协议中定义了3张mcs表，分别是1个256QAM，2个64QAM的表；在不同的场景选用不同的mcs表。比如UE不希望在解码P-RNTI, RA-RNTI, SI-RNTI加扰的PDSCH时，使用Qm &gt; 2的调制方式。</p>
+<p><font color="red"><strong>case1</strong></font>： 高层配置PDSCH-config种使用<strong>qam256</strong>的mcs表，那么对DCI1_1指示的PDSCH使用<font color="red"><strong>Table 5.1.3.1-2</strong></font>来确定MCS和码率，也就是256qam的表格。</p>
+<p><font color="red"><strong>case2</strong></font>： 如果UE没有通过SPS-config来配置mcs表，而是通过pdsch-config配置了成<strong>qam256</strong>，那么UE使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。<br><img src="http://42.192.236.236/NR/pdsch_mcsTable2.png" alt="pdsch_mcsTable2"></p>
+<p><font color="red"><strong>case3</strong></font>： 如果UE没有配置MCS-C-RNTI，且高曾参数pdsch-config种配置的mcs表是<strong>qam64LowSE</strong>，那么针对UE USS 搜索空间的对应的PDSCH调度使用<font color="red"><strong>Table 5.1.3.1-3</strong></font>来确定MCS和码率，也就是低码率的64qam的表格。</p>
+<p><font color="red"><strong>case4</strong></font>： 如果UE配置了MCS-C-RNTI，pdsch是被MCS-C-RNTI加扰的PDCCH指示调度，那么UE使用<font color="red"><strong>Table 5.1.3.1-3</strong></font>来确定MCS和码率；</p>
+<p><font color="red"><strong>case5</strong></font>： 如果UE的mcs表通过SPS-Config配置并且配置成<strong>qam64LowSE</strong>，那么UE使用<font color="red"><strong>Table 5.1.3.1-3</strong></font>来确定MCS和码率；<br><img src="http://42.192.236.236/NR/pdsch_mcsTable3.png" alt="pdsch_mcsTable3"></p>
+<p><font color="red"><strong>case6</strong></font>：除了上述5种情况外，使用<font color="red"><strong>Table 5.1.3.1-1</strong></font>；<br><img src="http://42.192.236.236/NR/pdsch_mcsTable1.png" alt="pdsch_mcsTable1">从上述的mcs表种可以看出，当mcs确定之后相应的传输码率就确定了。因此码率是通过mcs查表间接确认得到的。</p>
+<h5 id="2-TBsize的计算和RB预估"><a href="#2-TBsize的计算和RB预估" class="headerlink" title="2. TBsize的计算和RB预估"></a>2. <a href="TBsize的计算和RB预估">TBsize的计算和RB预估</a></h5><p>pdsch传输的tbsize宏观上见与码字数和码率强相关，码字由基站高层参数<code>maxNrofCodeWordsScheduledByDCI</code>指示，表示使用1个码字还是两个码字；码率由上mcs表确定，针对64qam可以使用mcs 0-28；256qam可以使用0-27；</p>
+<h6 id="2-1-TBsize的计算"><a href="#2-1-TBsize的计算" class="headerlink" title="2.1 TBsize的计算"></a>2.1 <a href="TBsize的计算">TBsize的计算</a></h6><p>一个slot对应的PDSCH可用的TBSIZE计算公式如下，在PDSCH可用的RE是上除去DMRS占用和PDCCH占用的RE等资源占用以后的频谱资源。一个slot种pdsch的有效RE数由如下公式获得：</p>
+<p>其中：<code>N ^{RB}_{sc}</code>是一个RB的子载波个数，<code>N^{sh}_{symb}</code>是时域上一个slot对应的符号数,<code>N^{PRB}_{DMRS}</code>是一个RB上DMRS占用的RE数；<code>N^{PRB}_{oh}</code>在高层参数PDSCH-ServingCellConfig-&gt;xOverhead配置，可配置为0，6，12，18；当xOverhead没有配置或者调度pdsch的pdcch由SI-RNTI, RA-RNTI 或者 P-RNTI加扰时，<code>N^{PRB}_{oh}</code>是0。<br>一个slot内频域上所有的pdsch可用RE，由以下公式获取：<br>$$<br>\begin{equation}<br>N_{RE} = min(156, N^{‘}<em>{RE})*n</em>{prb}<br>\end{eqnarray}<br>$$<br>其中，<code>n_{prb}</code>是slot内可分配的PRB数。</p>
+<p>有了RE数解可以计算当前的TB-Size了，TB-Size的计算如下：</p>
+<p>$$<br>\begin{equation}<br>N_{info} = N_{RE}<em>R</em>Q_{m}*v<br>\end{eqnarray}<br>$$<br>其中，R是目标码率，Qm是调制阶数，V标识layer数。</p>
+<p>有了<code>N_info</code>之后还需要跟3824作量化比较才能确认最终的tbsize：</p>
 <ul>
-<li><strong>dl-UL-TransmissionPeriodicity</strong>：表示DL-UL模式的周期，用变量P表示，单位是ms，它的取值范围是ms0p5, ms0p625, ms1, ms1p25, ms2,ms2p5, ms5, ms10，分别对应0.5ms、0.625ms、1ms、1.25ms、2ms、2.5ms、5ms、10ms。</li>
+<li><code>N_info</code> &lt;= 3824 : 在N_info的小于3824的场景下确定TB-Size需要先量化，然后再查表确认TB-Size;量化公式如下：</li>
 </ul>
-<p>如果我们用变量u_ref来表示referenceSubcarrierSpacing这个值，那么：(1)<strong>只有当u_ref=3的时候</strong>，P才能取0.625ms，此时如下表所示，子载波间隔为120kHz。(2)<strong>只有当u_ref=2或3的时候</strong>，P才能取1.25ms，此时子载波间隔为60 kHz或120kHz。(3)<strong>只有当u_ref=1或2或3的时候</strong>，P才能取2.5ms，此时子载波间隔为30kHz或60 kHz或120kHz。</p>
+<p>$$<br>\begin{equation}<br>N^{‘}<em>{info} = max(24, 2^{n}*⌊\frac{N</em>{info}}{2^n} ⌋)，其中 n = max(3, ⌊ log_2(N_{info})⌋-6)<br>\end{eqnarray}<br>$$<br>通过量化公式获得的<code>N_&#39;_info</code>在Table 5.1.3.2-1中查找不小于他的最接近的值，比如算出来的量化值是606，那么通过查表就获得的TB-Size就是608；<br><img src="http://42.192.236.236/NR/tbs_low_3824.png" alt="tbs_low_3824"></p>
 <ul>
-<li><strong>nrofDownlinkSlots</strong>：表示从每一个DL-UL模式的开始位置起，全部连续的下行时隙的个数，用变量d_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80</li>
-<li><strong>nrofDownlinkSymbols</strong>：表示从最近的一个全连续下行时隙开始，连续的下行符号个数，用变量d_sym表示。最小值是0，最大值可以取13。</li>
-<li><strong>nrofUplinkSlots</strong>：表示在每一个DL-UL模式的结尾处，连续全上行时隙的个数，用变量u_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80。</li>
-<li><strong>nrofUplinkSymbols</strong>：表示在第一个全上行时隙之前的最后一个时隙中，连续全上行符号的个数，用变量u_sym表示。<br><strong>dl-UL-TransmissionPeriodicity</strong>参数可以取8个周期值，这8个周期值，有一定的规则约束需要遵守，</li>
+<li><code>N_info</code> &gt; 3824 : </li>
 </ul>
+<p>$$<br>\begin{equation}<br>N^{‘}<em>{info} = max(3840, 2^{n}*round(\frac{N</em>{info}-24}{2^n} ))，其中 n = ⌊ log_2(N_{info}-24)⌋-5)<br>\end{eqnarray}<br>$$</p>
+<p><font color="red"><strong>当码率R&lt;=1/4时</strong></font>，<br>$$<br>\begin{equation}<br>TBS = 8<em>C</em> ⌈(\frac{N^{‘}<em>{info}+24}{8*C})⌉-24,其中C=⌈\frac{N^{‘}</em>{info}+24}{8424}⌉<br>\end{eqnarray}<br>$$</p>
+<p><font color="red"><strong>当码率R&gt;1/4时</strong></font>，<br><strong>(1)</strong> 如果<code>N_&#39;_info</code>&gt;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS = 8<em>C</em> (\frac{N^{‘}<em>{info}+24}{8*C})⌉-24,其中C=⌈\frac{N^{‘}</em>{info}+24}{3816}⌉<br>\end{eqnarray}<br>$$<br><strong>(2)</strong> 如果<code>N_&#39;_info</code>&lt;=8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS = 8<em>C</em> (\frac{N^{‘}_{info}+24}{8})-24<br>\end{eqnarray}<br>$$<br>需要注意的是：<strong>(1)</strong> 当调度PDSCH的PDCCH是通过SI-RNTI加扰的话，也就是传输sib1消息时，TB-Size的大小不能超过2976，因为sib1只能通过qpsk的调制方式发送；<strong>(2)</strong> 当调度的DCI是P-RNTI、RA-RNTI加扰的时候，在信息量N_info计算时需要带上一个缩放因子，具体如下图所示：<br><img src="http://42.192.236.236/NR/tbs_Scaling_factor.png" alt="tbs_Scaling_factor"><br>那么新的<code>N_info</code>计算公式就编程如下的样子：<br>$$<br>\begin{equation}<br>N_{info} = S<em>N_{RE}</em>R<em>Q_{m}</em>v, 其中S是缩放因子<br>$$</p>
+<h6 id="2-2-RB预估"><a href="#2-2-RB预估" class="headerlink" title="2.2 RB预估"></a>2.2 <a href="RB预估">RB预估</a></h6><p>UE进行上下行数传的时候，基站根据UE的数据量来判断UE的调度时刻使用的RB数，数据量的计算公式如下：<br>`$$<br>\begin{equation}<br>数据量 = {N_{prb}<em>N_{re}</em>layer<em>Qm</em>CodeRate},<br>$$<br>N_prb是传递这些数据量需要的RB数，N_re是每个RB中有效的RE数，layer是数传的UE的rank，QM是调试bit数，CodeRate是传输的码率。</p>
+<p>预估RB就是通过上边的公式反算UE传输当前数据量需要的RB数，在确定RB数之前需要先确定，每个RB中的RE数，这些RE数跟基站的配置相关，特别是PDCCH和PDSCH DMRS的配置。</p>
 <blockquote>
-<p><strong>从DCI里获取slot format</strong> ?</p>
+<p><font color="red">PDSCH DMRS </font>: NR中定义了两种DMRS type，分别是type1和type2，在这两种type中，有1符号或者2符号的DMRS，除此之外还可以配置额外的附加导频的DMRS。</p>
 </blockquote>
-<p>R15版本的38.213中表7.3.1-1中定义了8中DCI formats，其中DCI2_0指示UE组的slot format。DCI 2_0用<strong>SFI_RNTI</strong> (Slot Format Indicator- Radio Network Temporary Identifier)来加扰，<strong>SFI_RNTI</strong>在RRC的<strong>PDCCH-ServingCellConfig</strong>信元中的<strong>SlotFormatIndicator</strong>信元中得到.<br><strong>PDCCH-ServingCellConfig information element</strong><br><img src="http://42.192.236.236/NR/PDCCH_ServingCellConfig.png" alt="image"></p>
-<p>==<strong>SlotFormatIndicator information element</strong>==<br><img src="http://42.192.236.236/NR/SlotFormatIndicator_information_1.png" alt="image"></p>
-<p><img src="http://42.192.236.236/NR/SlotFormatIndicator_information_2.png" alt="image"></p>
-<p>在<strong>DCI 2_0</strong>码流中携带的是N个slot format indicator的比特流，格式为：</p>
-<p><slot format="" indicator1，slot="" indicator="" 2，…，slot="" n=""><br>DCI 2_0的码流大小由上边的dci-PayloadSize配置决定，最多可以携带128bits。DCI 2_0码流中的Slot Format Indicator为SFI-Index，只是一个ID索引号，范围是0~511；SFI-Index都对应一个SlotFormatCombinationsPerCell信元，这个信元被封装在SlotFormatIndicator信元中。</slot></p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong><br><img src="http://42.192.236.236/NR/SlotFormatCombinationsPerCell_1.png" alt="image"></p>
-<p><img src="http://42.192.236.236/NR/SlotFormatCombinationsPerCell_2.png" alt="image"></p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong>中的slotFormats参数才是真正的时隙格式参数，对应这个slot flormat的表中的第一列<strong>indicator 0-255</strong>；<strong>slotFormatCombinationId</strong>是DCI2_0码流中<strong>SFI_Index</strong>，</p>
-<hr>
-<p><strong>DCI 2_0能够动态的修改时隙格式参数并通知到UE</strong>，为了进一步提升系统的传输性能，<strong>DCI 2_0</strong>里尽量只考虑携带有限个比特的<strong>SFI_Index</strong>索引，UE在提取到N个SFI_Index之后，再通过匹配<strong>SlotFormatCombinationsPerCell</strong>信元中的<strong>slotFormatCombinationId</strong>字段，获取到<strong>SlotFormatCombinationsPerCell</strong>信元中的更多参数。</p>
-<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#参考文献">参考文献</a></h5><ol>
-<li>3GPP TS 38.211: “NR; Physical channels and modulation (Release 15)”</li>
-<li>3GPP TS 38.212: “NR; Multiplexing and channel coding(Release 15)”</li>
-<li>3GPP TS 38.213：“NR; Physical layer procedures for control (Release 15)”</li>
-<li>3GPP TS 38.331:”NR; Radio Resource Control (RRC) protocol specification (Release 15)”</li>
-<li><a href="http://www.sharetechnote.com" target="_blank" rel="noopener">http://www.sharetechnote.com</a></li>
-</ol>
+<p><img src="http://42.192.236.236/NR/pdsch_pusch_type.png" alt="pdsch_pusch_type"></p>
+<ul>
+<li><p><font color="red">PDSCH DMRS Type A</font> ：固定在第三或(pos2)者第四(pos3)个符号上，无论PDSCH的起始符号是多少，最小资源组是一个RE；</p>
+</li>
+<li><p><font color="red">PDSCH DMRS Type B </font>：DMRS固定在分配PDSCH的第一个符号上；最小资源组是2个RE；</p>
+</li>
+<li><font color="red">附加导频   </font>，可以配置0-4个</li>
+</ul>
+<p>【参考文献】：<a href="https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html" target="_blank" rel="noopener">https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html</a></p>
 
       
     </div>
@@ -526,8 +518,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/06/13/C-函数对象与lambda表达式/" rel="next" title="C++函数对象与lambda表达式">
-                <i class="fa fa-chevron-left"></i> C++函数对象与lambda表达式
+              <a href="/2021/05/20/5G基础-上行调度的BSR/" rel="next" title="5G基础-上行调度的BSR">
+                <i class="fa fa-chevron-left"></i> 5G基础-上行调度的BSR
               </a>
             
           </div>
@@ -536,8 +528,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2021/04/29/5G基础-NR接入过程/" rel="prev" title="5G基础-NR接入过程">
-                5G基础-NR接入过程 <i class="fa fa-chevron-right"></i>
+              <a href="/2021/06/25/NR-PDSCH资源分配/" rel="prev" title="NR PDSCH资源分配">
+                NR PDSCH资源分配 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -771,7 +763,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-时隙结构"><span class="nav-text"><a href="#1-&#x65F6;&#x9699;&#x7ED3;&#x6784;" class="headerlink" title="1. &#x65F6;&#x9699;&#x7ED3;&#x6784;"></a>1. <a href="#&#x65F6;&#x9699;&#x7ED3;&#x6784;">&#x65F6;&#x9699;&#x7ED3;&#x6784;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-slot-Format"><span class="nav-text"><a href="#2-slot-Format" class="headerlink" title="2. slot Format"></a>2. <a href="#slot Format">slot Format</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-UE如何获取基站的slot-format"><span class="nav-text"><a href="#3-UE&#x5982;&#x4F55;&#x83B7;&#x53D6;&#x57FA;&#x7AD9;&#x7684;slot-format" class="headerlink" title="3. UE&#x5982;&#x4F55;&#x83B7;&#x53D6;&#x57FA;&#x7AD9;&#x7684;slot format"></a>3. <a href="#UE&#x5982;&#x4F55;&#x83B7;&#x53D6;&#x57FA;&#x7AD9;&#x7684;slot format">UE&#x5982;&#x4F55;&#x83B7;&#x53D6;&#x57FA;&#x7AD9;&#x7684;slot format</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#参考文献"><span class="nav-text"><a href="#&#x53C2;&#x8003;&#x6587;&#x732E;" class="headerlink" title="&#x53C2;&#x8003;&#x6587;&#x732E;"></a><a href="#&#x53C2;&#x8003;&#x6587;&#x732E;">&#x53C2;&#x8003;&#x6587;&#x732E;</a></span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-mcs的选择和码率的确定"><span class="nav-text"><a href="#1-mcs&#x7684;&#x9009;&#x62E9;&#x548C;&#x7801;&#x7387;&#x7684;&#x786E;&#x5B9A;" class="headerlink" title="1. mcs&#x7684;&#x9009;&#x62E9;&#x548C;&#x7801;&#x7387;&#x7684;&#x786E;&#x5B9A;"></a>1. <a href="#mcs&#x7684;&#x9009;&#x62E9;&#x548C;&#x7801;&#x7387;&#x7684;&#x786E;&#x5B9A;">mcs&#x7684;&#x9009;&#x62E9;&#x548C;&#x7801;&#x7387;&#x7684;&#x786E;&#x5B9A;</a></span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-TBsize的计算和RB预估"><span class="nav-text"><a href="#2-TBsize&#x7684;&#x8BA1;&#x7B97;&#x548C;RB&#x9884;&#x4F30;" class="headerlink" title="2. TBsize&#x7684;&#x8BA1;&#x7B97;&#x548C;RB&#x9884;&#x4F30;"></a>2. <a href="TBsize&#x7684;&#x8BA1;&#x7B97;&#x548C;RB&#x9884;&#x4F30;">TBsize&#x7684;&#x8BA1;&#x7B97;&#x548C;RB&#x9884;&#x4F30;</a></span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-TBsize的计算"><span class="nav-text"><a href="#2-1-TBsize&#x7684;&#x8BA1;&#x7B97;" class="headerlink" title="2.1 TBsize&#x7684;&#x8BA1;&#x7B97;"></a>2.1 <a href="TBsize&#x7684;&#x8BA1;&#x7B97;">TBsize&#x7684;&#x8BA1;&#x7B97;</a></span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-RB预估"><span class="nav-text"><a href="#2-2-RB&#x9884;&#x4F30;" class="headerlink" title="2.2 RB&#x9884;&#x4F30;"></a>2.2 <a href="RB&#x9884;&#x4F30;">RB&#x9884;&#x4F30;</a></span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -983,7 +975,7 @@
       <script type="text/javascript">
       function renderGitment(){
         var gitment = new Gitmint({
-            id: '5G基础-时隙和帧结构',
+            id: 'PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估',
             owner: 'ruitear',
             repo: 'blog.github.io',
             
