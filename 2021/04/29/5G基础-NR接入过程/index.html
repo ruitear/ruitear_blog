@@ -115,14 +115,14 @@
 <meta property="og:site_name" content="liurui&#39;s blogs">
 <meta property="og:description" content="UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程： 1. 初始接入UE通过基站广播的PSS/SSS信息对齐频率、时间以及获得接入所需要的参数：  基站广播PSS/SSS/PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS/SSS/PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://42.192.236.236/NR/Initial_Attach_Sequence.png">
-<meta property="og:image" content="http://42.192.236.236/NR/RAR调度流程.png">
-<meta property="og:image" content="http://42.192.236.236/NR/SA_Initial_Registration.png">
-<meta property="og:updated_time" content="2021-05-16T12:55:55.549Z">
+<meta property="og:image" content="http://1.116.145.136/NR/Initial_Attach_Sequence.png">
+<meta property="og:image" content="http://1.116.145.136/NR/RAR调度流程.png">
+<meta property="og:image" content="http://1.116.145.136/NR/SA_Initial_Registration.png">
+<meta property="og:updated_time" content="2022-05-04T13:57:45.969Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5G基础-NR接入过程">
 <meta name="twitter:description" content="UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程： 1. 初始接入UE通过基站广播的PSS/SSS信息对齐频率、时间以及获得接入所需要的参数：  基站广播PSS/SSS/PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS/SSS/PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB">
-<meta name="twitter:image" content="http://42.192.236.236/NR/Initial_Attach_Sequence.png">
+<meta name="twitter:image" content="http://1.116.145.136/NR/Initial_Attach_Sequence.png">
 
 
 
@@ -371,7 +371,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2021-05-16 20:55:55" itemprop="dateModified" datetime="2021-05-16T20:55:55+08:00">2021-05-16</time>
+                <time title="修改时间：2022-05-04 21:57:45" itemprop="dateModified" datetime="2022-05-04T21:57:45+08:00">2022-05-04</time>
               
             
           </span>
@@ -422,7 +422,7 @@
       
 
       
-        <p>UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程：<br><img src="http://42.192.236.236/NR/Initial_Attach_Sequence.png" alt="image"></p>
+        <p>UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程：<br><img src="http://1.116.145.136/NR/Initial_Attach_Sequence.png" alt="image"></p>
 <h5 id="1-初始接入"><a href="#1-初始接入" class="headerlink" title="1. 初始接入"></a>1. <a href="#初始接入">初始接入</a></h5><p>UE通过基站广播的PSS/SSS信息对齐频率、时间以及获得接入所需要的参数：</p>
 <ol>
 <li>基站广播PSS/SSS/PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS/SSS/PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB12个子载波），协议38.211 7.4.2章节描述定义；</li>
@@ -455,7 +455,7 @@
 <blockquote>
 <p><strong>RAR的响应时间窗</strong>（RA Response Window）在rach-configGeneric中配置，配置项为ra-ResponseWindows单位是slot；</p>
 </blockquote>
-<p><center><img src="http://42.192.236.236/NR/RAR调度流程.png" alt="RAR调度流程"></center></p>
+<p><center><img src="http://1.116.145.136/NR/RAR调度流程.png" alt="RAR调度流程"></center></p>
 <ol start="3">
 <li><p><strong>UE发msg3 RRC_SETUP_REQ RRC承载建立请求</strong>：UE收到RAR之后，通过解析，RAR的payload获取msg3发送时刻的视频资源，采用的mcs和功率等信息，UE在这个过程中会发送一个39bit的随机值（申请RRC Setup请求）；首次发送msg3时以RV版本号0发送（默认顺序0-2-3-1），若基站收到msg3 CRC错，则会基站通过以TC-RNTI加扰的DCI format0-0将信息告知UE；==<strong>UE发送完成后msg3后会启动Ra-COntentResolution定时器</strong>（这个定时器在sib1中的RACH-Config-Common中配置），在这个定时器期间UE会等待基站是否让自己接入，也就是冲突解决的过程；</p>
 </li>
@@ -468,7 +468,7 @@
 <li><strong>初始上下文建立</strong>： 建立UE与AMF的之间的绘画，让UE与AMF之间保持交流，由AMF发起，初始上下文建立完成就表示UE与AMF之间完成连接；</li>
 <li><strong>UE能力查询</strong>：UE能力主要有<strong>UE的天线能力</strong>（也就是支持的频段等信息）和<strong>UE的网络能力</strong>（加密算法，NAS等的支持情况）；基站根据核心网在UE上下文建立的请求中是否携带了UE能力，来决定是否进行查询，如果UE携带了则不下发UE能力查询。<br><strong>下图是NR SA UE注册的流程示例，从msg3一直到注册完成</strong>；</li>
 </ol>
-<p><img src="http://42.192.236.236/NR/SA_Initial_Registration.png" alt="image"></p>
+<p><img src="http://1.116.145.136/NR/SA_Initial_Registration.png" alt="image"></p>
 <p><strong>参考文献</strong>：<br>[1]. <a href="https://www.eventhelix.com/5G/standalone-access-registration/5g-standalone-access-registration.pdf" target="_blank" rel="noopener">5G Standalone Access Registration Signaling Messages</a><br>[2]. <a href="https://www.eventhelix.com/5G/standalone-access-registration/details/5g-standalone-access-registration.pdf" target="_blank" rel="noopener">5G Standalone Access: Registration Procedure</a><br>[3]. <a href="http://www.sharetechnote.com/html/5G/5G_CallProcess_InitialAttach.html" target="_blank" rel="noopener">5G/NR-初始Aattach</a></p>
 <h5 id="3-随机接入触发的场景"><a href="#3-随机接入触发的场景" class="headerlink" title="3. 随机接入触发的场景"></a>3. <a href="#随机接入触发的场景">随机接入触发的场景</a></h5><p>随机接入并不是只有新入网才会触发，还会发生在一些已经入网的UE身上，梳理出来主要有一下8大场景；</p>
 <ol>
@@ -841,7 +841,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2022</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

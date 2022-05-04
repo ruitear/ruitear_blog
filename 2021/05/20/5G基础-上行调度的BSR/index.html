@@ -115,20 +115,20 @@
 <meta property="og:site_name" content="liurui&#39;s blogs">
 <meta property="og:description" content="BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源； 1. BSR的配置和内容UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://42.192.236.236/NR/LogicalChannelConfig.png">
-<meta property="og:image" content="http://42.192.236.236/NR/bsr-config.png">
-<meta property="og:image" content="http://42.192.236.236/NR/bsr-lcid.png">
-<meta property="og:image" content="http://42.192.236.236/NR/short-bsr.png">
-<meta property="og:image" content="http://42.192.236.236/NR/long-bsr.png">
-<meta property="og:image" content="http://42.192.236.236/NR/buffer_size_for_5bit.png">
-<meta property="og:image" content="http://42.192.236.236/NR/NR_MAC_CE_BSR_8bit_01.png">
-<meta property="og:image" content="http://42.192.236.236/NR/NR_MAC_CE_BSR_8bit_02.png">
-<meta property="og:image" content="http://42.192.236.236/NR/bsr_fasong.png">
-<meta property="og:updated_time" content="2021-05-20T15:59:03.709Z">
+<meta property="og:image" content="http://1.116.145.136/NR/LogicalChannelConfig.png">
+<meta property="og:image" content="http://1.116.145.136/NR/bsr-config.png">
+<meta property="og:image" content="http://1.116.145.136/NR/bsr-lcid.png">
+<meta property="og:image" content="http://1.116.145.136/NR/short-bsr.png">
+<meta property="og:image" content="http://1.116.145.136/NR/long-bsr.png">
+<meta property="og:image" content="http://1.116.145.136/NR/buffer_size_for_5bit.png">
+<meta property="og:image" content="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_01.png">
+<meta property="og:image" content="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_02.png">
+<meta property="og:image" content="http://1.116.145.136/NR/bsr_fasong.png">
+<meta property="og:updated_time" content="2022-05-04T13:58:26.480Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5G基础-上行调度的BSR">
 <meta name="twitter:description" content="BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源； 1. BSR的配置和内容UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样">
-<meta name="twitter:image" content="http://42.192.236.236/NR/LogicalChannelConfig.png">
+<meta name="twitter:image" content="http://1.116.145.136/NR/LogicalChannelConfig.png">
 
 
 
@@ -360,12 +360,24 @@
                 
               
 
-              <time title="创建时间：2021-05-20 23:38:29 / 修改时间：23:59:03" itemprop="dateCreated datePublished" datetime="2021-05-20T23:38:29+08:00">2021-05-20</time>
+              <time title="创建时间：2021-05-20 23:38:29" itemprop="dateCreated datePublished" datetime="2021-05-20T23:38:29+08:00">2021-05-20</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2022-05-04 21:58:26" itemprop="dateModified" datetime="2022-05-04T21:58:26+08:00">2022-05-04</time>
               
             
           </span>
@@ -418,21 +430,21 @@
       
         <p>BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源；</p>
 <h5 id="1-BSR的配置和内容"><a href="#1-BSR的配置和内容" class="headerlink" title="1. BSR的配置和内容"></a>1. <a href="#BSR的配置和内容">BSR的配置和内容</a></h5><p>UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在<font color="red">LogicalChannelConfig-&gt;logicalChannelGroup</font>中配置。</p>
-<p><img src="http://42.192.236.236/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
+<p><img src="http://1.116.145.136/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
 <p><font color="red">在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。</font>如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示：</p>
-<p><img src="http://42.192.236.236/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
+<p><img src="http://1.116.145.136/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
 <ul>
 <li><font color="red">[1]</font> <strong>retxBSR定时器</strong>，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况；</li>
 <li><font color="red">[2]</font> <strong>periodicBSR定时器</strong>，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况；</li>
 <li><font color="red">[3]</font> <strong>logicalChannelSR-DelayTimer</strong>，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR；</li>
 </ul>
 <p>BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR/短截断BSR，长BSR/长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示：</p>
-<p><img src="http://42.192.236.236/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
+<p><img src="http://1.116.145.136/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
 <p>短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示：</p>
-<p><img src="http://42.192.236.236/NR/short-bsr.png" alt="pusch_bsr">长BSR/长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
-<p><img src="http://42.192.236.236/NR/long-bsr.png" alt="pusch_bsr">长/短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，<font color="red">表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多</font>。<br><img src="http://42.192.236.236/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="http://42.192.236.236/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="http://42.192.236.236/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
+<p><img src="http://1.116.145.136/NR/short-bsr.png" alt="pusch_bsr">长BSR/长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
+<p><img src="http://1.116.145.136/NR/long-bsr.png" alt="pusch_bsr">长/短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，<font color="red">表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多</font>。<br><img src="http://1.116.145.136/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
 <h5 id="2-BSR分类"><a href="#2-BSR分类" class="headerlink" title="2. BSR分类"></a>2. <a href="BSR分类">BSR分类</a></h5><p>协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：</p>
-<p><img src="http://42.192.236.236/NR/bsr_fasong.png" alt="pusch_bsr"></p>
+<p><img src="http://1.116.145.136/NR/bsr_fasong.png" alt="pusch_bsr"></p>
 
       
     </div>
@@ -766,7 +778,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2021</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2022</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

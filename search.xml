@@ -168,8 +168,8 @@
         <category>网络编程</category>
       </categories>
       <tags>
-        <tag>socket</tag>
         <tag>python</tag>
+        <tag>socket</tag>
       </tags>
   </entry>
   <entry>
@@ -204,8 +204,8 @@
         <category>git使用</category>
       </categories>
       <tags>
-        <tag>环境搭建</tag>
         <tag>git</tag>
+        <tag>环境搭建</tag>
       </tags>
   </entry>
 </search>
