@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"liurui.live","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"default"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInUp","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C和C++关键特性浅析">
+<meta property="og:url" content="https://liurui.live/2020/05/12/C%E5%92%8CC++%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="1. 命名空间namespace与staticnamespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。C++引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-11T16:25:41.000Z">
+<meta property="article:modified_time" content="2026-08-28T07:41:58.605Z">
+<meta property="article:author" content="liurui">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://liurui.live/2020/05/12/C%E5%92%8CC++%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2020/05/12/C%E5%92%8CC++%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/","path":"2020/05/12/C和C++关键特性浅析/","title":"C和C++关键特性浅析"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>C和C++关键特性浅析 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">liurui's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活成期待的样子...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic"><span class="nav-number">1.</span> <span class="nav-text">1. 命名空间namespace与static</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 编译属性</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-static-%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 static 修饰的对象成员和成员函数</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr"><span class="nav-number">2.</span> <span class="nav-text">2. 虚函数表vtbl与（虚）函数表指针vptr</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 无虚函数的类</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 有虚函数的类</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-3-%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 虚表指针和虚函数表</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-4-%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 总结一下</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-C-C-%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"><span class="nav-number">3.</span> <span class="nav-text">3. C&#x2F;C++的内存分布</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liurui</p>
+  <div class="site-description" itemprop="description">liurui's blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2020/05/12/C%E5%92%8CC++%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liurui">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+      <meta itemprop="description" content="liurui's blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="C和C++关键特性浅析 | liurui's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C和C++关键特性浅析
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-12 00:25:41" itemprop="dateCreated datePublished" datetime="2020-05-12T00:25:41+08:00">2020-05-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-28 15:41:58" itemprop="dateModified" datetime="2026-08-28T15:41:58+08:00">2026-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7/" itemprop="url" rel="index"><span itemprop="name">语言特性</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a><a href="#1-%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic"></a>1. <a href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
+<ul>
+<li><p><strong>什么是命名空间？</strong> 一个由程序设计者命名的内存区域，程序设计者可以根据需要指定一些有名字的空间域，把一些全局实体分别放在各个命名空间中，从而与其他全局实体分隔开来。</p>
+</li>
+<li><p><strong>命名空间的作用</strong><br>建立一些互相分隔的作用域，把一些全局实体分隔开来。</p>
+</li>
+<li><p><strong>命名空间的定义</strong><br><code>namespace ns1 &#123;int a；double b; void fun() &#123; //do something&#125;;&#125;</code></p>
+</li>
+<li><p><strong>使用命名空间成员</strong><br>命名空间名：：命名空间成员名，例如 <code>std::vector</code></p>
+</li>
+<li><p><strong>命名空间的使用</strong> (1)使用命名空间中的全部成员<br><code>using namespace std;</code>在本作用域(using语句所在的作用域)中引入命名空间std所有的成员的声明，以备使用；(2)使用命名空间中的特定成员;using后面的命名空间成员名必须是由命名空间限定的名字。<code>using std::string;</code>在本作用域(using语句所在的作用域)中引入命名空间std成员string的声明以备使用；也就是在使用了无命名namespace的文件中，使用命名空间中的成员，不必(也无法)用命名空间名限定。</p>
+</li>
+<li><p><strong>无名的命名空间</strong> C++还允许使用没有名字的命名空间，由于命名空间没有名字，在其他文件中显然无法引用，它只在本文件的作用域内有效。</p>
+</li>
+</ul>
+<h6 id="1-1-编译属性"><a href="#1-1-编译属性" class="headerlink" title="1.1 编译属性"></a><a href="#1-1-%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"></a>1.1 <a href="%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"><strong>编译属性</strong></a></h6><p>在C中，给变量(局部&#x2F;全局变量)、函数，加上 static表示当前函数和变量的linkage 为 internal，也就是对外部不可见, 这样就可以在不同的unit(源一般指当前文件) 中定义同名的函数和变量了。在C++中，在不同的编译unit中定义同名的函数和变量的，这样就有了命名空间namespace，解决了变量和函数名字冲突问题，同时给函数和变量限定为 internal linkage。</p>
+<h6 id="1-2-static-修饰的对象成员和成员函数"><a href="#1-2-static-修饰的对象成员和成员函数" class="headerlink" title="1.2 static 修饰的对象成员和成员函数"></a><a href="#1-2-static-%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"></a>1.2 <a href="%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><strong>static 修饰的对象成员和成员函数</strong></a></h6><p><strong>static修饰的对象成员</strong>不能通过调用构造函数来进行初始化，因此static修饰的数据成员必须在类外进行初始化且只会初始化一次。【静态变量内存分配在 .data段】<br><strong>static修饰的成员函数</strong>为静态成员方法，静态成员方法可以在类内或类外定义，但必须在类内声明；；static成员方法没有this指针，不能直接引用非static数据成员或调用类的非static成员方法，只能调用类的static成员数据和static成员方法；static成员不是任何对象的组成，不依赖对象的调用所以static成员方法不能被声明为const，因为const只限定该类的对象；static成员方法不能同时被声明为虚函数。</p>
+<p>参考文献：</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/skullboyer/p/10200039.html">https://www.cnblogs.com/skullboyer/p/10200039.html</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html">https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html</a></p>
+</li>
+</ul>
+<h5 id="2-虚函数表vtbl与（虚）函数表指针vptr"><a href="#2-虚函数表vtbl与（虚）函数表指针vptr" class="headerlink" title="2. 虚函数表vtbl与（虚）函数表指针vptr"></a><a href="#2-%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr"></a>2. <a href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr">虚函数表vtbl与（虚）函数表指针vptr</a></h5><p><strong>虚函数表</strong>：存储虚函数信息的表； <strong>虚函数表指针</strong>：指向虚函数表的指针。</p>
+<h6 id="2-1-无虚函数的类"><a href="#2-1-无虚函数的类" class="headerlink" title="2.1 无虚函数的类"></a><a href="#2-1-%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.1 <a href="#%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><strong>无虚函数的类</strong></a></h6><p>讲C++的虚函数表之前，先看一下C语言是如何实现一个面向对象的类。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// 方法1</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    </span><br><span class="line">    void (*func)(struct* stu);</span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.func = profile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要有面向对象的效果，只能给struct里面添加函数指针，然后把函数赋值给指针；实际使用中这种用法比较少，主要因为函数指针的空间成本；每实例化一个结构体对象，就会有一个函数指针，例如8字节吗，如果有这个对象有m个函数指针，n个实例对象，那么消耗额外的内存是<code>m*8*n</code>字节。因此C语言通常不这样用，而是直接用外部定义一个函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 方法2</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    profile(&amp;jhon);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于一个C++的类，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.profile();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟C语言实现对比，看着像第一种方式通过在结构体定义函数指针的方式来实现。但实际相当于第二种方式。为什么呢？<strong>C++中类的操作和封装只是针对程序员的，而编译器还是面向过程的</strong>，编译器会给类的成员函数添加额外的类指针参数，在运行期间传入对象实际的指针。这说明<strong>类的数据成员和成员函数是分离的</strong>。每个函数都有一个地址（指针），不论这个函数是全局函数还是类的成员函数；在类不含虚函数的情况下，编译器在编译的时候就会把函数的地址确定下来，运行期间直接去调用这个地址的函数，这就是<strong>静态绑定</strong>方式（static binding）的函数调用。</p>
+<h6 id="2-2-有虚函数的类"><a href="#2-2-有虚函数的类" class="headerlink" title="2.2 有虚函数的类"></a><a href="#2-2-%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.2 <a href="#%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB">有虚函数的类</a></h6><p>为什么会出现虚函数？为了解决面向对象中多态的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">class seniorStu: public student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    string address;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n address:%s&quot;, height, age, address.c_str());&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student bob(185,20);</span><br><span class="line">    seniorStu jhon(170,25,&quot;四川成都&quot;);</span><br><span class="line">    jhon.profile();</span><br><span class="line">    // 输出 height: 170 age:25 address:四川成都</span><br><span class="line">    bob.profile();</span><br><span class="line">    // 输出 height: 185 age:20</span><br><span class="line">    student* jim = &amp;jhon;</span><br><span class="line">    jim-&gt;profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25 </span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述，可以看到用父类指针指向子类的地址，最终调用的profile函数韩式子类的<br>这个现象称之为<strong>动态绑定</strong>（dynamic binding）后者说<strong>延迟绑定</strong>（lazy binding）。这里如果把子类的virtual，这个代码将调用父类的profile，输出：</p>
+<blockquote>
+</blockquote>
+<p>输出 height: 170 age:25 </p>
+<p>输出 height: 170 age:25 </p>
+<p>这是由于<strong>类的数据成员和函数成员是分离的</strong>。</p>
+<h6 id="2-3-虚表指针和虚函数表"><a href="#2-3-虚表指针和虚函数表" class="headerlink" title="2.3 虚表指针和虚函数表"></a><a href="#2-3-%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"></a>2.3 <a href="#%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8">虚表指针和虚函数表</a></h6><p>从内存布局上，只能看到成员变量，看不到成员函数。因为在编译的时候就确定调用哪个函数。<br>将了这么多，可以回归到整体函数虚函数表了，也就是C++多态的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#include</span><br><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123; printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">    virtual void status() &#123; std::coutprofile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个示例父类有两个虚函数，子类重载了这两个虚函数。查看编译器的内存布局，<br>clang有个命令可以输出对象的内存布局（不同编译器内存布局未必相同），</p>
+<blockquote>
+</blockquote>
+<p>clang -cc1 -fdump-record-layouts -stdlib&#x3D;libc++ student.cpp</p>
+<p>可以看到类似于这样的内存分布：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class student</span><br><span class="line">    0  | (student vtable pointer)</span><br><span class="line">    x  | int height</span><br><span class="line">    x  | int age</span><br><span class="line"></span><br><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class seniorStu</span><br><span class="line">    0  |   class student (primary base)</span><br><span class="line">    0  |     (student vtable pointer)</span><br><span class="line">    x  |     int height</span><br><span class="line">    x  |     int age</span><br><span class="line">    x  |   string status</span><br></pre></td></tr></table></figure>
+
+<p>在父类student的起始位置有一个student vtable pointer；子类seniorStu是在他的基础上多了自己的成员status。对于含有虚函数的类，在编译期间编译器会给这种类自动的在起始位置添加一个<strong>虚表指针</strong>（vptr），让虚表指针vptr指向一个虚表；虚表中存储了实际的函数地址。<strong>那么虚表里面存储了那些详细的内容呢？</strong> g++有打印虚表的操作（请在Linux上使用g++）会自动写到一个文件里：</p>
+<blockquote>
+</blockquote>
+<p>g++ -fdump-class-hierarchy student.cpp</p>
+<p>可以看出如果vptr指向的并不是虚表的表头而是表头加偏移量而获得一个地址，也就是虚函数的位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Vtable for student</span><br><span class="line">student::_ZTV7student: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI7student)</span><br><span class="line">    16 (int (*)(...))student::profile</span><br><span class="line">    24 (int (*)(...))student::status</span><br><span class="line"></span><br><span class="line">Class student</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=20 base align=8</span><br><span class="line">    student (0x0x7f9b1fa8c960) 0</span><br><span class="line">    vptr=((&amp; student::_ZTV7Actress) + 16u)</span><br><span class="line"></span><br><span class="line">Vtable for Sensei</span><br><span class="line">    seniorStu::_ZTV6seniorStu: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI6seniorStu)</span><br><span class="line">    16 (int (*)(...))seniorStu::profile</span><br><span class="line">    24 (int (*)(...))seniorStu::status</span><br><span class="line"></span><br><span class="line">Class seniorStu</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=24 base align=8</span><br><span class="line">    seniorStu (0x0x7f9b1fa81138) 0</span><br><span class="line">    vptr=((&amp; seniorStu::_ZTV6seniorStu) + 16u)</span><br><span class="line">    student (0x0x7f9b1fa8c9c0) 0</span><br><span class="line">    primary-for seniorStu (0x0x7f9b1fa81138)</span><br></pre></td></tr></table></figure>
+
+<h6 id="2-4-总结一下"><a href="#2-4-总结一下" class="headerlink" title="2.4 总结一下"></a><a href="#2-4-%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"></a>2.4 <a href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><strong>总结一下</strong></a></h6><p><strong>1、如果一个类中有一个虚函数</strong>，这个类就有一个虚函数表。虚函数表示类的，而不是属于对象的，在编译时就确定了，存放在只读的数据段（非代码段）。每实例化一个类对象都有一个虚函数表指针，指向类的虚函数。虚函数表指针属于类的对象。存放在堆上或者栈上(<strong>什么时候存放在堆，什么时候存放在栈</strong>上需要再探讨一下)。<strong>2、对于有派生子类的情况</strong>：如果基类有虚函数，不管派生类实现或者没有虚函数，都有虚函数表。基类的虚函数表和派生类的虚函数表不是同一个表。如果派生类没有重写基类的函数，则派生类的虚函数表和基类的虚函数表内容是一样的。如果派生类重写了基类的虚函数，则培生累的虚函数表中用的是派生类的函数。<strong>3、对于多继承的情况</strong>，含有虚函数的基类有多少个，派生类就有多少个虚函数表；派生类有的而基类没有的，添加在派生类的第一个虚函数表中，虚函数表的结果是*表示还有下一个虚函数表，结果是0表示是最后一个虚函数表。</p>
+<p>参考文献： </p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/389546003/answer/1194780618">https://www.zhihu.com/question/389546003/answer/1194780618</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_30552635/article/details/99157190">https://blog.csdn.net/weixin_30552635&#x2F;article&#x2F;details&#x2F;99157190</a></p>
+</li>
+</ul>
+<h5 id="3-C-C-的内存分布"><a href="#3-C-C-的内存分布" class="headerlink" title="3. C&#x2F;C++的内存分布"></a><a href="#3-C-C-%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"></a>3. <a href="#C/C++%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83">C&#x2F;C++的内存分布</a></h5><table>
+<thead>
+<tr>
+<th>内存区</th>
+<th>用途</th>
+<th>申请释放方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>栈区</td>
+<td>存储局部和临时变量，函数调用时存储函数调用时，存储函数的返回指针用于控制函数的调用和返回</td>
+<td>程序开始是自动分配内存，结束自动释放</td>
+</tr>
+<tr>
+<td>堆区</td>
+<td>存储动态内存分配</td>
+<td>程序员手动申请，手动释放；若程序员不释放，在程序结束是，系统回收</td>
+</tr>
+<tr>
+<td>BSS段</td>
+<td>存储未初始化的变量数据，包括初始化为0的全局变量</td>
+<td>只占运行时内存空间不占文件空间。在程序整个周期内，BSS段的数据一致存在</td>
+</tr>
+<tr>
+<td>data区</td>
+<td>存储已经初始化的变量数据，为数据分配空间，数据保存在目标文件中</td>
+<td>—–</td>
+</tr>
+<tr>
+<td>代码段TXT</td>
+<td>存储程序代码的内存映射，以及函数体的二进制代码</td>
+<td>—–</td>
+</tr>
+<tr>
+<td>文字(只读)常量区</td>
+<td>存字符串常量放等</td>
+<td>程序结束后有系统释放</td>
+</tr>
+<tr>
+<td>全局区(静态区)</td>
+<td>全局变量和静态变量存储在一起，未初始化或者初始化为0的存在BSS，初始化不为0的全局变量或者静态变量存在此处</td>
+<td>程序结束后由系统释放</td>
+</tr>
+</tbody></table>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/C/" rel="tag"># C</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/" rel="prev" title="设计模式-状态模式">
+                  <i class="fa fa-angle-left"></i> 设计模式-状态模式
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="windows下基于python的Tensorflow环境搭建">
+                  windows下基于python的Tensorflow环境搭建 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">liurui</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

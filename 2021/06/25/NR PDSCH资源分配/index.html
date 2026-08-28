@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"liurui.live","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"default"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInUp","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1. PDSCH频域资源分配PDSCH频域资源分配方式有两种，称为type0和type1，支持动态和静态配置；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示； 1.1 终端如何获取频域资源分配方式的信息 如果终端通过DCI 1_0接收调度，那么只能是Type 1；  如果终端通过DCI 1_1接收调度，需要参考RRC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NR PDSCH资源分配">
+<meta property="og:url" content="https://liurui.live/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="1. PDSCH频域资源分配PDSCH频域资源分配方式有两种，称为type0和type1，支持动态和静态配置；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示； 1.1 终端如何获取频域资源分配方式的信息 如果终端通过DCI 1_0接收调度，那么只能是Type 1；  如果终端通过DCI 1_1接收调度，需要参考RRC">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch-config-1.png">
+<meta property="og:image" content="http://1.116.145.136/NR/normal_rbg_size.png">
+<meta property="og:image" content="http://1.116.145.136/NR/RBG-num-1.png">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch-rbg_alloc.png">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch_mapping_type.png">
+<meta property="og:image" content="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png">
+<meta property="og:image" content="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch_config_setup.png">
+<meta property="og:image" content="http://1.116.145.136/NR/38_214_5_1_2_1-1.png">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch_common.png">
+<meta property="og:image" content="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png">
+<meta property="og:image" content="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png">
+<meta property="article:published_time" content="2021-06-25T15:55:53.000Z">
+<meta property="article:modified_time" content="2026-08-28T07:41:59.414Z">
+<meta property="article:author" content="liurui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://1.116.145.136/NR/pdsch-config-1.png">
+
+
+<link rel="canonical" href="https://liurui.live/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/","path":"2021/06/25/NR PDSCH资源分配/","title":"NR PDSCH资源分配"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>NR PDSCH资源分配 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">liurui's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活成期待的样子...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"><span class="nav-number">1.</span> <span class="nav-text">1. PDSCH频域资源分配</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 终端如何获取频域资源分配方式的信息</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 type0和type1的频域资源分配</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"><span class="nav-number">2.</span> <span class="nav-text">2. PDSCH时域资源分配</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liurui</p>
+  <div class="site-description" itemprop="description">liurui's blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liurui">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+      <meta itemprop="description" content="liurui's blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="NR PDSCH资源分配 | liurui's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          NR PDSCH资源分配
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-06-25 23:55:53" itemprop="dateCreated datePublished" datetime="2021-06-25T23:55:53+08:00">2021-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-28 15:41:59" itemprop="dateModified" datetime="2026-08-28T15:41:59+08:00">2026-08-28</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
+<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
+<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
+</li>
+<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
+</li>
+</ul>
+<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
+<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
+</li>
+<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
+</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
+<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
+<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
+<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
+</li>
+<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
+</li>
+</ul>
+<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
+<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
+<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
+<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
+</blockquote>
+Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
+</ul>
+<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
+<ul>
+<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
+<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a target="_blank" rel="noopener" href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
+<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
+<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
+<ul>
+<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
+</li>
+<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
+<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
+<blockquote>
+</blockquote>
+<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/21/PDSCH%E7%9A%84MCS%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A0%81%E7%8E%87%E7%A1%AE%E5%AE%9A%E4%BB%A5%E5%8F%8ATBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0/" rel="prev" title="PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估">
+                  <i class="fa fa-angle-left"></i> PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">liurui</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

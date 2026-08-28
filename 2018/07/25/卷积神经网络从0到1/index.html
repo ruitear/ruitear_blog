@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"liurui.live","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"default"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInUp","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:   “一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”   为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含">
+<meta property="og:type" content="article">
+<meta property="og:title" content="卷积神经网络从0到1">
+<meta property="og:url" content="https://liurui.live/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:   “一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”   为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liurui.live/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png">
+<meta property="og:image" content="https://liurui.live/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg">
+<meta property="og:image" content="https://liurui.live/images/cnn/%E5%8D%B7%E7%A7%AF.png">
+<meta property="og:image" content="https://liurui.live/images/cnn/LeNet-5.jpg">
+<meta property="article:published_time" content="2018-07-24T16:15:05.000Z">
+<meta property="article:modified_time" content="2026-08-28T07:42:00.783Z">
+<meta property="article:author" content="liurui">
+<meta property="article:tag" content="CNN">
+<meta property="article:tag" content="神经网络，机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liurui.live/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png">
+
+
+<link rel="canonical" href="https://liurui.live/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/","path":"2018/07/25/卷积神经网络从0到1/","title":"卷积神经网络从0到1"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>卷积神经网络从0到1 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">liurui's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活成期待的样子...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.</span> <span class="nav-text">1. 什么是卷积神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 什么是卷积</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 什么是神经网络</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 什么是卷积神经网络</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">1.4.</span> <span class="nav-text">1.3 卷积神经网络的基本结构</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liurui</p>
+  <div class="site-description" itemprop="description">liurui's blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liurui">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+      <meta itemprop="description" content="liurui's blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="卷积神经网络从0到1 | liurui's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          卷积神经网络从0到1
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-07-25 00:15:05" itemprop="dateCreated datePublished" datetime="2018-07-25T00:15:05+08:00">2018-07-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-28 15:42:00" itemprop="dateModified" datetime="2026-08-28T15:42:00+08:00">2026-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">卷积神经网络</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:</p>
+<blockquote>
+</blockquote>
+<p>“一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”  </p>
+<p>为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含一个隐藏的多层感知机网络，到现在已卷积神经网络为代表的深度卷积神经网络。<br>  本文以神经网络的发展为线索，从卷积神经网络的结构和应用两个方面进行简单阐述。</p>
+<h5 id="1-什么是卷积神经网络"><a href="#1-什么是卷积神经网络" class="headerlink" title="1. 什么是卷积神经网络"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h5><p>  认识卷积神经网络之前首先要了解两个基本的概念: 1、什么是卷积；2、什么是神经网络。</p>
+<h6 id="1-1-什么是卷积"><a href="#1-1-什么是卷积" class="headerlink" title="1.1 什么是卷积"></a><a href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"></a>1.1 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF">什么是卷积</a></h6><ul>
+<li><strong>从图像的角度来看卷积</strong>:  就是卷积模板在图像上滑动，把对应位置上的元素相城相加得到最终结果的过程。如果考虑翻转则就需要翻转卷积模板。</li>
+</ul>
+<p>  卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
+<h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a><a href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.2 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是神经网络</a></h6><p>   按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
+<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) &#x3D; 1&#x2F;(1+e^{-x})  \<br>tanh(x)&#x3D;\frac{1-e^{-2x}} {1+e^{-2x}}  \<br>relu(x)&#x3D;max(0,x)<br>\end{eqnarray}<br>$$</p>
+<p><img src="/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>  而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
+<p>$$<br>\begin{equation}<br>y&#x3D;f(w_1<em>x_1+w_2</em>x_2+b)<br>\end{equation}<br>$$</p>
+<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x&#x3D;(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
+<h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a><a href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.3 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h6><p>  卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg" alt="全连接与局部连接"><br>  上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/%E5%8D%B7%E7%A7%AF.png" alt="卷积"><br>  上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
+<h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a><a href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"></a>1.3 <a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">卷积神经网络的基本结构</a></h6><p>  经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CNN/" rel="tag"># CNN</a>
+              <a href="/tags/%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%8C%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 神经网络，机器学习</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/07/22/python%20socket%E7%BC%96%E7%A8%8B/" rel="prev" title="python socket编程">
+                  <i class="fa fa-angle-left"></i> python socket编程
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/" rel="next" title="学习资源收集">
+                  学习资源收集 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">liurui</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

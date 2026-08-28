@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"liurui.live","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"default"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInUp","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程： 1. 初始接入UE通过基站广播的PSS&#x2F;SSS信息对齐频率、时间以及获得接入所需要的参数：  基站广播PSS&#x2F;SSS&#x2F;PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS&#x2F;SSS&#x2F;PBCH组成，频域上有2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="5G基础-NR接入过程">
+<meta property="og:url" content="https://liurui.live/2021/04/29/5G%E5%9F%BA%E7%A1%80-NR%E6%8E%A5%E5%85%A5%E8%BF%87%E7%A8%8B/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程： 1. 初始接入UE通过基站广播的PSS&#x2F;SSS信息对齐频率、时间以及获得接入所需要的参数：  基站广播PSS&#x2F;SSS&#x2F;PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS&#x2F;SSS&#x2F;PBCH组成，频域上有2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://1.116.145.136/NR/Initial_Attach_Sequence.png">
+<meta property="og:image" content="http://1.116.145.136/NR/RAR%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://1.116.145.136/NR/SA_Initial_Registration.png">
+<meta property="article:published_time" content="2021-04-28T16:52:43.000Z">
+<meta property="article:modified_time" content="2026-08-28T07:41:57.666Z">
+<meta property="article:author" content="liurui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://1.116.145.136/NR/Initial_Attach_Sequence.png">
+
+
+<link rel="canonical" href="https://liurui.live/2021/04/29/5G%E5%9F%BA%E7%A1%80-NR%E6%8E%A5%E5%85%A5%E8%BF%87%E7%A8%8B/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2021/04/29/5G%E5%9F%BA%E7%A1%80-NR%E6%8E%A5%E5%85%A5%E8%BF%87%E7%A8%8B/","path":"2021/04/29/5G基础-NR接入过程/","title":"5G基础-NR接入过程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>5G基础-NR接入过程 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">liurui's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活成期待的样子...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%88%9D%E5%A7%8B%E6%8E%A5%E5%85%A5"><span class="nav-number">1.</span> <span class="nav-text">1. 初始接入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5"><span class="nav-number">2.</span> <span class="nav-text">2. 随机接入</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5%E8%A7%A6%E5%8F%91%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">3.</span> <span class="nav-text">3. 随机接入触发的场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-RRC%E9%87%8D%E5%BB%BA%E4%B8%8E%E9%87%8D%E5%90%8C%E6%AD%A5"><span class="nav-number">4.</span> <span class="nav-text">4. RRC重建与重同步</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#4-1-RRC%E9%87%8D%E5%BB%BA"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 RRC重建</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-2-%E9%87%8D%E5%90%8C%E6%AD%A5"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 重同步</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liurui</p>
+  <div class="site-description" itemprop="description">liurui's blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2021/04/29/5G%E5%9F%BA%E7%A1%80-NR%E6%8E%A5%E5%85%A5%E8%BF%87%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liurui">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+      <meta itemprop="description" content="liurui's blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="5G基础-NR接入过程 | liurui's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          5G基础-NR接入过程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-04-29 00:52:43" itemprop="dateCreated datePublished" datetime="2021-04-29T00:52:43+08:00">2021-04-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-28 15:41:57" itemprop="dateModified" datetime="2026-08-28T15:41:57+08:00">2026-08-28</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程：<br><img src="http://1.116.145.136/NR/Initial_Attach_Sequence.png" alt="image"></p>
+<h5 id="1-初始接入"><a href="#1-初始接入" class="headerlink" title="1. 初始接入"></a><a href="#1-%E5%88%9D%E5%A7%8B%E6%8E%A5%E5%85%A5"></a>1. <a href="#%E5%88%9D%E5%A7%8B%E6%8E%A5%E5%85%A5">初始接入</a></h5><p>UE通过基站广播的PSS&#x2F;SSS信息对齐频率、时间以及获得接入所需要的参数：</p>
+<ul>
+<li><p>基站广播PSS&#x2F;SSS&#x2F;PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS&#x2F;SSS&#x2F;PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB12个子载波），协议38.211 7.4.2章节描述定义；</p>
+</li>
+<li><p>UE检测到一个SS&#x2F;PBCH Block,定位到PSS和SSS之后，UE便可以在时频域知道MIB消息的位置，应为MIB消息的位置是相对PSS和SSS固定的，<strong>MIB消息的内容</strong>有子载波间隔、<strong>PBCH的DMRS符号位</strong>置、<strong>SIB1所在的时频位置</strong>（由L3的PDCCH-Config SIB1配置）和<strong>频带大</strong>小、<strong>是否禁止用户驻留</strong>、是否容许用户直选到同频邻区等；解到MIB之后就可以解码PBCH的内容，获取SS&#x2F;PBCH index、定时等信息；<strong>SSB Block Pattern有五种case A-E</strong>（1）SUB3G（A-C）其中FDD频段最大4个SSB Block，每个对应一个SSB Index；（2）sub3G-sub6G A-C定义8个SSB；（3）Above 6G （D-E）定义64个SSB；</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>38.321 6.1.4 MIB&#x2F;SIB&#x2F;OSI消息格式</strong> </p>
+<blockquote>
+</blockquote>
+<p><strong>SIB1消息</strong>提供了UE准许接入和OSI调度的信息，以及初始BWP相关的频域位置和带宽，寻呼，PRACH接入等关键信息；SI-SchedingInfo 中SIB1字段中的valueTag字段在SI消息发生变化时都是加1，用于指示SI消息是否发生变化，UE使用这个字段检测自己之前保存的SI消息是否发生了变化；</p>
+<ul>
+<li>UE根据mib中中内容获取RSMI所在的频域位置（初始BWP的位置，PDCCH common coreset的视频位置），然后获取RMSI，并从RMSI中获取RACH的位置信息，上下行初始BWP的信息、PUCCH的配置等信息。</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>BWP0阶段 PDCCH信道频域RB的位置与PDSCH信道是一致的</p>
+<ul>
+<li>UE在对应的RACH occasion上发送RACH Preamble。</li>
+</ul>
+<h5 id="2-随机接入"><a href="#2-随机接入" class="headerlink" title="2. 随机接入"></a><a href="#2-%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5"></a>2. <a href="#%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5">随机接入</a></h5><ul>
+<li><strong>随机选择preamble Id发送preamble</strong>：UE从SS_RSRP大于RSRP_ThreadSSB选一个SSB-RSRP最好的SSB波束。如果没有最好的额，就随机选一个SSB波束，在从SSB的preambles中随机选择一个preamble Id发送preamble，告诉基站有一个随机接入请求，并使基站估计与UE之间的传输时延，以便基站校准uplink timing并通过RAR的timing advance command告知UE；基站通过sib1广播告知UE，基站的RACH信道的视频位置、preamble序列格式、序列产生的参数等信息，用来解答UE在<strong>什么时候</strong>（prach-configuration-Index）以<strong>在什么位置</strong>（prach-frequencyOffset）以<strong>什么格式</strong>（prach-configuration-index）<strong>多大的功率</strong>（min(Pmax, PREAMBLE_RECEIVED_TAR_GET_POWER+Rl)）<strong>发送RA</strong>。</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>preamble的作用</strong>：告诉基站有一个随机接入请求，并使基站估计其余UE之间的传输时延，以便在RAR中下发TAC；</p>
+<ul>
+<li><strong>基站下发RAR</strong>：基站对不同的preamble分配不同（的TC-RNTI和UL-Grant资源等，并通过preamble测量到初始的TA值，在RAR中发送给UE；UE在发送Preamble之后，会在RAR的响应时间窗内，监听PDCCH以接收对应RA-RNTI的RAR；基站侧用RA-RNTI加扰的PDCCH的公共搜索空间中的的DCI1-0告诉UE。<strong>如果UE在时间窗时间内发生</strong>：<br>(1)<strong>在时间窗内用RA-RNTI没有盲检到DCI</strong>；<br>(2)<strong>没有盲检到PDCCH CRC错误</strong>；<br>(3)R<strong>AR中的RA-PID与preambleId不一致</strong>；<br>就认为本次<strong>RA接入失败</strong>；UE RA失败后重发preamble与RAR PDU中的BI(backoff Indicator)字段相关，如果RAR PDU中的携带了BI，那么UE会在0-BI中随机选取一个时刻重新发preamble接入；<strong>BI的大小反映了小区的负载</strong>；</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>RAR的响应时间窗</strong>（RA Response Window）在rach-configGeneric中配置，配置项为ra-ResponseWindows单位是slot；</p>
+<p><img src="http://1.116.145.136/NR/RAR%E8%B0%83%E5%BA%A6%E6%B5%81%E7%A8%8B.png" alt="RAR调度流程"></p>
+<p>-<br><strong>UE发msg3 RRC_SETUP_REQ RRC承载建立请求</strong>：UE收到RAR之后，通过解析，RAR的payload获取msg3发送时刻的视频资源，采用的mcs和功率等信息，UE在这个过程中会发送一个39bit的随机值（申请RRC Setup请求）；首次发送msg3时以RV版本号0发送（默认顺序0-2-3-1），若基站收到msg3 CRC错，则会基站通过以TC-RNTI加扰的DCI format0-0将信息告知UE；&#x3D;&#x3D;<strong>UE发送完成后msg3后会启动Ra-COntentResolution定时器</strong>（这个定时器在sib1中的RACH-Config-Common中配置），在这个定时器期间UE会等待基站是否让自己接入，也就是冲突解决的过程；</p>
+<p>-<br><strong>基站发发msg4 RRC_CONN_SETUP，并进行冲突解决</strong>: 在CCCH上发送，携带SIB1资源的配置的详细信息，同时如果有竞争接入会有竞争解决的过程，（冲突解决）基站把msg3的钱48bit作为UE Contention Resolution Identity MAC CE发送，其中包括了mcs的39bit随机值；msg4通过preamble Id和Tc-RNTI发送，终端收到ms4之后，会把竞争解决的MAC CE解析出来，和自己的msg3的前48bit对比，如果相等则认为自己竞争成功，否则竞争失败，在sib1的定时器之后再重新发起接入；</p>
+<blockquote>
+</blockquote>
+<p><strong>UE时RRC非连接态</strong>：通过网络侧提供的S-IMSI作为标识，如果没有提，使用一个39bit的随机值作为临时标识，并通过CCCH告诉基站，基站在msg4时通过UE冲突是否解决；<br><strong>UE时RRC连接态</strong>：msg3中UE通过C-RNTI MAC CE将自己的C-RNTI告诉基站，msg4中基站用这个C_RNTI来解决冲突。</p>
+<ul>
+<li><p><strong>UE发msg5 RRC_CONN_SETUP_COMPLETE，完成RRC链接建立</strong>：通过DDCH的SRB1承载发送，携带上行方向的NAS消息，基站收到RRC_CONN_SETUP_COMPLETE消息之后，RRC链接建立完成，SRB2承载就会随之建立。</p>
+</li>
+<li><p><strong>初始上下文建立</strong>： 建立UE与AMF的之间的绘画，让UE与AMF之间保持交流，由AMF发起，初始上下文建立完成就表示UE与AMF之间完成连接；</p>
+</li>
+<li><p><strong>UE能力查询</strong>：UE能力主要有<strong>UE的天线能力</strong>（也就是支持的频段等信息）和<strong>UE的网络能力</strong>（加密算法，NAS等的支持情况）；基站根据核心网在UE上下文建立的请求中是否携带了UE能力，来决定是否进行查询，如果UE携带了则不下发UE能力查询。<br><strong>下图是NR SA UE注册的流程示例，从msg3一直到注册完成</strong>；</p>
+</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/SA_Initial_Registration.png" alt="image"></p>
+<p><strong>参考文献</strong>：<br>[1]. <a target="_blank" rel="noopener" href="https://www.eventhelix.com/5G/standalone-access-registration/5g-standalone-access-registration.pdf">5G Standalone Access Registration Signaling Messages</a><br>[2]. <a target="_blank" rel="noopener" href="https://www.eventhelix.com/5G/standalone-access-registration/details/5g-standalone-access-registration.pdf">5G Standalone Access: Registration Procedure</a><br>[3]. <a target="_blank" rel="noopener" href="http://www.sharetechnote.com/html/5G/5G_CallProcess_InitialAttach.html">5G&#x2F;NR-初始Aattach</a></p>
+<h5 id="3-随机接入触发的场景"><a href="#3-随机接入触发的场景" class="headerlink" title="3. 随机接入触发的场景"></a><a href="#3-%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5%E8%A7%A6%E5%8F%91%E7%9A%84%E5%9C%BA%E6%99%AF"></a>3. <a href="#%E9%9A%8F%E6%9C%BA%E6%8E%A5%E5%85%A5%E8%A7%A6%E5%8F%91%E7%9A%84%E5%9C%BA%E6%99%AF">随机接入触发的场景</a></h5><p>随机接入并不是只有新入网才会触发，还会发生在一些已经入网的UE身上，梳理出来主要有一下8大场景；</p>
+<ul>
+<li><p>初始RRC连接建立：当UE需要和基站建立连接时，UE会发起随机接入；</p>
+</li>
+<li><p>RRC重建：当UE需要和基站重新建立RRC连接时；</p>
+</li>
+<li><p>UE进行切换时：UE会在目标小区发起随机接入；</p>
+</li>
+<li><p>下行数据到达：UE处于RRC连接，有UE有下行数据要发送，但发现UE失步，此时基站会通过下行控制信令让UE发起随机接入；若UE处在DRX休眠，则需要等UE变为Active后再下发控制信令；</p>
+</li>
+<li><p>上行数据达到：UE处于RRC连接，有UE有上行数据要发送，但发现UE失步，UE会发起随机接入；</p>
+</li>
+<li><p>NSA接入，LTE小区接入，添加NR小区时，会发起随机接入；</p>
+</li>
+<li><p>基于RA请求SI：当UE需要请求特定的SI时，会发起随机接入；</p>
+</li>
+<li><p>当UE处在RRC-INACTIVE：（1）主动迁移到RRC-CONNECTED时，UE会发起随机接入；（2）基站需要UE迁移到RRC-CONNECTED是，基站会通过paging让UE发起随机接入；</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>其中</strong>：<strong>1、2、5是竞争接入</strong>；3、4是优先非竞争接入，如果没有转悠preamble触发就是竞争的随机接入；6、7是非竞争接入；<strong>8如果是UE发起的就是竞争接入，如果是网络侧发起的就是非竞争接入</strong>。</p>
+<h5 id="4-RRC重建与重同步"><a href="#4-RRC重建与重同步" class="headerlink" title="4. RRC重建与重同步"></a><a href="#4-RRC%E9%87%8D%E5%BB%BA%E4%B8%8E%E9%87%8D%E5%90%8C%E6%AD%A5"></a>4. <a href="#RRC%E9%87%8D%E5%BB%BA%E4%B8%8E%E9%87%8D%E5%90%8C%E6%AD%A5">RRC重建与重同步</a></h5><h6 id="4-1-RRC重建"><a href="#4-1-RRC重建" class="headerlink" title="4.1 RRC重建"></a><a href="#4-1-RRC%E9%87%8D%E5%BB%BA"></a>4.1 RRC重建</h6><p>RRC重建是快速建立RRC连接的一种业务，重建的前提是UE已经与基站建立RRC连接，且已经成功启用安全模式，才能发起RRC重建；若是安全模式激活前发起重建，会发生重建失败，UE直接进入IDLE态，主要在<strong>以下几个场景中会触发RRC重建</strong>：</p>
+<ul>
+<li><p>检测到无线链路链接失败（38.331 5.3.10），主要有<strong>T310超时</strong>、<strong>RA失败且T311未运行</strong>和<strong>RLC达到最大重传</strong>；</p>
+</li>
+<li><p>NR-RRN系统内，异系统切换失败；</p>
+</li>
+<li><p>L3收到底层完整性校验失败的报告；</p>
+</li>
+<li><p>RRC连接重配失败；</p>
+</li>
+</ul>
+<h6 id="4-2-重同步"><a href="#4-2-重同步" class="headerlink" title="4.2 重同步"></a><a href="#4-2-%E9%87%8D%E5%90%8C%E6%AD%A5"></a>4.2 重同步</h6><p>重同步的过程是UE重新接入的过程，是在UE或者基站有上行或者下行数据要发送时发现UE与基站失步了，由UE主动发起或者基站被动发起的同步动作；</p>
+<ul>
+<li><p>对于SA基站收到msg4的ACK就认为上行同步；</p>
+</li>
+<li><p>对于NSA基站收到UE发送的首个数据报文（msg5）就认为上行同步；</p>
+</li>
+</ul>
+<p><strong>重同步的触发</strong>：</p>
+<ul>
+<li><p>UE有上行数据要发，UE发现上行失步，有UE发起竞争重同步；</p>
+</li>
+<li><p>基站有下行数据要发，发现上行失步，有基站触发UE发起竞争重同步；</p>
+</li>
+<li><p>SUL场景上下行数据到来，会触发重同步；</p>
+</li>
+</ul>
+<p>在基站和UE维护和管理同步状态是由一个<strong>同步定时器</strong>，</p>
+<ul>
+<li><p>当UE收到基站的TA MAC CE时，会重启定时器；</p>
+</li>
+<li><p>基站收到UE的TA MAC CE时，也会重启定时器；</p>
+</li>
+</ul>
+<p>参考文献：<br>[1]. xxx大厂问题定位指导书</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/" rel="prev" title="5G基础-时隙和帧结构">
+                  <i class="fa fa-angle-left"></i> 5G基础-时隙和帧结构
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/" rel="next" title="5G常见问题定位">
+                  5G常见问题定位 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">liurui</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

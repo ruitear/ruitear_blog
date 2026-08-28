@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"liurui.live","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.29.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"default"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInUp","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="本文以windows为生产环境，介绍以github为免费仓库和服务器，以及node.js和hexo技术为支撑免费搭建个人博客的方法。如果想让博客链接到个人域名，那就需要去单独购买域名。  1. Git安装与github仓库配置仓库配置  Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同， 它采用了分布式版本库的方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建基于hexo的github博客系统">
+<meta property="og:url" content="https://liurui.live/2018/07/18/%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="liurui&#39;s blogs">
+<meta property="og:description" content="本文以windows为生产环境，介绍以github为免费仓库和服务器，以及node.js和hexo技术为支撑免费搭建个人博客的方法。如果想让博客链接到个人域名，那就需要去单独购买域名。  1. Git安装与github仓库配置仓库配置  Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同， 它采用了分布式版本库的方">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://liurui.live/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/github%E5%8D%9A%E5%AE%A2.png">
+<meta property="og:image" content="https://liurui.live/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo%E6%93%8D%E4%BD%9C.png">
+<meta property="og:image" content="https://liurui.live/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/cname.png">
+<meta property="article:published_time" content="2018-07-17T16:19:32.000Z">
+<meta property="article:modified_time" content="2026-08-28T07:42:00.812Z">
+<meta property="article:author" content="liurui">
+<meta property="article:tag" content="blog环境">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://liurui.live/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/github%E5%8D%9A%E5%AE%A2.png">
+
+
+<link rel="canonical" href="https://liurui.live/2018/07/18/%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2018/07/18/%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/","path":"2018/07/18/搭建基于hexo的github博客系统/","title":"搭建基于hexo的github博客系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>搭建基于hexo的github博客系统 | liurui's blogs</title>
+  
+
+
+
+
+
+
+
+
+  
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.5.0/search.js" integrity="sha256-xFC6PJ82SL9b3WkGjFavNiA9gm5z6UBxWPiu4CYjptg=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">liurui's blogs</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">活成期待的样子...</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-Git%E5%AE%89%E8%A3%85%E4%B8%8Egithub%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="nav-number">1.</span> <span class="nav-text">1. Git安装与github仓库配置仓库配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-Node-Js%E4%B8%8EHexo%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">2. Node.Js与Hexo安装</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#2-1-%E4%B8%8B%E8%BD%BD-%E5%AE%89%E8%A3%85Node-js"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 下载&#x2F;安装Node.js</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-2-%E4%B8%8B%E8%BD%BD-%E5%AE%89%E8%A3%85hexo"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 下载&#x2F;安装hexo</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-Hexo%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">3. Hexo的基本配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E7%BB%91%E5%AE%9A%E4%B8%AA%E4%BA%BA%E5%9F%9F%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text">4. 绑定个人域名</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">liurui</p>
+  <div class="site-description" itemprop="description">liurui's blogs</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2018/07/18/%E6%90%AD%E5%BB%BA%E5%9F%BA%E4%BA%8Ehexo%E7%9A%84github%E5%8D%9A%E5%AE%A2%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="liurui">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="liurui's blogs">
+      <meta itemprop="description" content="liurui's blogs">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="搭建基于hexo的github博客系统 | liurui's blogs">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建基于hexo的github博客系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-07-18 00:19:32" itemprop="dateCreated datePublished" datetime="2018-07-18T00:19:32+08:00">2018-07-18</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2026-08-28 15:42:00" itemprop="dateModified" datetime="2026-08-28T15:42:00+08:00">2026-08-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" itemprop="url" rel="index"><span itemprop="name">环境搭建</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>本文以<code>windows</code>为生产环境，介绍以<code>github</code>为免费仓库和服务器，以及<code>node.js</code>和<code>hexo</code>技术为支撑免费搭建个人博客的方法。如果想让博客链接到个人域名，那就需要去单独购买域名。</p>
+<p><img src="/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/github%E5%8D%9A%E5%AE%A2.png" alt="hexo操作"></p>
+<h5 id="1-Git安装与github仓库配置仓库配置"><a href="#1-Git安装与github仓库配置仓库配置" class="headerlink" title="1. Git安装与github仓库配置仓库配置"></a><a href="#1-Git%E5%AE%89%E8%A3%85%E4%B8%8Egithub%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE"></a>1. <a href="#Git%E5%AE%89%E8%A3%85%E4%B8%8Egithub%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE">Git安装与github仓库配置仓库配置</a></h5><p>  Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 <code>CVS</code>, <code>Subversion</code>等不同， 它采用了分布式版本库的方式， 不必服务器端软件支持。windows环境下git的安装配置以及github仓库的配置, 可参考如下博文: <a target="_blank" rel="noopener" href="http://ruitear.com/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/"><strong>windows搭建git环境</strong></a></p>
+<h5 id="2-Node-Js与Hexo安装"><a href="#2-Node-Js与Hexo安装" class="headerlink" title="2. Node.Js与Hexo安装"></a><a href="#2-Node-Js%E4%B8%8EHexo%E5%AE%89%E8%A3%85"></a>2. <a href="#Node.Js%E4%B8%8EHexo%E5%AE%89%E8%A3%85">Node.Js与Hexo安装</a></h5><p>  <code>Hexo</code>使用<code>Markdown</code>（或其他渲染引擎）解析文章，生成静态网页, 是搭建博客环境的基础环境，hexo依赖node.js；因此，安装<code>hexo</code>前必须安装<code>Node.js</code>和<code>Git</code>。</p>
+<h6 id="2-1-下载-安装Node-js"><a href="#2-1-下载-安装Node-js" class="headerlink" title="2.1 下载&#x2F;安装Node.js"></a><a href="#2-1-%E4%B8%8B%E8%BD%BD-%E5%AE%89%E8%A3%85Node-js"></a>2.1 <a href="#%E4%B8%8B%E8%BD%BD-/-%E5%AE%89%E8%A3%85hexo">下载&#x2F;安装Node.js</a></h6><p>    去<a target="_blank" rel="noopener" href="https://nodejs.org/en/"><strong>官方</strong></a>下载最的<code>.msi</code>的新可靠版本，双击安装；</p>
+<h6 id="2-2-下载-安装hexo"><a href="#2-2-下载-安装hexo" class="headerlink" title="2.2 下载&#x2F;安装hexo"></a><a href="#2-2-%E4%B8%8B%E8%BD%BD-%E5%AE%89%E8%A3%85hexo"></a>2.2 <a href="#%E4%B8%8B%E8%BD%BD-/-%E5%AE%89%E8%A3%85hexo">下载&#x2F;安装hexo</a></h6><p>    安装完<code>git</code>和<code>node.js</code>之后，在本地创建一个路径用来保存<code>hexo</code>，其实也就是自己的本地博客代码库，比如<code>E:\github\blog</code>；然后，打开安装的<code>git bash</code>切换到刚刚创建的目录，输入<code>npm install -g hexo-cli</code>安装hexo；</p>
+<blockquote>
+</blockquote>
+<p><strong>注</strong>: <code>npm</code>是随同<code>Node.JS</code>一起安装的包管理工具, 所以装好<code>node.js</code>就可以在<code>git bash</code>中使用<code>npm</code>工具，无需单独安装；</p>
+<p><img src="/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/hexo%E6%93%8D%E4%BD%9C.png" alt="hexo操作"></p>
+<h5 id="3-Hexo的基本配置"><a href="#3-Hexo的基本配置" class="headerlink" title="3. Hexo的基本配置"></a><a href="#3-Hexo%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE"></a>3. <a href="#Hexo%E7%9A%84%E5%9F%BA%E6%9C%AC%E9%85%8D%E7%BD%AE">Hexo的基本配置</a></h5><p>  Hexo 作为一个快速、简洁且高效的博客框架。在我们下载hexo后，首先要做的是初始化hexo，告诉hexo在哪里保存博客网站</p>
+<p>-<br><strong>初始化hexo</strong>  <code>$ hexo init [folder]</code>，没有folder属性就默认在hexo当前的路径建立并保存网站文件。查看<code>hexo</code>的基本命令可以参考<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/commands.html">hexo指令</a>；</p>
+<p>-<br><strong>更改hexo主题</strong>  笔者使用的<a target="_blank" rel="noopener" href="https://github.com/iissnan/hexo-theme-next">next模板主题</a>，首先切换到<code>hexo</code>的<code>themes</code>文件夹下，将主题下载下来，在<code>hexo</code>的文件中将原始的<code>theme</code>配置由<code>landscape</code>改为<code>next</code>；</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/iissnan/hexo-theme-next themes/next</span><br></pre></td></tr></table></figure>
+
+<p>-<br><strong>部署主题</strong> hexo路径下的<code>git bash</code>输入: </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo clean; hexo generate  #清理缓存并生成文件</span><br><span class="line">hexo deploy  #部署</span><br></pre></td></tr></table></figure>
+
+<p>-<br><strong>配置主题</strong>  next主题的配置文件是next文件夹下的<code>_config.yml</code>文件</p>
+<ul>
+<li><strong>写博文</strong> <code>$ hexo new &lt;title&gt;</code> 使用默认属性在<code>source\_posts</code>路径下，生成一个<code>markdown</code>文件，然后就可以在这个文件中撰写自己的博客；</li>
+</ul>
+<h5 id="4-绑定个人域名"><a href="#4-绑定个人域名" class="headerlink" title="4. 绑定个人域名"></a><a href="#4-%E7%BB%91%E5%AE%9A%E4%B8%AA%E4%BA%BA%E5%9F%9F%E5%90%8D"></a>4. <a href="#%E7%BB%91%E5%AE%9A%E4%B8%AA%E4%BA%BA%E5%9F%9F%E5%90%8D">绑定个人域名</a></h5><p>  <strong>购买和注册</strong>：目前国内阿里、腾讯和百度以及华为的云都有域名购买和注册的服务，笔者在腾讯云上注册了<a href="ruitear.com">ruitear.com</a>这个域名。一个域名一年一般几十块钱, 还提供免费的dns域名解析服务。</p>
+<ul>
+<li><p>配置<code>cname</code>文件：在项目的source文件夹下新建一个名为<code>CNAME</code>的文件，在里面添加你购买的域名，比如我添加的是<a href="ruitear.com">ruitear.com</a>，有且只能添加一个。</p>
+</li>
+<li><p>将<code>github</code>博客关联到自己的域名：在域名解析的地方添加三条记录，如下图所示；<br><img src="/images/hexo%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/cname.png" alt="image"></p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>注意：blog.github.io. 是我的博客仓库名；<code>192.30.252.153</code>,<code>192.30.252.154</code>是GitHub提供的IP地址。</p>
+<blockquote>
+</blockquote>
+<blockquote>
+</blockquote>
+<ul>
+<li><code>www</code>：解析后的域名为 <code>www.你的域名</code><blockquote>
+</blockquote>
+</li>
+<li><code>@</code>：直接解析主域名 你的域名<blockquote>
+</blockquote>
+</li>
+<li><code>*</code>：泛解析，匹配其他所有域名 <code>*.你的域名</code><blockquote>
+</blockquote>
+</li>
+</ul>
+<hr>
+<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"></a><a href="%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</a></h5><p>[1] hexo中文文档：<a target="_blank" rel="noopener" href="https://hexo.io/zh-cn/docs/">https://hexo.io/zh-cn/docs/</a><br>[2] Hexo搭建的GitHub博客之优化 <a target="_blank" rel="noopener" href="http://wangwlj.com/2017/09/09/blog-opti/">http://wangwlj.com/2017/09/09/blog-opti/</a><br>[3] 在Github上利用hexo搭建个人博客 <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/9df4aba9c25a">https://www.jianshu.com/p/9df4aba9c25a</a></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blog%E7%8E%AF%E5%A2%83/" rel="tag"># blog环境</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/07/15/python%E5%B7%A5%E5%85%B7%E5%8C%85%E4%B9%8Bmatplotlib%E7%9A%84%E4%BD%BF%E7%94%A8--pyplot%E7%94%BB%E5%9B%BE/" rel="prev" title="python工具包之matplotlib的使用--pyplot画图">
+                  <i class="fa fa-angle-left"></i> python工具包之matplotlib的使用--pyplot画图
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/07/22/python%20socket%E7%BC%96%E7%A8%8B/" rel="next" title="python socket编程">
+                  python socket编程 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">liurui</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
