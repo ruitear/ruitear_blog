@@ -233,110 +233,6 @@
 ]]></content>
   </entry>
   <entry>
-    <title>5G常见问题定位</title>
-    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
-    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
-<li><p>check UE的盲检位置能否对上</p>
-</li>
-<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
-</li>
-<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
-</li>
-</ul>
-<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
-<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
-</li>
-<li><p>check DCI类型数值value是否正确</p>
-</li>
-<li><p>L2下发的L1报文是否被L1校验</p>
-</li>
-<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
-</li>
-</ul>
-<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
-<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
-</li>
-<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
-<blockquote>
-</blockquote>
-<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>协议栈</th>
-<th>影响因素</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PDCP</td>
-<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
-</tr>
-<tr>
-<td>RLC</td>
-<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
-</tr>
-<tr>
-<td>MAC</td>
-<td>harq资源耗尽，DCI漏检</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
-</li>
-<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
-</li>
-<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
-</li>
-<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
-</li>
-<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
-</li>
-<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
-</li>
-</ul>
-<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
-<li><p>检查切换前后流量是否已经降低；</p>
-</li>
-<li><p>切换的时延是否异常，如时延过大；</p>
-</li>
-<li><p>切换后来水不足导致调度不足；</p>
-</li>
-<li><p>切换后MCS异常，rank异常；</p>
-</li>
-<li><p>切换前后是否存在多径，频偏过大；</p>
-</li>
-<li><p>其他，比如干扰等；</p>
-</li>
-</ul>
-<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
-<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
-</li>
-<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
-</li>
-</ul>
-<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>5G基础-时隙和帧结构</title>
     <url>/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/</url>
     <content><![CDATA[<h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a><a href="#1-%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84"></a>1. <a href="#%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
@@ -528,6 +424,110 @@
       <tags>
         <tag>C++</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>5G常见问题定位</title>
+    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
+    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
+<li><p>check UE的盲检位置能否对上</p>
+</li>
+<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
+</li>
+<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
+</li>
+</ul>
+<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
+<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
+</li>
+<li><p>check DCI类型数值value是否正确</p>
+</li>
+<li><p>L2下发的L1报文是否被L1校验</p>
+</li>
+<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
+</li>
+</ul>
+<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
+<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
+</li>
+<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
+<blockquote>
+</blockquote>
+<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>协议栈</th>
+<th>影响因素</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PDCP</td>
+<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
+</tr>
+<tr>
+<td>RLC</td>
+<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
+</tr>
+<tr>
+<td>MAC</td>
+<td>harq资源耗尽，DCI漏检</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
+</li>
+<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
+</li>
+<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
+</li>
+<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
+</li>
+<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
+</li>
+<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
+</li>
+</ul>
+<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
+<li><p>检查切换前后流量是否已经降低；</p>
+</li>
+<li><p>切换的时延是否异常，如时延过大；</p>
+</li>
+<li><p>切换后来水不足导致调度不足；</p>
+</li>
+<li><p>切换后MCS异常，rank异常；</p>
+</li>
+<li><p>切换前后是否存在多径，频偏过大；</p>
+</li>
+<li><p>其他，比如干扰等；</p>
+</li>
+</ul>
+<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
+<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
+</li>
+<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
+</li>
+</ul>
+<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
   </entry>
   <entry>
     <title>C与C++常用函数使用与表达式解析</title>
@@ -1127,6 +1127,77 @@ int main()&#123;
 ]]></content>
   </entry>
   <entry>
+    <title>NR PDSCH资源分配</title>
+    <url>/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
+    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
+<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
+<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
+</li>
+<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
+</li>
+</ul>
+<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
+<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
+</li>
+<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
+</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
+<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
+<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
+<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
+</li>
+<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
+</li>
+</ul>
+<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
+<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
+<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
+<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
+</blockquote>
+Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
+</ul>
+<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
+<ul>
+<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
+<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
+<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
+<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
+<ul>
+<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
+</li>
+<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
+<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
+<blockquote>
+</blockquote>
+<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
     <title>LeetCode刷题--典型字符串问题</title>
     <url>/2020/05/05/LeetCode%E5%88%B7%E9%A2%98--%E5%85%B8%E5%9E%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>字符串的<strong>子串</strong>和<strong>子序列</strong>，<strong>子串必须是连续的</strong>，<strong>子序列不一定要求联系</strong> 。<strong>什么叫回文串</strong>？如果一个字符串正着读和反着读是一样的，那它就是<strong>回文串</strong>。</p>
@@ -1270,77 +1341,6 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
-    <title>NR PDSCH资源分配</title>
-    <url>/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
-    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
-<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
-<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
-</li>
-<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
-</li>
-</ul>
-<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
-<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
-</li>
-<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
-</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
-<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
-<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
-<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
-</li>
-<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
-</li>
-</ul>
-<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
-<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
-<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
-<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
-</blockquote>
-Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
-</ul>
-<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
-<ul>
-<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
-<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
-<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
-<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
-<ul>
-<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
-</li>
-<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
-</li>
-</ul>
-<blockquote>
-</blockquote>
-<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
-<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
-<blockquote>
-</blockquote>
-<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>leetcode刷题-排列和组合问题</title>
     <url>/2020/05/05/leetcode%E5%88%B7%E9%A2%98-%E6%8E%92%E5%88%97%E5%92%8C%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
@@ -1390,6 +1390,211 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
 </code></pre>
 <p>支付宝</p>
 ]]></content>
+  </entry>
+  <entry>
+    <title>windows搭建git环境</title>
+    <url>/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[<p>Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
+<h5 id="1-git安装"><a href="#1-git安装" class="headerlink" title="1. git安装"></a><a href="#1-git%E5%AE%89%E8%A3%85"></a>1. git安装</h5><p>  下载<a href="https://gitforwindows.org/">git windows</a>一路安装下来.</p>
+<h5 id="2-注册github账户"><a href="#2-注册github账户" class="headerlink" title="2. 注册github账户"></a><a href="#2-%E6%B3%A8%E5%86%8Cgithub%E8%B4%A6%E6%88%B7"></a>2. 注册github账户</h5><p>  访问<a href="https://github.com/">github</a>官网，注册一个<code>github</code>账户.</p>
+<h5 id="3-git-bash添加本地仓"><a href="#3-git-bash添加本地仓" class="headerlink" title="3. git bash添加本地仓"></a><a href="#3-git-bash%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E4%BB%93"></a>3. git bash添加本地仓</h5><p>  通过 <code>git bash</code> 客户端添加添加一个本地文件夹作为本地仓库；可以通过 <code>pwd</code> 命令来查看当前bash窗口的路径。<br><img src="/images/windows_git/1.png" alt="image">  此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用<code>git init</code>命令初始化这个文件夹。<img src="/images/windows_git/3.png" alt="image">  初始化之后，再调用 <code>git config --global</code> config 本地仓库关联到远端的 <code>github</code> 账户，也就是你注册 <code>github</code> 的时候填的用户名和邮箱。<img src="/images/windows_git/4.png" alt="image">  到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 <code>ssh key</code>， 可以根据官网的 <a href="https://help.github.com/categories/ssh/">git help</a> 创建ssh秘钥。这里首先调用 <code>$ ssh-keygen -t rsa -C &quot;liuru@host.com&quot;</code> 调用创建秘钥的指令。<br><img src="/images/windows_git/5.png" alt="image">  如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：<strong>1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。</strong> </p>
+<ul>
+<li><p><strong>关联的到github账户</strong>: 在github账户的setting地方有一个ssh key的你添加输入，<br>生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;</p>
+</li>
+<li><p><strong>关联本地客户端</strong>: 根据上述创建的过程中的提示，我们找到相应的.ssh&#x2F;id_rsa.pub找到文件。首先确保ssh客户端能用，调用 <code>evel &quot;$(ssh-agent -s)&quot;</code> 命令查看, 有 agent id 即为有用； <img src="/images/windows_git/6.png" alt="image">然后, 调用 <code>ssh-add ~/.ssh/id_rsa</code> <img src="/images/windows_git/7.png" alt="image">把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。</p>
+</li>
+</ul>
+<h5 id="4-从github仓库clone内容"><a href="#4-从github仓库clone内容" class="headerlink" title="4. 从github仓库clone内容"></a><a href="#4-%E4%BB%8Egithub%E4%BB%93%E5%BA%93clone%E5%86%85%E5%AE%B9"></a>4. 从github仓库clone内容</h5><p>  在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用 <code>$ git clone git@github.com:ruitear/C-C-plus-plus.git</code>   (其中ruitear是账户名)<br><img src="/images/windows_git/8.png" alt="image"></p>
+<h5 id="5-在仓库里面创建子文件夹"><a href="#5-在仓库里面创建子文件夹" class="headerlink" title="5. 在仓库里面创建子文件夹"></a><a href="#5-%E5%9C%A8%E4%BB%93%E5%BA%93%E9%87%8C%E9%9D%A2%E5%88%9B%E5%BB%BA%E5%AD%90%E6%96%87%E4%BB%B6%E5%A4%B9"></a>5. 在仓库里面创建子文件夹</h5><p>  陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用<code>$ git add Sort/</code> . 这样就在<code>C-Cplus-plus</code>仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：<code>$ git commit -m &quot;相关说明&quot;</code><br><img src="/images/windows_git/9.png" alt="image"><br>  最后调用push把添加之后的仓库push到github仓库了 <code>$git push origin master</code> ， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。<br>【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在<br>push，如果有冲突就解决冲突，没有的话就直接push。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>git使用</category>
+      </categories>
+      <tags>
+        <tag>git</tag>
+        <tag>环境搭建</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>windows下基于python的Tensorflow环境搭建</title>
+    <url>/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
+<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a><a href="#1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"></a>1. <a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure>
+
+<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure>
+
+<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
+<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a><a href="#2-%E5%88%87%E6%8D%A2pypi%E6%BA%90"></a>2. <a href="#%E5%88%87%E6%8D%A2pypi%E6%BA%90">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
+<table>
+<thead>
+<tr>
+<th>pypi源</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清华大学</td>
+<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
+</tr>
+<tr>
+<td>中国科大</td>
+<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
+</tr>
+<tr>
+<td>豆瓣</td>
+<td><a href="https://pypi.doubanio.com/simple/">https://pypi.doubanio.com/simple/</a></td>
+</tr>
+<tr>
+<td>阿里云</td>
+<td><a href="https://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/</a></td>
+</tr>
+</tbody></table>
+<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=aliyun.com</span><br><span class="line">index-url=https://mirrors.aliyun.com/pypi/simple</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a><a href="#3-%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83"></a>3. <a href="#%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux&#x2F;mac可参考：<a href="https://www.v2ex.com/t/354625">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
+<ul>
+<li><p>安装virtualenv， <code>pip install virtualenv</code>;</p>
+</li>
+<li><p>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</p>
+</li>
+<li><p>用命令<code>virtualenv  web</code>创建虚拟化环境;</p>
+</li>
+<li><p>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"></p>
+</li>
+</ul>
+<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a><a href="#4-%E5%AE%89%E8%A3%85tensorflow"></a>4. <a href="#%E5%AE%89%E8%A3%85tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/imglib/tensorflow.png" alt="image"><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>环境搭建</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>从函数指针看C语言的面向对象实现</title>
+    <url>/2020/05/05/%E4%BB%8E%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9C%8BC%E8%AF%AD%E8%A8%80%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%AE%9E%E7%8E%B0/</url>
+    <content><![CDATA[<h5 id="1-什么是函数指针"><a href="#1-什么是函数指针" class="headerlink" title="1. 什么是函数指针"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88">什么是函数指针</a></h5><p><strong>指针函数</strong>：<br>指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。<br><strong>函数指针</strong>：<br>函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。<br>常见的函数都有其入口，比如 <code>main()</code> 函数是整个程序的入口，我们调用的其他函数都有其特定的入口，正如我们可以通过地址找到相应的变量一样，我们也可以通过地址找到相应的函数。而这个存储着函数地址的指针就是函数指针。可以通过指针访问相应的变量，函数指针也可以像函数一样用于调用函数、传递参数。<br><strong>回调函数</strong><br>函数指针作为某个函数的参数。理解回调函数，我们先要搞清楚回调函数有什么作用。比如老板、经理、你三个角色。老板通常是规则的指定着，经理按照规则指派相应的人去做事，而你就是任务的具体执行者。当老板要求经理去做一个事情，那么老板就是主调函数，经理就是回调函数，你按照规则去处理事情就是相应回调函数。你处理的结果会反馈给经理，经理拿着你的结果再反馈给老板。老板就可以使用这个结果去做相关的事情了。在这个环节中，你只需要按照指定的规则去做事，而经理不需要考虑事情是怎么做的，他只需要把相应的事情分配给对应的人去处理即可，然后将获取的结果反馈给老板。如果规则有变，只需要对应的员工知道哪里改变了，而经理不需要关注这些细节。<br><strong>函数指针的应用场景</strong> </p>
+<ul>
+<li><p>普通的函数指针，指向函数，实现比如勾子函数等</p>
+</li>
+<li><p>回调函数，实现在特定情况下需要不同的处理，或者对不同些数据的不同处理</p>
+</li>
+<li><p>封装，函数模板，构造对象（类似于C++虚函数）等等</p>
+</li>
+</ul>
+<p>结构体，是定义了一个用户自定义内型，那么这个内型就可以定义N多的变量，不同的变量拥有不同的值，也包括函数指针的值，这样就实现了”多态”，模拟OOP中的虚函数。<br><strong>函数指针声明</strong> 函数原型<code>int sum(int,int);</code>是一个返回值为int类型, 参数是两个int类型的函数.  如何声明该类型函数的指针呢？将函数名替换成(*pf)形式即可，即我们把sum替换成(*fp)即可，fp为函数指针名<code>int （*fp）(int,int);</code> 这样就声明了和sum函数类型相同的函数指针fp, <code>*</code>和fp为一体，<code>说明了fp为指针类型</code>;  <code>*fp</code>需要用括号括起来，否则就会变成<code>int *fp(int,int);</code>,这时候意义就变化了，成立一个返回值为一个int指针类型的函数，函数一个函数指针。为了避免每次声明函数指针的时候方便，函数指针可以用typedef定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef int (*myFun)(int,int);//为该函数指针起一个新名字</span><br><span class="line">myFun f1;       //声明myFun类型的函数指针f1</span><br></pre></td></tr></table></figure>
+
+<p><strong>函数指针赋值</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func1 = mytest; //表达式1</span><br><span class="line">    fp func2 = &amp;mytest;//表达式2</span><br><span class="line">    printf(&quot;%d\n&quot;,func1);</span><br><span class="line">    printf(&quot;%d\n&quot;,func2);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里，声明返回类型为int，接受两个int类型参数的函数指针func1和func2，分别给它们进行了赋值。表达式1和表达式2在作用上是一样的。由于函数名在被使用时总是由编译器把它转换为函数指针，因此前面加上&amp;只是显式的说明了这一点而已。</p>
+<p><strong>函数指针的调用</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func = mytest; //表达式1</span><br><span class="line">    func(1,2); //表达式1</span><br><span class="line">    (*func)(3,4); //表达式2</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在函数指针后面加括号，并传入参数即可调用，其中表达式1和表达式2似乎都可以成功调用，但是哪个是正确的呢？ANSI C认为这两种形式等价。</p>
+<h5 id="2-函数指针的用途"><a href="#2-函数指针的用途" class="headerlink" title="2. 函数指针的用途"></a><a href="#2-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E7%94%A8%E9%80%94"></a>2. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E7%94%A8%E9%80%94">函数指针的用途</a></h5><p>1、作为句柄函数传入，<br>以库函数qsort排序函数为例，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void qsort(void *base,size_t nmemb,size_t size , int(*compar)(const void *,const void *));</span><br></pre></td></tr></table></figure>
+
+<p>拆开来看如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void qsort(void *base, size_t nmemb, size_t size, );</span><br></pre></td></tr></table></figure>
+
+<p>拿掉第四个参数后，它是一个无返回值的函数，接受4个参数，第一个是void*类型，代表原始数组，第二个是size_t类型，代表数据数量，第三个是size_t类型，代表单个数据占用空间大小，而第四个参数是函数指针。这第四个参数，即函数指针指向的是什么类型呢？</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int(*compar)(const void *,const void *)</span><br></pre></td></tr></table></figure>
+
+<p>这是一个接受两个const void*类型入参，返回值为int的函数指针。<br>这个参数告诉qsort，应该使用哪个函数来比较元素，即只要我们告诉qsort比较大小的规则，就可以帮我们对任意数据类型的数组进行排序。</p>
+<p>结构体中包含函数指针,可以像一般变量一样,包含函数指针变量.下面是一种简单的实现</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">struct opt  </span><br><span class="line">&#123;  </span><br><span class="line">    int x,y;  </span><br><span class="line">    int (*func)(int,int); //函数指针  </span><br><span class="line">&#125;; </span><br><span class="line">void main()  </span><br><span class="line">&#123;  </span><br><span class="line">    struct opt demo;  </span><br><span class="line">    demo.func=add2; //结构体函数指针赋值  </span><br><span class="line">    //demo.func=&amp;add2; //结构体函数指针赋值  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">    demo.func=add1;  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>C语言中的struct是最接近类的概念，但是在C语言的struct中只有成员，不能有函数，但是可以有指向函数的指针，们使用函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct student  </span><br><span class="line">&#123;  </span><br><span class="line">    int id;  </span><br><span class="line">    char name[50];   </span><br><span class="line">    void (*init)();  </span><br><span class="line">    void (*process)(int id, char *name);  </span><br><span class="line">    void (*destroy)();  </span><br><span class="line">&#125;stu; </span><br><span class="line"></span><br><span class="line">void init()  &#123; /*do something*/ &#125;  </span><br><span class="line">void process(int id, char *name)   &#123; /*do something*/ &#125;</span><br><span class="line">void destroy() &#123; /*do something*/ &#125; </span><br><span class="line"></span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">    stu *stu1 = (stu *)malloc(sizeof(stu));  </span><br><span class="line">    stu1-&gt;id=1000;  </span><br><span class="line">    strcpy(stu1-&gt;name,&quot;C++&quot;);  </span><br><span class="line">    stu1-&gt;init=init;  </span><br><span class="line">    stu1-&gt;process=process;  </span><br><span class="line">    stu1-&gt;destroy=destroy;  </span><br><span class="line">    printf(&quot;%d\t%s\n&quot;,stu1-&gt;id,stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;init();  </span><br><span class="line">    stu1-&gt;process(stu1-&gt;id, stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;destroy();  </span><br><span class="line">    free(stu1);  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-函数指针的面向对象应用"><a href="#3-函数指针的面向对象应用" class="headerlink" title="3. 函数指针的面向对象应用"></a><a href="#3-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BA%94%E7%94%A8"></a>3. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BA%94%E7%94%A8">函数指针的面向对象应用</a></h5><p>函数指针是解耦对象关系的最佳利器。</p>
+<h6 id="3-1-命令模式"><a href="#3-1-命令模式" class="headerlink" title="3.1 命令模式"></a><a href="#3-1-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"></a>3.1 <a href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F">命令模式</a></h6><p>命令模式通过增加中转数据结构，使命令下达和命令执行二者依赖于接口，从而达到二者时间上不相关、二者变化方向独立的目的。<br>【好处：代码清晰明了，容易添加和删除，易维护】</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">  uint8_t cmd;</span><br><span class="line">  void (* handle)(char *buffer);</span><br><span class="line">&#125; package;</span><br><span class="line"> </span><br><span class="line">static const package packageItems[] =</span><br><span class="line">&#123;</span><br><span class="line">  &#123;0x01, parse_temperature&#125;,</span><br><span class="line">  &#123;0x02, parse_humidity&#125;,</span><br><span class="line">  &#123;0x03, parse_illumination&#125;,</span><br><span class="line">  &#123;0xFF, NULL&#125;,</span><br><span class="line">&#125;;</span><br><span class="line">static uint8_t parse(void *buffer, uint16_t length)</span><br><span class="line">&#123;</span><br><span class="line">  package *frame = (package *)buffer;</span><br><span class="line">  if (frame == NULL) &#123; // 异常处理 &#125;</span><br><span class="line"></span><br><span class="line">  const package *entry;</span><br><span class="line">  for (entry = packageItems; entry-&gt;handle != NULL; ++entry) &#123;</span><br><span class="line">    if(frame-&gt;cmd == entry-&gt;cmd) &#123;</span><br><span class="line">      entry-&gt;handle(frame-&gt;data);</span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>什么时候会用到这个命令模式呢？</p>
+<ul>
+<li><p>按键处理</p>
+</li>
+<li><p>协议解析（串口，网口，CAN，等等）</p>
+</li>
+</ul>
+<h6 id="3-2-策略模式"><a href="#3-2-策略模式" class="headerlink" title="3.2 策略模式"></a><a href="#3-2-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"></a>3.2 <a href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F">策略模式</a></h6><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//开关配置过程</span><br><span class="line">typedef void (*ProcStrategy)();</span><br><span class="line">ProcStrategy procStrategy;</span><br><span class="line">if (strategy == A)</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStrategyA;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStaregyB;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//核心逻辑处理过程</span><br><span class="line">...</span><br><span class="line">procStrategy();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-3-观察者模式"><a href="#3-3-观察者模式" class="headerlink" title="3.3 观察者模式"></a><a href="#3-3-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"></a>3.3 <a href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F">观察者模式</a></h6><p>函数需要抽象出来一个action函数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void Eat() &#123; // do something&#125;</span><br><span class="line">void Drink() &#123; // do something&#125;</span><br><span class="line">void Rest() &#123; // do something&#125;</span><br><span class="line"></span><br><span class="line">typedef void (*lAction)();</span><br><span class="line">lAction flikuiAction[3] = &#123;Eat, Drink, Rest&#125;;</span><br><span class="line"></span><br><span class="line">//命令响应程序</span><br><span class="line">void DoCmd(Cmd *cmd)</span><br><span class="line">&#123;</span><br><span class="line">    for(int i = 0; i cmdNum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flikuiAction[cmd-&gt;cmd[i]]();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h6 id="3-4-状态模式"><a href="#3-4-状态模式" class="headerlink" title="3.4 状态模式"></a><a href="#3-4-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"></a>3.4 <a href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F">状态模式</a></h6><p>有这么一个需求，宋江命令李逵杀敌，李逵此时有很多种状态，李逵要根据自己不同的状态做出不同的反应：如果正在吃饭，就扔掉碗进入空闲态，如果处于空闲，就拿起斧子进入战斗状态，如果处于战斗状态，就不做响应。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef void (*LikuiDoAction)();</span><br><span class="line"></span><br><span class="line">LikuiDoAction likuiDoAction[3][3] = </span><br><span class="line">&#123;			/* EATING */		/* FIGHTING */		/* IDLE */</span><br><span class="line">/* EAT */	&#123;DoNothing,			ThrowAxe,			TakeBowl&#125;,</span><br><span class="line">/* FIGHT */	&#123;ThrowBowl,			DoNothing,			TakeAxe&#125;,</span><br><span class="line">/* IDLE */	&#123;ThrowBowl,			ThrowAxe,			DoNothing&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void LikuiAction()</span><br><span class="line">&#123;</span><br><span class="line">    likuiDoAction[SongjiangCmd][LikuiStatus]();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="4-函数指针与函数调用的性能分析"><a href="#4-函数指针与函数调用的性能分析" class="headerlink" title="4. 函数指针与函数调用的性能分析"></a><a href="#4-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"></a>4. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90">函数指针与函数调用的性能分析</a></h5><p>直观上看应该是函数调用开销更小。函数指针调用方案中需要先访问数据区，再访问函数，增加指令开销，同时，数据取值与函数指令加载必须串行执行，影响CPU流水性能；函数调用方案可以做内联优化。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>函数指针</category>
+      </categories>
+      <tags>
+        <tag>函数指针</tag>
+        <tag>设计模式</tag>
+      </tags>
   </entry>
   <entry>
     <title>python socket编程</title>
@@ -1500,59 +1705,25 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       </tags>
   </entry>
   <entry>
-    <title>windows下基于python的Tensorflow环境搭建</title>
-    <url>/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
-<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a><a href="#1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"></a>1. <a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure>
-
-<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure>
-
-<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
-<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a><a href="#2-%E5%88%87%E6%8D%A2pypi%E6%BA%90"></a>2. <a href="#%E5%88%87%E6%8D%A2pypi%E6%BA%90">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
-<table>
-<thead>
-<tr>
-<th>pypi源</th>
-<th>地址</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>清华大学</td>
-<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
-</tr>
-<tr>
-<td>中国科大</td>
-<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
-</tr>
-<tr>
-<td>豆瓣</td>
-<td><a href="https://pypi.doubanio.com/simple/">https://pypi.doubanio.com/simple/</a></td>
-</tr>
-<tr>
-<td>阿里云</td>
-<td><a href="https://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/</a></td>
-</tr>
-</tbody></table>
-<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=aliyun.com</span><br><span class="line">index-url=https://mirrors.aliyun.com/pypi/simple</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a><a href="#3-%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83"></a>3. <a href="#%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux&#x2F;mac可参考：<a href="https://www.v2ex.com/t/354625">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
-<ul>
-<li><p>安装virtualenv， <code>pip install virtualenv</code>;</p>
-</li>
-<li><p>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</p>
-</li>
-<li><p>用命令<code>virtualenv  web</code>创建虚拟化环境;</p>
-</li>
-<li><p>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"></p>
-</li>
+    <title>卷积神经网络从0到1</title>
+    <url>/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/</url>
+    <content><![CDATA[<p>1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:</p>
+<blockquote>
+</blockquote>
+<p>“一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”  </p>
+<p>为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含一个隐藏的多层感知机网络，到现在已卷积神经网络为代表的深度卷积神经网络。<br>  本文以神经网络的发展为线索，从卷积神经网络的结构和应用两个方面进行简单阐述。</p>
+<h5 id="1-什么是卷积神经网络"><a href="#1-什么是卷积神经网络" class="headerlink" title="1. 什么是卷积神经网络"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h5><p>  认识卷积神经网络之前首先要了解两个基本的概念: 1、什么是卷积；2、什么是神经网络。</p>
+<h6 id="1-1-什么是卷积"><a href="#1-1-什么是卷积" class="headerlink" title="1.1 什么是卷积"></a><a href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"></a>1.1 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF">什么是卷积</a></h6><ul>
+<li><strong>从图像的角度来看卷积</strong>:  就是卷积模板在图像上滑动，把对应位置上的元素相城相加得到最终结果的过程。如果考虑翻转则就需要翻转卷积模板。</li>
 </ul>
-<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a><a href="#4-%E5%AE%89%E8%A3%85tensorflow"></a>4. <a href="#%E5%AE%89%E8%A3%85tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/imglib/tensorflow.png" alt="image"><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
+<p>  卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
+<h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a><a href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.2 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是神经网络</a></h6><p>   按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
+<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) &#x3D; 1&#x2F;(1+e^{-x})  \<br>tanh(x)&#x3D;\frac{1-e^{-2x}} {1+e^{-2x}}  \<br>relu(x)&#x3D;max(0,x)<br>\end{eqnarray}<br>$$</p>
+<p><img src="/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>  而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
+<p>$$<br>\begin{equation}<br>y&#x3D;f(w_1<em>x_1+w_2</em>x_2+b)<br>\end{equation}<br>$$</p>
+<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x&#x3D;(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
+<h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a><a href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.3 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h6><p>  卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg" alt="全连接与局部连接"><br>  上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/%E5%8D%B7%E7%A7%AF.png" alt="卷积"><br>  上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
+<h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a><a href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"></a>1.3 <a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">卷积神经网络的基本结构</a></h6><p>  经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
 <p>————-本文结束感谢您的阅读————-</p>
 <p>坚持创作，坚持分享！</p>
 <pre><code>打赏
@@ -1572,10 +1743,115 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
 <p>支付宝</p>
 ]]></content>
       <categories>
-        <category>Python</category>
+        <category>卷积神经网络</category>
+      </categories>
+      <tags>
+        <tag>CNN</tag>
+        <tag>神经网络，机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
+    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
+<table>
+<thead>
+<tr>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>处理器</td>
+<td>英特尔 i5-8400</td>
+<td>主板</td>
+<td>Nvidia RTX 2060 SUPER</td>
+</tr>
+<tr>
+<td>主板</td>
+<td>华硕PRIME Z370-P</td>
+<td>电源</td>
+<td>爱国者GT-550 550W</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>4*DDR4 2400MHz</td>
+<td>系统</td>
+<td>WIN10 2004</td>
+</tr>
+</tbody></table>
+<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
+<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
+<ul>
+<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
+</li>
+<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
+</li>
+<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
+</li>
+</ul>
+<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
+<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>环境搭建</category>
       </categories>
       <tags>
         <tag>环境搭建</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学习资源收集</title>
+    <url>/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/</url>
+    <content><![CDATA[<h5 id="1、Python"><a href="#1、Python" class="headerlink" title="1、Python"></a><a href="#1%E3%80%81Python"></a>1、Python</h5><p>1）<a href="https://mp.weixin.qq.com/s/OOBckD-FobvJJvkFk7MNng">Python_交互式的学习资源</a><br>2）<a href="https://mp.weixin.qq.com/s/_OG4yX2ZYTyN8URKuywMdw">Python生成动态图表</a><br>3）<a href="https://mp.weixin.qq.com/s/niH1N-khxwDJXtvRCngqSg">Python文章中精选Top10</a><br>4）<a href="https://zhuanlan.zhihu.com/p/46257877">忘了Python关键语句？这份备忘录拯救你的记忆</a><br>5）<a href="https://zhuanlan.zhihu.com/p/42171409">Python教程：17个冷门但实用的小技巧</a></p>
+<h5 id="2、机器学习相关"><a href="#2、机器学习相关" class="headerlink" title="2、机器学习相关"></a><a href="#2%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3"></a>2、机器学习相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/0tCxAZzVr22liaJpmTJYSg">通俗理解PCA降维作用</a><br>2）<a href="https://mp.weixin.qq.com/s/JsnQq2FOf3bpa5vkJ-SZTg">18年9月机器学习开源项目Top10</a><br>3）<a href="https://mp.weixin.qq.com/s/aV9Rj-CnJZRXRm0rDOK6gg">LSTM和GRU的解析</a><br>4）<a href="https://mp.weixin.qq.com/s/cfvId6E0tc5gIMau6EM9ag">算法和编程面试题精选TOP50</a><br>5）<a href="https://mp.weixin.qq.com/s/59bNdkFUzkjRYDAR3qqW5A">5种回归损失函数</a><br>6）<a href="https://mp.weixin.qq.com/s/DFyafGAUPNc70rG643ozbA">精选机器学习文章Top10</a><br>7）<a href="https://mp.weixin.qq.com/s/AjwOlktv0BGDiHfJ4kvfuA">如何通过引入硬注意力机制来学习视觉问答任务？</a><br>8）<a href="https://mp.weixin.qq.com/s/gcjVNmr3BFMg27rFfpzMMw">深度学习必备数学知识之线性代数篇</a><br>9）<a href="https://mp.weixin.qq.com/s/2gKYtona0Z6szsjaj8c9Vg">构建深度神经网络的实用技巧</a><br>10）<a href="https://mp.weixin.qq.com/s/G0jY23Sui5a7P9m9_HkRNg">ICML2018见闻 | 迁移学习、多任务学习领域的进展</a><br>11）<a href="https://zhuanlan.zhihu.com/p/43831189">8 个超赞的深度学习课程</a><br>12）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484920&idx=1&sn=74d2e9d11da046098a4f52c48e7e929f&chksm=97a0ce2ca0d7473a23d254047f550c41850be4a97b9ddff75baa2d85eb74b9835f0a4ed4aef7&scene=21#wechat_redirect">合成注意力推理神经网络-Christopher Manning-ICLR2018</a><br>13）<a href="https://pan.baidu.com/s/1OUecGv5OKAL_GCve7S8w4Q">李宏毅-201806-中文-Deep Reinforcement Learning精品课程</a>  提取码：3eig<br>14）<a href="https://v.qq.com/x/page/d0748orcuzt.html">最新深度学习面试题目及答案集锦</a><br>15）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484960&idx=1&sn=17f07ffd8dc8a5df2fb0a1e1f5fd05cf&chksm=97a0cdf4a0d744e2c869f60df5bd0b3fe0735e6ef660d41c95d370af4c2368a6e992b2fcb0cd&scene=21#wechat_redirect">MIT 6.S094 深度学习与自动驾驶课程（下）</a><br>16）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484998&idx=1&sn=c6b3a98412c45aeba50d82a0d09b74c1&chksm=97a0cd92a0d74484b9e3a1221ac1ad926cfd88891748b82d37667f6cc29a8251e5c190ca7712&scene=21#wechat_redirect">迁移学习在自然语言处理中的应用之通用语言建模</a><br>17）<a href="https://zhuanlan.zhihu.com/p/39912633">图说卡尔曼滤波_一份通俗易懂的教程</a><br>18)）<a href="https://zhuanlan.zhihu.com/p/35814495">面试了10家公司，以下是一份机器学习面试内容总结</a><br>19）<a href="https://zhuanlan.zhihu.com/p/41777804">献给新手的深度学习综述 | 入门</a><br>20）<a href="https://zhuanlan.zhihu.com/p/46396329">https://zhuanlan.zhihu.com/p/46396329</a></p>
+<h5 id="3、Git相关"><a href="#3、Git相关" class="headerlink" title="3、Git相关"></a><a href="#3%E3%80%81Git%E7%9B%B8%E5%85%B3"></a>3、Git相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/ahyco9UvUqTlAD6NLcdHNQ">泪流满面的 11 个 Git 面试题</a></p>
+<h5 id="4、图像处理-计算机视觉"><a href="#4、图像处理-计算机视觉" class="headerlink" title="4、图像处理&amp;计算机视觉"></a><a href="#4%E3%80%81%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86-amp-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89"></a>4、图像处理&amp;计算机视觉</h5><p>1）<a href="https://mp.weixin.qq.com/s/zeruKQOye_QNWgluVIN0BA">从R-CNN到RFBNet，目标检测架构5年演进全盘点</a><br>2）<a href="R-CNN%EF%BC%88%E8%AF%91%EF%BC%89https://zhuanlan.zhihu.com/p/26652657">CNN图像分割简史：从R-CNN到Mask</a><br>3）<a href="https://zhuanlan.zhihu.com/p/40902853">图像超级补全效果惊艳（附代码）</a><br>4）<a href="https://zhuanlan.zhihu.com/p/43318695">用神经网络操纵图像中的自然场景属性</a></p>
+<h5 id="5、文本相关"><a href="#5、文本相关" class="headerlink" title="5、文本相关"></a><a href="#5%E3%80%81%E6%96%87%E6%9C%AC%E7%9B%B8%E5%85%B3"></a>5、文本相关</h5><p>1、<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484778&idx=1&sn=630f43fa0060c76e490a53f9046e21b1&chksm=97a0cebea0d747a81455479e5465bdb914ee3965dabb9cd3fee5c7e1cb1348a4be19d91c1b54&scene=21#wechat_redirect">基于深度学习的文本分类6大算法</a><br>2、<a href="https://docs.opencv.org/3.0-beta/modules/text/doc/erfilter.html">Scene Text Detection</a>                                                      </p>
+<h5 id="6、hexo相关"><a href="#6、hexo相关" class="headerlink" title="6、hexo相关"></a><a href="#6%E3%80%81hexo%E7%9B%B8%E5%85%B3"></a>6、hexo相关</h5><p>1）hexo命令 <a href="https://hexo.io/zh-cn/docs/commands.html">https://hexo.io/zh-cn/docs/commands.html</a></p>
+<h5 id="Others"><a href="#Others" class="headerlink" title="Others"></a><a href="#Others"></a>Others</h5><p>脉冲神经网络(SNN)</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>学习资源</category>
+      </categories>
+      <tags>
+        <tag>coding，learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1890,282 +2166,6 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
         <tag>python</tag>
         <tag>matplotlib</tag>
         <tag>plot</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>windows搭建git环境</title>
-    <url>/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/</url>
-    <content><![CDATA[<p>Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
-<h5 id="1-git安装"><a href="#1-git安装" class="headerlink" title="1. git安装"></a><a href="#1-git%E5%AE%89%E8%A3%85"></a>1. git安装</h5><p>  下载<a href="https://gitforwindows.org/">git windows</a>一路安装下来.</p>
-<h5 id="2-注册github账户"><a href="#2-注册github账户" class="headerlink" title="2. 注册github账户"></a><a href="#2-%E6%B3%A8%E5%86%8Cgithub%E8%B4%A6%E6%88%B7"></a>2. 注册github账户</h5><p>  访问<a href="https://github.com/">github</a>官网，注册一个<code>github</code>账户.</p>
-<h5 id="3-git-bash添加本地仓"><a href="#3-git-bash添加本地仓" class="headerlink" title="3. git bash添加本地仓"></a><a href="#3-git-bash%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E4%BB%93"></a>3. git bash添加本地仓</h5><p>  通过 <code>git bash</code> 客户端添加添加一个本地文件夹作为本地仓库；可以通过 <code>pwd</code> 命令来查看当前bash窗口的路径。<br><img src="/images/windows_git/1.png" alt="image">  此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用<code>git init</code>命令初始化这个文件夹。<img src="/images/windows_git/3.png" alt="image">  初始化之后，再调用 <code>git config --global</code> config 本地仓库关联到远端的 <code>github</code> 账户，也就是你注册 <code>github</code> 的时候填的用户名和邮箱。<img src="/images/windows_git/4.png" alt="image">  到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 <code>ssh key</code>， 可以根据官网的 <a href="https://help.github.com/categories/ssh/">git help</a> 创建ssh秘钥。这里首先调用 <code>$ ssh-keygen -t rsa -C &quot;liuru@host.com&quot;</code> 调用创建秘钥的指令。<br><img src="/images/windows_git/5.png" alt="image">  如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：<strong>1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。</strong> </p>
-<ul>
-<li><p><strong>关联的到github账户</strong>: 在github账户的setting地方有一个ssh key的你添加输入，<br>生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;</p>
-</li>
-<li><p><strong>关联本地客户端</strong>: 根据上述创建的过程中的提示，我们找到相应的.ssh&#x2F;id_rsa.pub找到文件。首先确保ssh客户端能用，调用 <code>evel &quot;$(ssh-agent -s)&quot;</code> 命令查看, 有 agent id 即为有用； <img src="/images/windows_git/6.png" alt="image">然后, 调用 <code>ssh-add ~/.ssh/id_rsa</code> <img src="/images/windows_git/7.png" alt="image">把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。</p>
-</li>
-</ul>
-<h5 id="4-从github仓库clone内容"><a href="#4-从github仓库clone内容" class="headerlink" title="4. 从github仓库clone内容"></a><a href="#4-%E4%BB%8Egithub%E4%BB%93%E5%BA%93clone%E5%86%85%E5%AE%B9"></a>4. 从github仓库clone内容</h5><p>  在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用 <code>$ git clone git@github.com:ruitear/C-C-plus-plus.git</code>   (其中ruitear是账户名)<br><img src="/images/windows_git/8.png" alt="image"></p>
-<h5 id="5-在仓库里面创建子文件夹"><a href="#5-在仓库里面创建子文件夹" class="headerlink" title="5. 在仓库里面创建子文件夹"></a><a href="#5-%E5%9C%A8%E4%BB%93%E5%BA%93%E9%87%8C%E9%9D%A2%E5%88%9B%E5%BB%BA%E5%AD%90%E6%96%87%E4%BB%B6%E5%A4%B9"></a>5. 在仓库里面创建子文件夹</h5><p>  陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用<code>$ git add Sort/</code> . 这样就在<code>C-Cplus-plus</code>仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：<code>$ git commit -m &quot;相关说明&quot;</code><br><img src="/images/windows_git/9.png" alt="image"><br>  最后调用push把添加之后的仓库push到github仓库了 <code>$git push origin master</code> ， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。<br>【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在<br>push，如果有冲突就解决冲突，没有的话就直接push。</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>git使用</category>
-      </categories>
-      <tags>
-        <tag>环境搭建</tag>
-        <tag>git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
-    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
-<table>
-<thead>
-<tr>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>处理器</td>
-<td>英特尔 i5-8400</td>
-<td>主板</td>
-<td>Nvidia RTX 2060 SUPER</td>
-</tr>
-<tr>
-<td>主板</td>
-<td>华硕PRIME Z370-P</td>
-<td>电源</td>
-<td>爱国者GT-550 550W</td>
-</tr>
-<tr>
-<td>内存</td>
-<td>4*DDR4 2400MHz</td>
-<td>系统</td>
-<td>WIN10 2004</td>
-</tr>
-</tbody></table>
-<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
-<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
-<ul>
-<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
-</li>
-<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
-</li>
-<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
-</li>
-</ul>
-<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
-<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-      </categories>
-      <tags>
-        <tag>环境搭建</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>学习资源收集</title>
-    <url>/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/</url>
-    <content><![CDATA[<h5 id="1、Python"><a href="#1、Python" class="headerlink" title="1、Python"></a><a href="#1%E3%80%81Python"></a>1、Python</h5><p>1）<a href="https://mp.weixin.qq.com/s/OOBckD-FobvJJvkFk7MNng">Python_交互式的学习资源</a><br>2）<a href="https://mp.weixin.qq.com/s/_OG4yX2ZYTyN8URKuywMdw">Python生成动态图表</a><br>3）<a href="https://mp.weixin.qq.com/s/niH1N-khxwDJXtvRCngqSg">Python文章中精选Top10</a><br>4）<a href="https://zhuanlan.zhihu.com/p/46257877">忘了Python关键语句？这份备忘录拯救你的记忆</a><br>5）<a href="https://zhuanlan.zhihu.com/p/42171409">Python教程：17个冷门但实用的小技巧</a></p>
-<h5 id="2、机器学习相关"><a href="#2、机器学习相关" class="headerlink" title="2、机器学习相关"></a><a href="#2%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3"></a>2、机器学习相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/0tCxAZzVr22liaJpmTJYSg">通俗理解PCA降维作用</a><br>2）<a href="https://mp.weixin.qq.com/s/JsnQq2FOf3bpa5vkJ-SZTg">18年9月机器学习开源项目Top10</a><br>3）<a href="https://mp.weixin.qq.com/s/aV9Rj-CnJZRXRm0rDOK6gg">LSTM和GRU的解析</a><br>4）<a href="https://mp.weixin.qq.com/s/cfvId6E0tc5gIMau6EM9ag">算法和编程面试题精选TOP50</a><br>5）<a href="https://mp.weixin.qq.com/s/59bNdkFUzkjRYDAR3qqW5A">5种回归损失函数</a><br>6）<a href="https://mp.weixin.qq.com/s/DFyafGAUPNc70rG643ozbA">精选机器学习文章Top10</a><br>7）<a href="https://mp.weixin.qq.com/s/AjwOlktv0BGDiHfJ4kvfuA">如何通过引入硬注意力机制来学习视觉问答任务？</a><br>8）<a href="https://mp.weixin.qq.com/s/gcjVNmr3BFMg27rFfpzMMw">深度学习必备数学知识之线性代数篇</a><br>9）<a href="https://mp.weixin.qq.com/s/2gKYtona0Z6szsjaj8c9Vg">构建深度神经网络的实用技巧</a><br>10）<a href="https://mp.weixin.qq.com/s/G0jY23Sui5a7P9m9_HkRNg">ICML2018见闻 | 迁移学习、多任务学习领域的进展</a><br>11）<a href="https://zhuanlan.zhihu.com/p/43831189">8 个超赞的深度学习课程</a><br>12）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484920&idx=1&sn=74d2e9d11da046098a4f52c48e7e929f&chksm=97a0ce2ca0d7473a23d254047f550c41850be4a97b9ddff75baa2d85eb74b9835f0a4ed4aef7&scene=21#wechat_redirect">合成注意力推理神经网络-Christopher Manning-ICLR2018</a><br>13）<a href="https://pan.baidu.com/s/1OUecGv5OKAL_GCve7S8w4Q">李宏毅-201806-中文-Deep Reinforcement Learning精品课程</a>  提取码：3eig<br>14）<a href="https://v.qq.com/x/page/d0748orcuzt.html">最新深度学习面试题目及答案集锦</a><br>15）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484960&idx=1&sn=17f07ffd8dc8a5df2fb0a1e1f5fd05cf&chksm=97a0cdf4a0d744e2c869f60df5bd0b3fe0735e6ef660d41c95d370af4c2368a6e992b2fcb0cd&scene=21#wechat_redirect">MIT 6.S094 深度学习与自动驾驶课程（下）</a><br>16）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484998&idx=1&sn=c6b3a98412c45aeba50d82a0d09b74c1&chksm=97a0cd92a0d74484b9e3a1221ac1ad926cfd88891748b82d37667f6cc29a8251e5c190ca7712&scene=21#wechat_redirect">迁移学习在自然语言处理中的应用之通用语言建模</a><br>17）<a href="https://zhuanlan.zhihu.com/p/39912633">图说卡尔曼滤波_一份通俗易懂的教程</a><br>18)）<a href="https://zhuanlan.zhihu.com/p/35814495">面试了10家公司，以下是一份机器学习面试内容总结</a><br>19）<a href="https://zhuanlan.zhihu.com/p/41777804">献给新手的深度学习综述 | 入门</a><br>20）<a href="https://zhuanlan.zhihu.com/p/46396329">https://zhuanlan.zhihu.com/p/46396329</a></p>
-<h5 id="3、Git相关"><a href="#3、Git相关" class="headerlink" title="3、Git相关"></a><a href="#3%E3%80%81Git%E7%9B%B8%E5%85%B3"></a>3、Git相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/ahyco9UvUqTlAD6NLcdHNQ">泪流满面的 11 个 Git 面试题</a></p>
-<h5 id="4、图像处理-计算机视觉"><a href="#4、图像处理-计算机视觉" class="headerlink" title="4、图像处理&amp;计算机视觉"></a><a href="#4%E3%80%81%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86-amp-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89"></a>4、图像处理&amp;计算机视觉</h5><p>1）<a href="https://mp.weixin.qq.com/s/zeruKQOye_QNWgluVIN0BA">从R-CNN到RFBNet，目标检测架构5年演进全盘点</a><br>2）<a href="R-CNN%EF%BC%88%E8%AF%91%EF%BC%89https://zhuanlan.zhihu.com/p/26652657">CNN图像分割简史：从R-CNN到Mask</a><br>3）<a href="https://zhuanlan.zhihu.com/p/40902853">图像超级补全效果惊艳（附代码）</a><br>4）<a href="https://zhuanlan.zhihu.com/p/43318695">用神经网络操纵图像中的自然场景属性</a></p>
-<h5 id="5、文本相关"><a href="#5、文本相关" class="headerlink" title="5、文本相关"></a><a href="#5%E3%80%81%E6%96%87%E6%9C%AC%E7%9B%B8%E5%85%B3"></a>5、文本相关</h5><p>1、<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484778&idx=1&sn=630f43fa0060c76e490a53f9046e21b1&chksm=97a0cebea0d747a81455479e5465bdb914ee3965dabb9cd3fee5c7e1cb1348a4be19d91c1b54&scene=21#wechat_redirect">基于深度学习的文本分类6大算法</a><br>2、<a href="https://docs.opencv.org/3.0-beta/modules/text/doc/erfilter.html">Scene Text Detection</a>                                                      </p>
-<h5 id="6、hexo相关"><a href="#6、hexo相关" class="headerlink" title="6、hexo相关"></a><a href="#6%E3%80%81hexo%E7%9B%B8%E5%85%B3"></a>6、hexo相关</h5><p>1）hexo命令 <a href="https://hexo.io/zh-cn/docs/commands.html">https://hexo.io/zh-cn/docs/commands.html</a></p>
-<h5 id="Others"><a href="#Others" class="headerlink" title="Others"></a><a href="#Others"></a>Others</h5><p>脉冲神经网络(SNN)</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>学习资源</category>
-      </categories>
-      <tags>
-        <tag>coding，learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>卷积神经网络从0到1</title>
-    <url>/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/</url>
-    <content><![CDATA[<p>1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:</p>
-<blockquote>
-</blockquote>
-<p>“一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”  </p>
-<p>为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含一个隐藏的多层感知机网络，到现在已卷积神经网络为代表的深度卷积神经网络。<br>  本文以神经网络的发展为线索，从卷积神经网络的结构和应用两个方面进行简单阐述。</p>
-<h5 id="1-什么是卷积神经网络"><a href="#1-什么是卷积神经网络" class="headerlink" title="1. 什么是卷积神经网络"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h5><p>  认识卷积神经网络之前首先要了解两个基本的概念: 1、什么是卷积；2、什么是神经网络。</p>
-<h6 id="1-1-什么是卷积"><a href="#1-1-什么是卷积" class="headerlink" title="1.1 什么是卷积"></a><a href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"></a>1.1 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF">什么是卷积</a></h6><ul>
-<li><strong>从图像的角度来看卷积</strong>:  就是卷积模板在图像上滑动，把对应位置上的元素相城相加得到最终结果的过程。如果考虑翻转则就需要翻转卷积模板。</li>
-</ul>
-<p>  卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
-<h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a><a href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.2 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是神经网络</a></h6><p>   按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
-<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) &#x3D; 1&#x2F;(1+e^{-x})  \<br>tanh(x)&#x3D;\frac{1-e^{-2x}} {1+e^{-2x}}  \<br>relu(x)&#x3D;max(0,x)<br>\end{eqnarray}<br>$$</p>
-<p><img src="/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>  而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
-<p>$$<br>\begin{equation}<br>y&#x3D;f(w_1<em>x_1+w_2</em>x_2+b)<br>\end{equation}<br>$$</p>
-<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x&#x3D;(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
-<h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a><a href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.3 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h6><p>  卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg" alt="全连接与局部连接"><br>  上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/%E5%8D%B7%E7%A7%AF.png" alt="卷积"><br>  上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
-<h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a><a href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"></a>1.3 <a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">卷积神经网络的基本结构</a></h6><p>  经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>卷积神经网络</category>
-      </categories>
-      <tags>
-        <tag>CNN</tag>
-        <tag>神经网络，机器学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从函数指针看C语言的面向对象实现</title>
-    <url>/2020/05/05/%E4%BB%8E%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9C%8BC%E8%AF%AD%E8%A8%80%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<h5 id="1-什么是函数指针"><a href="#1-什么是函数指针" class="headerlink" title="1. 什么是函数指针"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88">什么是函数指针</a></h5><p><strong>指针函数</strong>：<br>指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。<br><strong>函数指针</strong>：<br>函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。<br>常见的函数都有其入口，比如 <code>main()</code> 函数是整个程序的入口，我们调用的其他函数都有其特定的入口，正如我们可以通过地址找到相应的变量一样，我们也可以通过地址找到相应的函数。而这个存储着函数地址的指针就是函数指针。可以通过指针访问相应的变量，函数指针也可以像函数一样用于调用函数、传递参数。<br><strong>回调函数</strong><br>函数指针作为某个函数的参数。理解回调函数，我们先要搞清楚回调函数有什么作用。比如老板、经理、你三个角色。老板通常是规则的指定着，经理按照规则指派相应的人去做事，而你就是任务的具体执行者。当老板要求经理去做一个事情，那么老板就是主调函数，经理就是回调函数，你按照规则去处理事情就是相应回调函数。你处理的结果会反馈给经理，经理拿着你的结果再反馈给老板。老板就可以使用这个结果去做相关的事情了。在这个环节中，你只需要按照指定的规则去做事，而经理不需要考虑事情是怎么做的，他只需要把相应的事情分配给对应的人去处理即可，然后将获取的结果反馈给老板。如果规则有变，只需要对应的员工知道哪里改变了，而经理不需要关注这些细节。<br><strong>函数指针的应用场景</strong> </p>
-<ul>
-<li><p>普通的函数指针，指向函数，实现比如勾子函数等</p>
-</li>
-<li><p>回调函数，实现在特定情况下需要不同的处理，或者对不同些数据的不同处理</p>
-</li>
-<li><p>封装，函数模板，构造对象（类似于C++虚函数）等等</p>
-</li>
-</ul>
-<p>结构体，是定义了一个用户自定义内型，那么这个内型就可以定义N多的变量，不同的变量拥有不同的值，也包括函数指针的值，这样就实现了”多态”，模拟OOP中的虚函数。<br><strong>函数指针声明</strong> 函数原型<code>int sum(int,int);</code>是一个返回值为int类型, 参数是两个int类型的函数.  如何声明该类型函数的指针呢？将函数名替换成(*pf)形式即可，即我们把sum替换成(*fp)即可，fp为函数指针名<code>int （*fp）(int,int);</code> 这样就声明了和sum函数类型相同的函数指针fp, <code>*</code>和fp为一体，<code>说明了fp为指针类型</code>;  <code>*fp</code>需要用括号括起来，否则就会变成<code>int *fp(int,int);</code>,这时候意义就变化了，成立一个返回值为一个int指针类型的函数，函数一个函数指针。为了避免每次声明函数指针的时候方便，函数指针可以用typedef定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef int (*myFun)(int,int);//为该函数指针起一个新名字</span><br><span class="line">myFun f1;       //声明myFun类型的函数指针f1</span><br></pre></td></tr></table></figure>
-
-<p><strong>函数指针赋值</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func1 = mytest; //表达式1</span><br><span class="line">    fp func2 = &amp;mytest;//表达式2</span><br><span class="line">    printf(&quot;%d\n&quot;,func1);</span><br><span class="line">    printf(&quot;%d\n&quot;,func2);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里，声明返回类型为int，接受两个int类型参数的函数指针func1和func2，分别给它们进行了赋值。表达式1和表达式2在作用上是一样的。由于函数名在被使用时总是由编译器把它转换为函数指针，因此前面加上&amp;只是显式的说明了这一点而已。</p>
-<p><strong>函数指针的调用</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">int mytest(int a,int b)</span><br><span class="line">&#123;</span><br><span class="line">    return a+b;</span><br><span class="line">&#125;</span><br><span class="line">typedef int(*fp)(int,int);</span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    fp func = mytest; //表达式1</span><br><span class="line">    func(1,2); //表达式1</span><br><span class="line">    (*func)(3,4); //表达式2</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在函数指针后面加括号，并传入参数即可调用，其中表达式1和表达式2似乎都可以成功调用，但是哪个是正确的呢？ANSI C认为这两种形式等价。</p>
-<h5 id="2-函数指针的用途"><a href="#2-函数指针的用途" class="headerlink" title="2. 函数指针的用途"></a><a href="#2-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E7%94%A8%E9%80%94"></a>2. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E7%94%A8%E9%80%94">函数指针的用途</a></h5><p>1、作为句柄函数传入，<br>以库函数qsort排序函数为例，</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void qsort(void *base,size_t nmemb,size_t size , int(*compar)(const void *,const void *));</span><br></pre></td></tr></table></figure>
-
-<p>拆开来看如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void qsort(void *base, size_t nmemb, size_t size, );</span><br></pre></td></tr></table></figure>
-
-<p>拿掉第四个参数后，它是一个无返回值的函数，接受4个参数，第一个是void*类型，代表原始数组，第二个是size_t类型，代表数据数量，第三个是size_t类型，代表单个数据占用空间大小，而第四个参数是函数指针。这第四个参数，即函数指针指向的是什么类型呢？</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">int(*compar)(const void *,const void *)</span><br></pre></td></tr></table></figure>
-
-<p>这是一个接受两个const void*类型入参，返回值为int的函数指针。<br>这个参数告诉qsort，应该使用哪个函数来比较元素，即只要我们告诉qsort比较大小的规则，就可以帮我们对任意数据类型的数组进行排序。</p>
-<p>结构体中包含函数指针,可以像一般变量一样,包含函数指针变量.下面是一种简单的实现</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">struct opt  </span><br><span class="line">&#123;  </span><br><span class="line">    int x,y;  </span><br><span class="line">    int (*func)(int,int); //函数指针  </span><br><span class="line">&#125;; </span><br><span class="line">void main()  </span><br><span class="line">&#123;  </span><br><span class="line">    struct opt demo;  </span><br><span class="line">    demo.func=add2; //结构体函数指针赋值  </span><br><span class="line">    //demo.func=&amp;add2; //结构体函数指针赋值  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">    demo.func=add1;  </span><br><span class="line">    printf(&quot;func(3,4)=%d\n&quot;,opt.func(3,4));  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>C语言中的struct是最接近类的概念，但是在C语言的struct中只有成员，不能有函数，但是可以有指向函数的指针，们使用函数。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct student  </span><br><span class="line">&#123;  </span><br><span class="line">    int id;  </span><br><span class="line">    char name[50];   </span><br><span class="line">    void (*init)();  </span><br><span class="line">    void (*process)(int id, char *name);  </span><br><span class="line">    void (*destroy)();  </span><br><span class="line">&#125;stu; </span><br><span class="line"></span><br><span class="line">void init()  &#123; /*do something*/ &#125;  </span><br><span class="line">void process(int id, char *name)   &#123; /*do something*/ &#125;</span><br><span class="line">void destroy() &#123; /*do something*/ &#125; </span><br><span class="line"></span><br><span class="line">int main()  </span><br><span class="line">&#123;  </span><br><span class="line">    stu *stu1 = (stu *)malloc(sizeof(stu));  </span><br><span class="line">    stu1-&gt;id=1000;  </span><br><span class="line">    strcpy(stu1-&gt;name,&quot;C++&quot;);  </span><br><span class="line">    stu1-&gt;init=init;  </span><br><span class="line">    stu1-&gt;process=process;  </span><br><span class="line">    stu1-&gt;destroy=destroy;  </span><br><span class="line">    printf(&quot;%d\t%s\n&quot;,stu1-&gt;id,stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;init();  </span><br><span class="line">    stu1-&gt;process(stu1-&gt;id, stu1-&gt;name);  </span><br><span class="line">    stu1-&gt;destroy();  </span><br><span class="line">    free(stu1);  </span><br><span class="line">    return 0;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-函数指针的面向对象应用"><a href="#3-函数指针的面向对象应用" class="headerlink" title="3. 函数指针的面向对象应用"></a><a href="#3-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BA%94%E7%94%A8"></a>3. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%BA%94%E7%94%A8">函数指针的面向对象应用</a></h5><p>函数指针是解耦对象关系的最佳利器。</p>
-<h6 id="3-1-命令模式"><a href="#3-1-命令模式" class="headerlink" title="3.1 命令模式"></a><a href="#3-1-%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"></a>3.1 <a href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F">命令模式</a></h6><p>命令模式通过增加中转数据结构，使命令下达和命令执行二者依赖于接口，从而达到二者时间上不相关、二者变化方向独立的目的。<br>【好处：代码清晰明了，容易添加和删除，易维护】</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef struct &#123;</span><br><span class="line">  uint8_t cmd;</span><br><span class="line">  void (* handle)(char *buffer);</span><br><span class="line">&#125; package;</span><br><span class="line"> </span><br><span class="line">static const package packageItems[] =</span><br><span class="line">&#123;</span><br><span class="line">  &#123;0x01, parse_temperature&#125;,</span><br><span class="line">  &#123;0x02, parse_humidity&#125;,</span><br><span class="line">  &#123;0x03, parse_illumination&#125;,</span><br><span class="line">  &#123;0xFF, NULL&#125;,</span><br><span class="line">&#125;;</span><br><span class="line">static uint8_t parse(void *buffer, uint16_t length)</span><br><span class="line">&#123;</span><br><span class="line">  package *frame = (package *)buffer;</span><br><span class="line">  if (frame == NULL) &#123; // 异常处理 &#125;</span><br><span class="line"></span><br><span class="line">  const package *entry;</span><br><span class="line">  for (entry = packageItems; entry-&gt;handle != NULL; ++entry) &#123;</span><br><span class="line">    if(frame-&gt;cmd == entry-&gt;cmd) &#123;</span><br><span class="line">      entry-&gt;handle(frame-&gt;data);</span><br><span class="line">      break;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>什么时候会用到这个命令模式呢？</p>
-<ul>
-<li><p>按键处理</p>
-</li>
-<li><p>协议解析（串口，网口，CAN，等等）</p>
-</li>
-</ul>
-<h6 id="3-2-策略模式"><a href="#3-2-策略模式" class="headerlink" title="3.2 策略模式"></a><a href="#3-2-%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F"></a>3.2 <a href="#%E7%AD%96%E7%95%A5%E6%A8%A1%E5%BC%8F">策略模式</a></h6><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//开关配置过程</span><br><span class="line">typedef void (*ProcStrategy)();</span><br><span class="line">ProcStrategy procStrategy;</span><br><span class="line">if (strategy == A)</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStrategyA;</span><br><span class="line">&#125;</span><br><span class="line">else</span><br><span class="line">&#123;</span><br><span class="line">    procStrategy = ProcStaregyB;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//核心逻辑处理过程</span><br><span class="line">...</span><br><span class="line">procStrategy();</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<h6 id="3-3-观察者模式"><a href="#3-3-观察者模式" class="headerlink" title="3.3 观察者模式"></a><a href="#3-3-%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"></a>3.3 <a href="#%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F">观察者模式</a></h6><p>函数需要抽象出来一个action函数</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void Eat() &#123; // do something&#125;</span><br><span class="line">void Drink() &#123; // do something&#125;</span><br><span class="line">void Rest() &#123; // do something&#125;</span><br><span class="line"></span><br><span class="line">typedef void (*lAction)();</span><br><span class="line">lAction flikuiAction[3] = &#123;Eat, Drink, Rest&#125;;</span><br><span class="line"></span><br><span class="line">//命令响应程序</span><br><span class="line">void DoCmd(Cmd *cmd)</span><br><span class="line">&#123;</span><br><span class="line">    for(int i = 0; i cmdNum; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flikuiAction[cmd-&gt;cmd[i]]();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h6 id="3-4-状态模式"><a href="#3-4-状态模式" class="headerlink" title="3.4 状态模式"></a><a href="#3-4-%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"></a>3.4 <a href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F">状态模式</a></h6><p>有这么一个需求，宋江命令李逵杀敌，李逵此时有很多种状态，李逵要根据自己不同的状态做出不同的反应：如果正在吃饭，就扔掉碗进入空闲态，如果处于空闲，就拿起斧子进入战斗状态，如果处于战斗状态，就不做响应。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">typedef void (*LikuiDoAction)();</span><br><span class="line"></span><br><span class="line">LikuiDoAction likuiDoAction[3][3] = </span><br><span class="line">&#123;			/* EATING */		/* FIGHTING */		/* IDLE */</span><br><span class="line">/* EAT */	&#123;DoNothing,			ThrowAxe,			TakeBowl&#125;,</span><br><span class="line">/* FIGHT */	&#123;ThrowBowl,			DoNothing,			TakeAxe&#125;,</span><br><span class="line">/* IDLE */	&#123;ThrowBowl,			ThrowAxe,			DoNothing&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void LikuiAction()</span><br><span class="line">&#123;</span><br><span class="line">    likuiDoAction[SongjiangCmd][LikuiStatus]();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="4-函数指针与函数调用的性能分析"><a href="#4-函数指针与函数调用的性能分析" class="headerlink" title="4. 函数指针与函数调用的性能分析"></a><a href="#4-%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"></a>4. <a href="#%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8%E7%9A%84%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90">函数指针与函数调用的性能分析</a></h5><p>直观上看应该是函数调用开销更小。函数指针调用方案中需要先访问数据区，再访问函数，增加指令开销，同时，数据取值与函数指令加载必须串行执行，影响CPU流水性能；函数调用方案可以做内联优化。</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>函数指针</category>
-      </categories>
-      <tags>
-        <tag>函数指针</tag>
-        <tag>设计模式</tag>
       </tags>
   </entry>
   <entry>
