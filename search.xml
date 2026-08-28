@@ -4,13 +4,13 @@
     <title>5G基础--SR</title>
     <url>/2021/05/16/5G%E5%9F%BA%E7%A1%80-SR/</url>
     <content><![CDATA[<h5 id="1-SR-Scheduling-Request"><a href="#1-SR-Scheduling-Request" class="headerlink" title="1. SR(Scheduling Request)"></a><a href="#1-SR-Scheduling-Request"></a>1. <a href="#SR(Scheduling_Request)">SR(Scheduling Request)</a></h5><p>SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR；<br><img src="http://1.116.145.136/NR/SR_0.png" alt="SR"></p>
-<h5 id="2-SR的配置"><a href="#2-SR的配置" class="headerlink" title="2. SR的配置"></a><a href="#2-SR%E7%9A%84%E9%85%8D%E7%BD%AE"></a>2. SR的配置</h5><p>在基站中SR的配置在SchedulingRequestResourceId IE中定义了SR资源的数量，最大8个SR资源，对应的SchedulingRequestResourceId就是0-7 ；<br><img src="http://1.116.145.136/NR/SchedulingRequestId_0.png" alt="SchedulingRequestId"><br>MAC的配置中， 逻辑信道可以分别关联SR配置，一个MAC实体可以配置0个、1个或者多个SR配置，不同的逻辑信道可以关联相同的schedulingRequestID，<strong>如果没有给相应的逻辑信道配置SR</strong>，当该逻辑信道有数据发送时只能通过随机接入获得上行调度。<br>一个mac实体通过MAC-CellGroupConfig-&gt;<strong>schedulingRequestConfig</strong>-&gt;schedulingRequestToAddModList配置一个SR列表。其中每个SR配置对应一个schedulingRequestConfig；<br><img src="http://1.116.145.136/NR/SchedulingRequestConfig.jpg" alt="SchedulingRequestConfig"></p>
+<h5 id="2-SR的配置"><a href="#2-SR的配置" class="headerlink" title="2. SR的配置"></a><a href="#2-SR%E7%9A%84%E9%85%8D%E7%BD%AE"></a>2. SR的配置</h5><p>在基站中SR的配置在SchedulingRequestResourceId IE中定义了SR资源的数量，最大8个SR资源，对应的SchedulingRequestResourceId就是0-7 ；<br><img src="/images/NR/SchedulingRequestId_0.png" alt="SchedulingRequestId"><br>MAC的配置中， 逻辑信道可以分别关联SR配置，一个MAC实体可以配置0个、1个或者多个SR配置，不同的逻辑信道可以关联相同的schedulingRequestID，<strong>如果没有给相应的逻辑信道配置SR</strong>，当该逻辑信道有数据发送时只能通过随机接入获得上行调度。<br>一个mac实体通过MAC-CellGroupConfig-&gt;<strong>schedulingRequestConfig</strong>-&gt;schedulingRequestToAddModList配置一个SR列表。其中每个SR配置对应一个schedulingRequestConfig；<br><img src="/images/NR/SchedulingRequestConfig.png" alt="SchedulingRequestConfig"></p>
 <p>一个SR配置(SchedulingRequestConfig)包含了分布在不同bwp或者小区中用于传输SR的一组PUCCH资源，也就是SR资源，目前SR只支持PUCCH format0或者PUCCH format1. 从协议38.331的描述可以看到一个SchedulingRequestConfig中对应一组SchedulingRequestResourceConfig，也就是一个SR配置可以对应多个SR资源，他们实际使用是分布在不同的小区或者BWP上。在特定逻辑信道上，每个BWP最多配置1个用于SR的PUCCH资源。</p>
 <p>上行BWP通过BWP-UplinkDedicated-&gt;pucch-Config-&gt;schedulingRequestResourceToAddModList配置一个SR资源表，每个SR资源对应一个SchedulingRequestResourceConfig，这个SR资源有一个schedulingRequestID指示它被哪个SR配置使用，<strong>schedulingRequestID</strong> 是区分不同的SR配置的唯一值，关联了<strong>sr-ProhibitTimer</strong>和<strong>sr-TransMax</strong>。通过BWP与小区的对应关系，可以确定一个SR配置在特定小区的特定上行BWP上使用的SR资源。</p>
-<p><strong>在pucch-config中为各个上行bwp配置了sr资源</strong>，<strong>使用schedulingRequestResourceId来区分不同的资源配置</strong>，schedulingRequestResourceId会关联schedulingRequestID，还包括SR发送时间点配置，以及对应的pucch resource配置。<br><img src="http://1.116.145.136/NR/pucch_config.png" alt="SchedulingRequestResourceId"></p>
+<p><strong>在pucch-config中为各个上行bwp配置了sr资源</strong>，<strong>使用schedulingRequestResourceId来区分不同的资源配置</strong>，schedulingRequestResourceId会关联schedulingRequestID，还包括SR发送时间点配置，以及对应的pucch resource配置。<br><img src="/images/NR/pucch_config.png" alt="SchedulingRequestResourceId"></p>
 <p>下图是SR在接入过程的对逻辑信道的配置的示例，信令中对SRB1&#x2F;SRB2&#x2F;DRB都配置了响应的相同的SR资源。</p>
 <p><img src="http://1.116.145.136/NR/%E9%80%BB%E8%BE%91%E4%BF%A1%E9%81%93SR_1.png" alt="SchedulingRequestId"></p>
-<h5 id="3-SR的发送"><a href="#3-SR的发送" class="headerlink" title="3. SR的发送"></a><a href="#3-SR%E7%9A%84%E5%8F%91%E9%80%81"></a>3. SR的发送</h5><p>针对每个SR资源，基站通过<strong>SchedulingRequestResourceConfig-&gt;resource</strong>告诉UE使用PUCCH format0还是 format1来发送SR。<br><img src="http://1.116.145.136/NR/SchedulingRequestResourceConfig.png" alt="SchedulingRequestConfig"><br><img src="http://1.116.145.136/NR/SchedulingRequestId_1.png" alt="SchedulingRequestId"></p>
+<h5 id="3-SR的发送"><a href="#3-SR的发送" class="headerlink" title="3. SR的发送"></a><a href="#3-SR%E7%9A%84%E5%8F%91%E9%80%81"></a>3. SR的发送</h5><p>针对每个SR资源，基站通过<strong>SchedulingRequestResourceConfig-&gt;resource</strong>告诉UE使用PUCCH format0还是 format1来发送SR。<br><img src="/images/NR/SchedulingRequestResourceConfig.png" alt="SchedulingRequestConfig"><br><img src="/images/NR/SchedulingRequestId_1.png" alt="SchedulingRequestId"></p>
 <p>在SchedulingRequestResourceConfig中的<strong>periodicityAndOffSet</strong>字段指定传送SR的PUCCH资源的周期,以符号或者slot为单位，确定了SR的发送时间位置[TS38.331 9.2.4]。可以看到SR的最小周期是2符号。<br>基于SR周期的差异，把SR对应三种场景来，如下图case所示：<br><img src="http://1.116.145.136/NR/SR%E5%91%A8%E6%9C%9F%E5%8F%91%E9%80%811.png" alt="SchedulingRequestId"></p>
 <p>从协议指示的配置范围可以看出，根据不同的子载波间隔，可选择的周期偏移有所不同；当UE发现一个SR传输机会对应PUCCH资源所在的slot，用于改pucch传输的符号数小于对应pucch资源所需的符号数，UE不会在该slot上发送pucch资源；<br>SR资源是UE专用，UE发送SR时不需要指定自己的CRNTI，基站通过SR资源的时域、频域和码分复用信息就知道哪个UE请求上行资源。<br><img src="http://1.116.145.136/NR/SR%E5%8F%91%E9%80%81%E6%9C%BA%E4%BC%9A.png" alt="SchedulingRequestId"></p>
 <p>协议描述中有<strong>Positive SR</strong>和<strong>Negative SR</strong>的概念，UE并不是一直有发送SR请求的需求，对于Positive SR即UE有SR请求发送，需要物理层发送<strong>SR&#x2F;PUCCH</strong>，而对于无SR发送请求的UE，在SR资源的时间点，则该SR为Negative SR。基站不知道UE什么时候发送SR，需要在已经分配的SR资源上检测是否有SR上报，会在每个SR上来的时刻监测是否有SR资源，具体的SR调度流程如下图所示：<br><img src="http://1.116.145.136/NR/SR%E6%B5%81%E7%A8%8B_0.png" alt="SR调度流程"><br>SR调度流程注意事项：</p>
@@ -61,51 +61,9 @@
 ]]></content>
   </entry>
   <entry>
-    <title>5G基础-上行调度的BSR</title>
-    <url>/2021/05/20/5G%E5%9F%BA%E7%A1%80-%E4%B8%8A%E8%A1%8C%E8%B0%83%E5%BA%A6%E7%9A%84BSR/</url>
-    <content><![CDATA[<p>BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源；</p>
-<h5 id="1-BSR的配置和内容"><a href="#1-BSR的配置和内容" class="headerlink" title="1. BSR的配置和内容"></a><a href="#1-BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9"></a>1. <a href="#BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9">BSR的配置和内容</a></h5><p>UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在LogicalChannelConfig-&gt;logicalChannelGroup中配置。</p>
-<p><img src="http://1.116.145.136/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
-<p>在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
-<ul>
-<li><p>[1] <strong>retxBSR定时器</strong>，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况；</p>
-</li>
-<li><p>[2] <strong>periodicBSR定时器</strong>，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况；</p>
-</li>
-<li><p>[3] <strong>logicalChannelSR-DelayTimer</strong>，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR；</p>
-</li>
-</ul>
-<p>BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR&#x2F;短截断BSR，长BSR&#x2F;长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
-<p>短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/short-bsr.png" alt="pusch_bsr">长BSR&#x2F;长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
-<p><img src="http://1.116.145.136/NR/long-bsr.png" alt="pusch_bsr">长&#x2F;短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多。<br><img src="http://1.116.145.136/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
-<h5 id="2-BSR分类"><a href="#2-BSR分类" class="headerlink" title="2. BSR分类"></a><a href="#2-BSR%E5%88%86%E7%B1%BB"></a>2. <a href="BSR%E5%88%86%E7%B1%BB">BSR分类</a></h5><p>协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr_fasong.png" alt="pusch_bsr"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>5G基础-NR接入过程</title>
     <url>/2021/04/29/5G%E5%9F%BA%E7%A1%80-NR%E6%8E%A5%E5%85%A5%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[<p>UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程：<br><img src="http://1.116.145.136/NR/Initial_Attach_Sequence.png" alt="image"></p>
+    <content><![CDATA[<p>UE的接入无线承载网的过程，分为初始接入和随机接入两个过程；以下是NR SA的场景下的通过空口在UE和NW（网络）之间信令流程：<br><img src="/images/NR/Initial_Attach_Sequence.png" alt="image"></p>
 <h5 id="1-初始接入"><a href="#1-初始接入" class="headerlink" title="1. 初始接入"></a><a href="#1-%E5%88%9D%E5%A7%8B%E6%8E%A5%E5%85%A5"></a>1. <a href="#%E5%88%9D%E5%A7%8B%E6%8E%A5%E5%85%A5">初始接入</a></h5><p>UE通过基站广播的PSS&#x2F;SSS信息对齐频率、时间以及获得接入所需要的参数：</p>
 <ul>
 <li><p>基站广播PSS&#x2F;SSS&#x2F;PBCH Block（SSB）：一个SSB有4个OFDM符号由PSS&#x2F;SSS&#x2F;PBCH组成，频域上有240个子载波（0-239编号）20个RB（一个RB12个子载波），协议38.211 7.4.2章节描述定义；</p>
@@ -213,6 +171,225 @@
 </li>
 </ul>
 <p>参考文献：<br>[1]. xxx大厂问题定位指导书</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>5G基础-上行调度的BSR</title>
+    <url>/2021/05/20/5G%E5%9F%BA%E7%A1%80-%E4%B8%8A%E8%A1%8C%E8%B0%83%E5%BA%A6%E7%9A%84BSR/</url>
+    <content><![CDATA[<p>BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源；</p>
+<h5 id="1-BSR的配置和内容"><a href="#1-BSR的配置和内容" class="headerlink" title="1. BSR的配置和内容"></a><a href="#1-BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9"></a>1. <a href="#BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9">BSR的配置和内容</a></h5><p>UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在LogicalChannelConfig-&gt;logicalChannelGroup中配置。</p>
+<p><img src="/images/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
+<p>在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示：</p>
+<p><img src="/images/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
+<ul>
+<li><p>[1] <strong>retxBSR定时器</strong>，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况；</p>
+</li>
+<li><p>[2] <strong>periodicBSR定时器</strong>，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况；</p>
+</li>
+<li><p>[3] <strong>logicalChannelSR-DelayTimer</strong>，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR；</p>
+</li>
+</ul>
+<p>BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR&#x2F;短截断BSR，长BSR&#x2F;长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示：</p>
+<p><img src="/images/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
+<p>短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示：</p>
+<p><img src="/images/NR/short-bsr.png" alt="pusch_bsr">长BSR&#x2F;长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
+<p><img src="/images/NR/long-bsr.png" alt="pusch_bsr">长&#x2F;短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多。<br><img src="/images/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="/images/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="/images/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
+<h5 id="2-BSR分类"><a href="#2-BSR分类" class="headerlink" title="2. BSR分类"></a><a href="#2-BSR%E5%88%86%E7%B1%BB"></a>2. <a href="BSR%E5%88%86%E7%B1%BB">BSR分类</a></h5><p>协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：</p>
+<p><img src="http://1.116.145.136/NR/bsr_fasong.png" alt="pusch_bsr"></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>5G基础-时隙和帧结构</title>
+    <url>/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a><a href="#1-%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84"></a>1. <a href="#%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
+<p><img src="/images/NR/numerologles.png" alt="image"></p>
+<p>无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。<br><img src="/images/NR/numerologles.png" alt="image"></p>
+<p>在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载波间隔越大（即频域越宽），相应的slot时间越短（即时域越窄），相应的每个symb符号长度也越短。<br>上表列出了NR支持的5中不同的帧结构，对应不同的μ，有着不同的帧结构。</p>
+<h5 id="2-slot-Format-slot-Format"><a href="#2-slot-Format-slot-Format" class="headerlink" title="2. [slot Format](#slot Format)"></a><a href="#2-slot-Format"></a>2. [slot Format](#slot Format)</h5><p>时隙格式slot format，是用来表示一个时隙里的每个OFDM符号的传输方向是什么；在NR中，一个时隙里的OFDM符号，被分类为三种：DL符号、flexible符号和UL符号。在TDD的系统就对应成DL slot、S slot 和UL slot；下行数据可以在DL符合和flexible符号中传输，上行数据可以在UL和flexible中传输。在38.213-f60协议中，定义了56中时隙格式，如下表所示：</p>
+<p><img src="/images/NR/slot_format.png" alt="image"></p>
+<p>为了能够<strong>调度的更加灵</strong>活，定义这么多的时隙格式，当前下行的数据负载很大，可以配置Slot Format 28#；当前上行的数据负载很大可以配置SlotFormat 34#。<strong>有这么多slot format，系统是怎么下发这个Slot Format配置？UE收到Slot Format配置之后，是怎么处理的呢？</strong></p>
+<h5 id="3-UE如何获取基站的slot-format-UE如何获取基站的slot-format"><a href="#3-UE如何获取基站的slot-format-UE如何获取基站的slot-format" class="headerlink" title="3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)"></a><a href="#3-UE%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%AB%99%E7%9A%84slot-format"></a>3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)</h5><p>上表的第一列是Slot Format Indicator，指示当前基站采用的时隙格式，该参数由基站侧配置并下发到UE。UE可以通过解析<strong>系统信息</strong>来获取小区的时隙格式Slot Format，也可以通过<strong>解析特定的DCI</strong>来更新时隙格式。</p>
+<blockquote>
+</blockquote>
+<p><strong>系统消息获取slot format</strong> ?</p>
+<p>SIB1中<strong>ServingCellConfigCommonSIB</strong>信元用于配置UE所在服务小区的小区特定参数，<strong>ServingCellConfigCommonSIB</strong>信元里有名为<strong>TDD-UL-DL-ConfigCommon</strong>的信元，该信元用于确定小区特定的上下行TDD配置；时隙格式相关的参数就可以通过解析<strong>TDD-UL-DL-ConfigCommon</strong>信元中的<strong>TDD-UL-DL-Pattern</strong>信元得到。UE获取到这些参数后，就可以得到当前基站的上下行时隙格式。<br><strong>TDD-UL-DL-Pattern</strong><br><img src="/images/NR/tdd_ul_dl_pattern.png" alt="image"></p>
+<ul>
+<li><strong>dl-UL-TransmissionPeriodicity</strong>：表示DL-UL模式的周期，用变量P表示，单位是ms，它的取值范围是ms0p5, ms0p625, ms1, ms1p25, ms2,ms2p5, ms5, ms10，分别对应0.5ms、0.625ms、1ms、1.25ms、2ms、2.5ms、5ms、10ms。</li>
+</ul>
+<p>如果我们用变量u_ref来表示referenceSubcarrierSpacing这个值，那么：(1)<strong>只有当u_ref&#x3D;3的时候</strong>，P才能取0.625ms，此时如下表所示，子载波间隔为120kHz。(2)<strong>只有当u_ref&#x3D;2或3的时候</strong>，P才能取1.25ms，此时子载波间隔为60 kHz或120kHz。(3)<strong>只有当u_ref&#x3D;1或2或3的时候</strong>，P才能取2.5ms，此时子载波间隔为30kHz或60 kHz或120kHz。</p>
+<ul>
+<li><p><strong>nrofDownlinkSlots</strong>：表示从每一个DL-UL模式的开始位置起，全部连续的下行时隙的个数，用变量d_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80</p>
+</li>
+<li><p><strong>nrofDownlinkSymbols</strong>：表示从最近的一个全连续下行时隙开始，连续的下行符号个数，用变量d_sym表示。最小值是0，最大值可以取13。</p>
+</li>
+<li><p><strong>nrofUplinkSlots</strong>：表示在每一个DL-UL模式的结尾处，连续全上行时隙的个数，用变量u_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80。</p>
+</li>
+<li><p><strong>nrofUplinkSymbols</strong>：表示在第一个全上行时隙之前的最后一个时隙中，连续全上行符号的个数，用变量u_sym表示。<br><strong>dl-UL-TransmissionPeriodicity</strong>参数可以取8个周期值，这8个周期值，有一定的规则约束需要遵守，</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>从DCI里获取slot format</strong> ?</p>
+<p>R15版本的38.213中表7.3.1-1中定义了8中DCI formats，其中DCI2_0指示UE组的slot format。DCI 2_0用<strong>SFI_RNTI</strong> (Slot Format Indicator- Radio Network Temporary Identifier)来加扰，<strong>SFI_RNTI</strong>在RRC的<strong>PDCCH-ServingCellConfig</strong>信元中的<strong>SlotFormatIndicator</strong>信元中得到.<br><strong>PDCCH-ServingCellConfig information element</strong><br><img src="/images/NR/PDCCH_ServingCellConfig.png" alt="image"></p>
+<p>&#x3D;&#x3D;<strong>SlotFormatIndicator information element</strong>&#x3D;&#x3D;<br><img src="/images/NR/SlotFormatIndicator_information_1.png" alt="image"></p>
+<p><img src="/images/NR/SlotFormatIndicator_information_2.png" alt="image"></p>
+<p>在<strong>DCI 2_0</strong>码流中携带的是N个slot format indicator的比特流，格式为：</p>
+<p>DCI 2_0的码流大小由上边的dci-PayloadSize配置决定，最多可以携带128bits。DCI 2_0码流中的Slot Format Indicator为SFI-Index，只是一个ID索引号，范围是0~511；SFI-Index都对应一个SlotFormatCombinationsPerCell信元，这个信元被封装在SlotFormatIndicator信元中。</p>
+<p><strong>SlotFormatCombinationsPerCell information element</strong><br><img src="/images/NR/SlotFormatCombinationsPerCell_1.png" alt="image"></p>
+<p><img src="/images/NR/SlotFormatCombinationsPerCell_2.png" alt="image"></p>
+<p><strong>SlotFormatCombinationsPerCell information element</strong>中的slotFormats参数才是真正的时隙格式参数，对应这个slot flormat的表中的第一列<strong>indicator 0-255</strong>；<strong>slotFormatCombinationId</strong>是DCI2_0码流中<strong>SFI_Index</strong>，</p>
+<hr>
+<p><strong>DCI 2_0能够动态的修改时隙格式参数并通知到UE</strong>，为了进一步提升系统的传输性能，<strong>DCI 2_0</strong>里尽量只考虑携带有限个比特的<strong>SFI_Index</strong>索引，UE在提取到N个SFI_Index之后，再通过匹配<strong>SlotFormatCombinationsPerCell</strong>信元中的<strong>slotFormatCombinationId</strong>字段，获取到<strong>SlotFormatCombinationsPerCell</strong>信元中的更多参数。</p>
+<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</a></h5><ul>
+<li><p>3GPP TS 38.211: “NR; Physical channels and modulation (Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.212: “NR; Multiplexing and channel coding(Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.213：“NR; Physical layer procedures for control (Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.331:”NR; Radio Resource Control (RRC) protocol specification (Release 15)”</p>
+</li>
+<li><p><a href="http://www.sharetechnote.com/">http://www.sharetechnote.com</a></p>
+</li>
+</ul>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>5G常见问题定位</title>
+    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
+    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
+<li><p>check UE的盲检位置能否对上</p>
+</li>
+<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
+</li>
+<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
+</li>
+</ul>
+<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
+<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
+</li>
+<li><p>check DCI类型数值value是否正确</p>
+</li>
+<li><p>L2下发的L1报文是否被L1校验</p>
+</li>
+<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
+</li>
+</ul>
+<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
+<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
+</li>
+<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
+<blockquote>
+</blockquote>
+<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>协议栈</th>
+<th>影响因素</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PDCP</td>
+<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
+</tr>
+<tr>
+<td>RLC</td>
+<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
+</tr>
+<tr>
+<td>MAC</td>
+<td>harq资源耗尽，DCI漏检</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
+</li>
+<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
+</li>
+<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
+</li>
+<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
+</li>
+<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
+</li>
+<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
+</li>
+</ul>
+<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
+<li><p>检查切换前后流量是否已经降低；</p>
+</li>
+<li><p>切换的时延是否异常，如时延过大；</p>
+</li>
+<li><p>切换后来水不足导致调度不足；</p>
+</li>
+<li><p>切换后MCS异常，rank异常；</p>
+</li>
+<li><p>切换前后是否存在多径，频偏过大；</p>
+</li>
+<li><p>其他，比如干扰等；</p>
+</li>
+</ul>
+<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
+<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
+</li>
+<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
+</li>
+</ul>
+<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
 <p>————-本文结束感谢您的阅读————-</p>
 <p>坚持创作，坚持分享！</p>
 <pre><code>打赏
@@ -624,79 +801,6 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
-    <title>5G基础-时隙和帧结构</title>
-    <url>/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a><a href="#1-%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84"></a>1. <a href="#%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
-<p><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
-<p>无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。<br><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
-<p>在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载波间隔越大（即频域越宽），相应的slot时间越短（即时域越窄），相应的每个symb符号长度也越短。<br>上表列出了NR支持的5中不同的帧结构，对应不同的μ，有着不同的帧结构。</p>
-<h5 id="2-slot-Format-slot-Format"><a href="#2-slot-Format-slot-Format" class="headerlink" title="2. [slot Format](#slot Format)"></a><a href="#2-slot-Format"></a>2. [slot Format](#slot Format)</h5><p>时隙格式slot format，是用来表示一个时隙里的每个OFDM符号的传输方向是什么；在NR中，一个时隙里的OFDM符号，被分类为三种：DL符号、flexible符号和UL符号。在TDD的系统就对应成DL slot、S slot 和UL slot；下行数据可以在DL符合和flexible符号中传输，上行数据可以在UL和flexible中传输。在38.213-f60协议中，定义了56中时隙格式，如下表所示：</p>
-<p><img src="http://1.116.145.136/NR/slot_format.png" alt="image"></p>
-<p>为了能够<strong>调度的更加灵</strong>活，定义这么多的时隙格式，当前下行的数据负载很大，可以配置Slot Format 28#；当前上行的数据负载很大可以配置SlotFormat 34#。<strong>有这么多slot format，系统是怎么下发这个Slot Format配置？UE收到Slot Format配置之后，是怎么处理的呢？</strong></p>
-<h5 id="3-UE如何获取基站的slot-format-UE如何获取基站的slot-format"><a href="#3-UE如何获取基站的slot-format-UE如何获取基站的slot-format" class="headerlink" title="3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)"></a><a href="#3-UE%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%AB%99%E7%9A%84slot-format"></a>3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)</h5><p>上表的第一列是Slot Format Indicator，指示当前基站采用的时隙格式，该参数由基站侧配置并下发到UE。UE可以通过解析<strong>系统信息</strong>来获取小区的时隙格式Slot Format，也可以通过<strong>解析特定的DCI</strong>来更新时隙格式。</p>
-<blockquote>
-</blockquote>
-<p><strong>系统消息获取slot format</strong> ?</p>
-<p>SIB1中<strong>ServingCellConfigCommonSIB</strong>信元用于配置UE所在服务小区的小区特定参数，<strong>ServingCellConfigCommonSIB</strong>信元里有名为<strong>TDD-UL-DL-ConfigCommon</strong>的信元，该信元用于确定小区特定的上下行TDD配置；时隙格式相关的参数就可以通过解析<strong>TDD-UL-DL-ConfigCommon</strong>信元中的<strong>TDD-UL-DL-Pattern</strong>信元得到。UE获取到这些参数后，就可以得到当前基站的上下行时隙格式。<br><strong>TDD-UL-DL-Pattern</strong><br><img src="http://1.116.145.136/NR/tdd_ul_dl_pattern.png" alt="image"></p>
-<ul>
-<li><strong>dl-UL-TransmissionPeriodicity</strong>：表示DL-UL模式的周期，用变量P表示，单位是ms，它的取值范围是ms0p5, ms0p625, ms1, ms1p25, ms2,ms2p5, ms5, ms10，分别对应0.5ms、0.625ms、1ms、1.25ms、2ms、2.5ms、5ms、10ms。</li>
-</ul>
-<p>如果我们用变量u_ref来表示referenceSubcarrierSpacing这个值，那么：(1)<strong>只有当u_ref&#x3D;3的时候</strong>，P才能取0.625ms，此时如下表所示，子载波间隔为120kHz。(2)<strong>只有当u_ref&#x3D;2或3的时候</strong>，P才能取1.25ms，此时子载波间隔为60 kHz或120kHz。(3)<strong>只有当u_ref&#x3D;1或2或3的时候</strong>，P才能取2.5ms，此时子载波间隔为30kHz或60 kHz或120kHz。</p>
-<ul>
-<li><p><strong>nrofDownlinkSlots</strong>：表示从每一个DL-UL模式的开始位置起，全部连续的下行时隙的个数，用变量d_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80</p>
-</li>
-<li><p><strong>nrofDownlinkSymbols</strong>：表示从最近的一个全连续下行时隙开始，连续的下行符号个数，用变量d_sym表示。最小值是0，最大值可以取13。</p>
-</li>
-<li><p><strong>nrofUplinkSlots</strong>：表示在每一个DL-UL模式的结尾处，连续全上行时隙的个数，用变量u_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80。</p>
-</li>
-<li><p><strong>nrofUplinkSymbols</strong>：表示在第一个全上行时隙之前的最后一个时隙中，连续全上行符号的个数，用变量u_sym表示。<br><strong>dl-UL-TransmissionPeriodicity</strong>参数可以取8个周期值，这8个周期值，有一定的规则约束需要遵守，</p>
-</li>
-</ul>
-<blockquote>
-</blockquote>
-<p><strong>从DCI里获取slot format</strong> ?</p>
-<p>R15版本的38.213中表7.3.1-1中定义了8中DCI formats，其中DCI2_0指示UE组的slot format。DCI 2_0用<strong>SFI_RNTI</strong> (Slot Format Indicator- Radio Network Temporary Identifier)来加扰，<strong>SFI_RNTI</strong>在RRC的<strong>PDCCH-ServingCellConfig</strong>信元中的<strong>SlotFormatIndicator</strong>信元中得到.<br><strong>PDCCH-ServingCellConfig information element</strong><br><img src="http://1.116.145.136/NR/PDCCH_ServingCellConfig.png" alt="image"></p>
-<p>&#x3D;&#x3D;<strong>SlotFormatIndicator information element</strong>&#x3D;&#x3D;<br><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_1.png" alt="image"></p>
-<p><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_2.png" alt="image"></p>
-<p>在<strong>DCI 2_0</strong>码流中携带的是N个slot format indicator的比特流，格式为：</p>
-<p>DCI 2_0的码流大小由上边的dci-PayloadSize配置决定，最多可以携带128bits。DCI 2_0码流中的Slot Format Indicator为SFI-Index，只是一个ID索引号，范围是0~511；SFI-Index都对应一个SlotFormatCombinationsPerCell信元，这个信元被封装在SlotFormatIndicator信元中。</p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong><br><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_1.png" alt="image"></p>
-<p><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_2.png" alt="image"></p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong>中的slotFormats参数才是真正的时隙格式参数，对应这个slot flormat的表中的第一列<strong>indicator 0-255</strong>；<strong>slotFormatCombinationId</strong>是DCI2_0码流中<strong>SFI_Index</strong>，</p>
-<hr>
-<p><strong>DCI 2_0能够动态的修改时隙格式参数并通知到UE</strong>，为了进一步提升系统的传输性能，<strong>DCI 2_0</strong>里尽量只考虑携带有限个比特的<strong>SFI_Index</strong>索引，UE在提取到N个SFI_Index之后，再通过匹配<strong>SlotFormatCombinationsPerCell</strong>信元中的<strong>slotFormatCombinationId</strong>字段，获取到<strong>SlotFormatCombinationsPerCell</strong>信元中的更多参数。</p>
-<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</a></h5><ul>
-<li><p>3GPP TS 38.211: “NR; Physical channels and modulation (Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.212: “NR; Multiplexing and channel coding(Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.213：“NR; Physical layer procedures for control (Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.331:”NR; Radio Resource Control (RRC) protocol specification (Release 15)”</p>
-</li>
-<li><p><a href="http://www.sharetechnote.com/">http://www.sharetechnote.com</a></p>
-</li>
-</ul>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>LeetCode刷题--典型字符串问题</title>
     <url>/2020/05/05/LeetCode%E5%88%B7%E9%A2%98-%E5%85%B8%E5%9E%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>字符串的<strong>子串</strong>和<strong>子序列</strong>，<strong>子串必须是连续的</strong>，<strong>子序列不一定要求联系</strong> 。<strong>什么叫回文串</strong>？如果一个字符串正着读和反着读是一样的，那它就是<strong>回文串</strong>。</p>
@@ -838,181 +942,6 @@ int main()&#123;
       <tags>
         <tag>leetcode</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>NR PDSCH资源分配</title>
-    <url>/2021/06/25/NR-PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
-    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
-<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
-<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
-</li>
-<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
-</li>
-</ul>
-<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
-<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
-</li>
-<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
-</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
-<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
-<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
-<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
-</li>
-<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
-</li>
-</ul>
-<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
-<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
-<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
-<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
-</blockquote>
-Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
-</ul>
-<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
-<ul>
-<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
-<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
-<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
-<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
-<ul>
-<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
-</li>
-<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
-</li>
-</ul>
-<blockquote>
-</blockquote>
-<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
-<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
-<blockquote>
-</blockquote>
-<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>5G常见问题定位</title>
-    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
-    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
-<li><p>check UE的盲检位置能否对上</p>
-</li>
-<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
-</li>
-<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
-</li>
-</ul>
-<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
-<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
-</li>
-<li><p>check DCI类型数值value是否正确</p>
-</li>
-<li><p>L2下发的L1报文是否被L1校验</p>
-</li>
-<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
-</li>
-</ul>
-<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
-<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
-</li>
-<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
-<blockquote>
-</blockquote>
-<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>协议栈</th>
-<th>影响因素</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PDCP</td>
-<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
-</tr>
-<tr>
-<td>RLC</td>
-<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
-</tr>
-<tr>
-<td>MAC</td>
-<td>harq资源耗尽，DCI漏检</td>
-</tr>
-</tbody></table>
-<ul>
-<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
-</li>
-<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
-</li>
-<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
-</li>
-<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
-</li>
-<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
-</li>
-<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
-</li>
-</ul>
-<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
-<li><p>检查切换前后流量是否已经降低；</p>
-</li>
-<li><p>切换的时延是否异常，如时延过大；</p>
-</li>
-<li><p>切换后来水不足导致调度不足；</p>
-</li>
-<li><p>切换后MCS异常，rank异常；</p>
-</li>
-<li><p>切换前后是否存在多径，频偏过大；</p>
-</li>
-<li><p>其他，比如干扰等；</p>
-</li>
-</ul>
-<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
-<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
-</li>
-<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
-</li>
-</ul>
-<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
   </entry>
   <entry>
     <title>LTE和NR共存之动态频谱共享</title>
@@ -1284,6 +1213,185 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
 ]]></content>
   </entry>
   <entry>
+    <title>NR PDSCH资源分配</title>
+    <url>/2021/06/25/NR-PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
+    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="/images/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
+<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
+<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
+</li>
+<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
+</li>
+</ul>
+<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
+<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
+</li>
+<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
+</li>
+</ul>
+<p><img src="/images/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
+<p>RBG个数的确定在协议中有如下的定义：<img src="/images/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
+<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
+<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
+</li>
+<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
+</li>
+</ul>
+<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="/images/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
+<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="/images/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
+<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
+<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
+</blockquote>
+Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
+</ul>
+<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="/images/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="/images/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
+<ul>
+<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
+</ul>
+<p><img src="/images/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="/images/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
+<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
+<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="/images/NR/pdsch_common.png" alt="pdsch_common.png"></p>
+<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="/images/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
+<ul>
+<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
+</li>
+<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
+<p><img src="/images/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
+<blockquote>
+</blockquote>
+<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估</title>
+    <url>/2021/05/21/PDSCH%E7%9A%84MCS%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A0%81%E7%8E%87%E7%A1%AE%E5%AE%9A%E4%BB%A5%E5%8F%8ATBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0/</url>
+    <content><![CDATA[<h5 id="1-mcs的选择和码率的确定"><a href="#1-mcs的选择和码率的确定" class="headerlink" title="1. mcs的选择和码率的确定"></a><a href="#1-mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1. <a href="#mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A">mcs的选择和码率的确定</a></h5><p>对月PDSCH的调度，主要有两种方式的<strong>一种是</strong>有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；<strong>另一种是</strong>在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。<br>PDSCH调制阶数通过DCI中5bit的字段<code>I_MCS</code>来指数，5bit最大32，协议中定义了3张mcs表，分别是1个256QAM，2个64QAM的表；在不同的场景选用不同的mcs表。比如UE不希望在解码P-RNTI, RA-RNTI, SI-RNTI加扰的PDSCH时，使用Qm &gt; 2的调制方式。</p>
+<p><strong>case1</strong>： 高层配置PDSCH-config种使用<strong>qam256</strong>的mcs表，那么对DCI1_1指示的PDSCH使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。</p>
+<p><strong>case2</strong>： 如果UE没有通过SPS-config来配置mcs表，而是通过pdsch-config配置了成<strong>qam256</strong>，那么UE使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。<br><img src="/images/NR/pdsch_mcsTable2.png" alt="pdsch_mcsTable2"></p>
+<p><strong>case3</strong>： 如果UE没有配置MCS-C-RNTI，且高曾参数pdsch-config种配置的mcs表是<strong>qam64LowSE</strong>，那么针对UE USS 搜索空间的对应的PDSCH调度使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率，也就是低码率的64qam的表格。</p>
+<p><strong>case4</strong>： 如果UE配置了MCS-C-RNTI，pdsch是被MCS-C-RNTI加扰的PDCCH指示调度，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；</p>
+<p><strong>case5</strong>： 如果UE的mcs表通过SPS-Config配置并且配置成<strong>qam64LowSE</strong>，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；<br><img src="/images/NR/pdsch_mcsTable3.png" alt="pdsch_mcsTable3"></p>
+<p><strong>case6</strong>：除了上述5种情况外，使用<strong>Table 5.1.3.1-1</strong>；<br><img src="/images/NR/pdsch_mcsTable1.png" alt="pdsch_mcsTable1">从上述的mcs表种可以看出，当mcs确定之后相应的传输码率就确定了。因此码率是通过mcs查表间接确认得到的。</p>
+<h5 id="2-TBsize的计算和RB预估"><a href="#2-TBsize的计算和RB预估" class="headerlink" title="2. TBsize的计算和RB预估"></a><a href="#2-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0"></a>2. <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0">TBsize的计算和RB预估</a></h5><p>pdsch传输的tbsize宏观上见与码字数和码率强相关，码字由基站高层参数<code>maxNrofCodeWordsScheduledByDCI</code>指示，表示使用1个码字还是两个码字；码率由上mcs表确定，针对64qam可以使用mcs 0-28；256qam可以使用0-27；</p>
+<h6 id="2-1-TBsize的计算"><a href="#2-1-TBsize的计算" class="headerlink" title="2.1 TBsize的计算"></a><a href="#2-1-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97"></a>2.1 <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97">TBsize的计算</a></h6><p>一个slot对应的PDSCH可用的TBSIZE计算公式如下，在PDSCH可用的RE是上除去DMRS占用和PDCCH占用的RE等资源占用以后的频谱资源。一个slot种pdsch的有效RE数由如下公式获得：</p>
+<p>其中：<code>N ^&#123;RB&#125;_&#123;sc&#125;</code>是一个RB的子载波个数，<code>N^&#123;sh&#125;_&#123;symb&#125;</code>是时域上一个slot对应的符号数,<code>N^&#123;PRB&#125;_&#123;DMRS&#125;</code>是一个RB上DMRS占用的RE数；<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>在高层参数PDSCH-ServingCellConfig-&gt;xOverhead配置，可配置为0，6，12，18；当xOverhead没有配置或者调度pdsch的pdcch由SI-RNTI, RA-RNTI 或者 P-RNTI加扰时，<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>是0。<br>一个slot内频域上所有的pdsch可用RE，由以下公式获取：<br>$$<br>\begin{equation}<br>N_{RE} &#x3D; min(156, N^{‘}*{RE})<em>n</em>{prb}<br>\end{eqnarray}<br>$$<br>其中，<code>n_&#123;prb&#125;</code>是slot内可分配的PRB数。</p>
+<p>有了RE数解可以计算当前的TB-Size了，TB-Size的计算如下：</p>
+<p>$$<br>\begin{equation}<br>N_{info} &#x3D; N_{RE}<em>R</em>Q_{m}*v<br>\end{eqnarray}<br>$$<br>其中，R是目标码率，Qm是调制阶数，V标识layer数。</p>
+<p>有了<code>N_info</code>之后还需要跟3824作量化比较才能确认最终的tbsize：</p>
+<ul>
+<li><code>N_info</code> &lt;&#x3D; 3824 : 在N_info的小于3824的场景下确定TB-Size需要先量化，然后再查表确认TB-Size;量化公式如下：</li>
+</ul>
+<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(24, 2^{n}<em>⌊\frac{N</em>{info}}{2^n} ⌋)，其中 n &#x3D; max(3, ⌊ log_2(N_{info})⌋-6)<br>\end{eqnarray}<br>$$<br>通过量化公式获得的<code>N_&#39;_info</code>在Table 5.1.3.2-1中查找不小于他的最接近的值，比如算出来的量化值是606，那么通过查表就获得的TB-Size就是608；<br><img src="/images/NR/tbs_low_3824.png" alt="tbs_low_3824"></p>
+<ul>
+<li><code>N_info</code> &gt; 3824 :</li>
+</ul>
+<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(3840, 2^{n}<em>round(\frac{N</em>{info}-24}{2^n} ))，其中 n &#x3D; ⌊ log_2(N_{info}-24)⌋-5)<br>\end{eqnarray}<br>$$</p>
+<p><strong>当码率R&lt;&#x3D;1&#x2F;4时</strong>，<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> ⌈(\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}*{info}+24}{8424}⌉<br>\end{eqnarray}<br>$$</p>
+<p><strong>当码率R&gt;1&#x2F;4时</strong>，<br><strong>(1)</strong> 如果<code>N_&#39;_info</code>&gt;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> (\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}<em>{info}+24}{3816}⌉<br>\end{eqnarray}<br>$$<br><strong>(2)</strong> 如果<code>N_&#39;_info</code>&lt;&#x3D;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8</em>C* (\frac{N^{‘}<em>{info}+24}{8})-24<br>\end{eqnarray}<br>$$<br>需要注意的是：**(1)** 当调度PDSCH的PDCCH是通过SI-RNTI加扰的话，也就是传输sib1消息时，TB-Size的大小不能超过2976，因为sib1只能通过qpsk的调制方式发送；**(2)** 当调度的DCI是P-RNTI、RA-RNTI加扰的时候，在信息量N_info计算时需要带上一个缩放因子，具体如下图所示：<br><img src="/images/NR/tbs_Scaling_factor.png" alt="tbs_Scaling_factor"><br>那么新的<code>N_info</code>计算公式就编程如下的样子：<br>$$<br>\begin{equation}<br>N</em>{info} &#x3D; S*N_{RE}<em>R</em>Q_{m}*v, 其中S是缩放因子<br>$$</p>
+<h6 id="2-2-RB预估"><a href="#2-2-RB预估" class="headerlink" title="2.2 RB预估"></a><a href="#2-2-RB%E9%A2%84%E4%BC%B0"></a>2.2 <a href="RB%E9%A2%84%E4%BC%B0">RB预估</a></h6><p>UE进行上下行数传的时候，基站根据UE的数据量来判断UE的调度时刻使用的RB数，数据量的计算公式如下：<br>&#96;$$<br>\begin{equation}<br>数据量 &#x3D; {N_{prb}<em>N_{re}<em>layer</em>Qm</em>CodeRate},<br>$$<br>N_prb是传递这些数据量需要的RB数，N_re是每个RB中有效的RE数，layer是数传的UE的rank，QM是调试bit数，CodeRate是传输的码率。</p>
+<p>预估RB就是通过上边的公式反算UE传输当前数据量需要的RB数，在确定RB数之前需要先确定，每个RB中的RE数，这些RE数跟基站的配置相关，特别是PDCCH和PDSCH DMRS的配置。</p>
+<blockquote>
+</blockquote>
+<p>PDSCH DMRS : NR中定义了两种DMRS type，分别是type1和type2，在这两种type中，有1符号或者2符号的DMRS，除此之外还可以配置额外的附加导频的DMRS。</p>
+<p><img src="/images/NR/pdsch_pusch_type.png" alt="pdsch_pusch_type"></p>
+<p>-<br>PDSCH DMRS Type A ：固定在第三或(pos2)者第四(pos3)个符号上，无论PDSCH的起始符号是多少，最小资源组是一个RE；</p>
+<p>-<br>PDSCH DMRS Type B ：DMRS固定在分配PDSCH的第一个符号上；最小资源组是2个RE；</p>
+<ul>
+<li>附加导频   ，可以配置0-4个</li>
+</ul>
+<p>【参考文献】：<a href="https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html">https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html</a></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>leetcode刷题-排列和组合问题</title>
+    <url>/2020/05/05/leetcode%E5%88%B7%E9%A2%98-%E6%8E%92%E5%88%97%E5%92%8C%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
+<h5 id="1-组合问题"><a href="#1-组合问题" class="headerlink" title="1. 组合问题"></a><a href="#1-%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98"></a>1. 组合问题</h5><p>【从n个元素中取m个元素–子集】<br><strong>例题1.</strong> LeetCode-78-<a href="https://leetcode-cn.com/problems/subsets/">子集</a> </p>
+<blockquote>
+</blockquote>
+<p>给定一组<strong>不含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: nums &#x3D; [1,2,3]<br>输出: [[3],[1],[2],[1,2,3],[1,3],[2,3],[1,2],[] ]</p>
+<p><strong>题解</strong>：从数组中连续至少0个元素，构成的子集问题，可以模拟成一个层次遍历的过程；从空集合开始，然后空集合的基础上依次插入元素，先是1个元素的集合，接着是2个元素的集合，依次类推。<br>首先，创建一个局部变量存放结果，把空集合插入存进去<code>vector&lt;vector&lt;int&gt; &gt; res(1)</code>；遍历整个数组，同事嵌套遍历结果数组，往结果数组中依次插入当前遍历到的数组元素，由于结果数组中有一个空子集，嵌套遍历结果数组的时候，就是往空子集中插入第1个元素，此时这个结果肯定是没有出现的排列，再把这个排列插入结果数组；这样结果中就存入了[]和[1];此时进去下一次迭代，数组的第二个元组，在依次往结果数组中的子集插入，也就是[2]依次插入[]和[1]中；以此类推，就可以遍历完所有的排列。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**代码实现**/</span><br><span class="line">vector&gt; subsets(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>例题2.</strong> LeetCode-90-<a href="https://leetcode-cn.com/problems/subsets-ii/">子集II</a></p>
+<blockquote>
+</blockquote>
+<p>给定一个可能<strong>包含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: [1,2,2]<br>输出: [[2],[1],[1,2,2],[2,2],[1,2],[]]</p>
+<p><strong>题解</strong> 题目中描述有重复元素，所以去重是在排列里面很关键，在上一题的基础上增加去重的操作即可，这里用一个set去去重，由于排列不考虑数的顺序，所以需要排序一下，进行归一化，然后设计一个hash表去重，这里hash表示就是unordered_map,键值用排序后的数组字符化表示；</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string clcHashValue(vector&amp; nums)&#123;</span><br><span class="line">    string res = &quot;&quot;;</span><br><span class="line">    sort(nums.begin(),nums.end());</span><br><span class="line">    for(int i=0; i &gt; subsetsWithDup(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    unordered_set numstt;</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            string tempHash = clcHashValue(tmp);</span><br><span class="line">            if(numstt.find(tempHash) == numstt.end())&#123;</span><br><span class="line">                res.push_back(tmp);</span><br><span class="line">                numstt.insert(tempHash);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-排列问题"><a href="#2-排列问题" class="headerlink" title="2. 排列问题"></a><a href="#2-%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"></a>2. 排列问题</h5><p><strong>例题1.</strong> 面试题 08.07. <a href="https://leetcode-cn.com/problems/permutation-i-lcci/">无重复字符串的排列组合</a></p>
+<blockquote>
+</blockquote>
+<p>无重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合，字符串每个字符均不相同。<br><strong>示例1</strong>:<br> 输入：S &#x3D; “qwe”<br> 输出：[“qwe”,”qew”,”wqe”,”weq”,”ewq”,”eqw”]<br><strong>示例2</strong>:<br> 输入：S &#x3D; “ab”<br> 输出：[“ab”,”ba”]</p>
+<p> <strong>题解</strong> 我们把字符串看成两部分，第一部分是它的第一个字符，第二部分是后边的字符。求整个字符串的排列，可以就可以看成两部分，首先求所有可能出现在第一个位置的字符，也就是把第一个字符和后边所有的字符交换。第二部分固定第一个字符求后面字符的排列。在第二部分的时候仍把后边的字符分成2部分，依次类推。这样就是很典型的递归了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPerm(vector &amp;result, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(beginIndex == s.size()-1) &#123;</span><br><span class="line">        result.push_back(s);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    strPerm(result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>例题2.</strong> 面试题 08.08. <a href="https://leetcode-cn.com/problems/permutation-ii-lcci/">有重复字符串的排列组合</a></p>
+<blockquote>
+</blockquote>
+<p>有重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合。<br>示例1: 输入：S &#x3D; “qqe”  输出：[“eqq”,”qeq”,”qqe”]<br>示例2: 输入：S &#x3D; “ab”  输出：[“ab”, “ba”]<br>提示: 字符都是英文字母。字符串长度在[1, 9]之间。</p>
+<p> <strong>题解</strong> 如上题一样，这里主要去重，去重，可以简单地额用一个hash表来解决，这里用unordered_set来创建hash。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPermu(unordered_set&amp; perLib, vector&amp; res, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(s.size()-1 == beginIndex) &#123;</span><br><span class="line">        if(perLib.find(s)==perLib.end()) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">            perLib.insert(s);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;return result;&#125;</span><br><span class="line">    unordered_set perLib;</span><br><span class="line">    strPermu(perLib, result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
     <title>python socket编程</title>
     <url>/2018/07/22/python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<p>Socket(套接字)，应用程序通常通过”套接字”向网络发出请求或者应答网络请求，使主机间或者一台计算机上的进程间可以通讯。<strong>服务器端</strong>：<code>socket()</code>建立套接字，绑定（bind）并监听（listen），用accept（）等待客户端连接。将accept()写入死循环，每次连接一个客户端，开一个线程。一般情况下建立<code>socket</code>连接后服务器与客户端建立了一个管道，当关闭<code>socket</code>或关闭客户端的时候，会导致管道破裂信号。如果使用默认处理则会导致服务器程序退出。</p>
@@ -1389,6 +1497,85 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       <tags>
         <tag>python</tag>
         <tag>socket</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>windows下基于python的Tensorflow环境搭建</title>
+    <url>/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
+<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a><a href="#1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"></a>1. <a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure>
+
+<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure>
+
+<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
+<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a><a href="#2-%E5%88%87%E6%8D%A2pypi%E6%BA%90"></a>2. <a href="#%E5%88%87%E6%8D%A2pypi%E6%BA%90">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
+<table>
+<thead>
+<tr>
+<th>pypi源</th>
+<th>地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>清华大学</td>
+<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
+</tr>
+<tr>
+<td>中国科大</td>
+<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
+</tr>
+<tr>
+<td>豆瓣</td>
+<td><a href="https://pypi.doubanio.com/simple/">https://pypi.doubanio.com/simple/</a></td>
+</tr>
+<tr>
+<td>阿里云</td>
+<td><a href="https://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/</a></td>
+</tr>
+</tbody></table>
+<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=aliyun.com</span><br><span class="line">index-url=https://mirrors.aliyun.com/pypi/simple</span><br></pre></td></tr></table></figure>
+
+<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a><a href="#3-%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83"></a>3. <a href="#%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux&#x2F;mac可参考：<a href="https://www.v2ex.com/t/354625">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
+<ul>
+<li><p>安装virtualenv， <code>pip install virtualenv</code>;</p>
+</li>
+<li><p>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</p>
+</li>
+<li><p>用命令<code>virtualenv  web</code>创建虚拟化环境;</p>
+</li>
+<li><p>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"></p>
+</li>
+</ul>
+<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a><a href="#4-%E5%AE%89%E8%A3%85tensorflow"></a>4. <a href="#%E5%AE%89%E8%A3%85tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/imglib/tensorflow.png" alt="image"><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>Python</category>
+      </categories>
+      <tags>
+        <tag>环境搭建</tag>
       </tags>
   </entry>
   <entry>
@@ -1706,167 +1893,20 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       </tags>
   </entry>
   <entry>
-    <title>leetcode刷题-排列和组合问题</title>
-    <url>/2020/05/05/leetcode%E5%88%B7%E9%A2%98-%E6%8E%92%E5%88%97%E5%92%8C%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
-<h5 id="1-组合问题"><a href="#1-组合问题" class="headerlink" title="1. 组合问题"></a><a href="#1-%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98"></a>1. 组合问题</h5><p>【从n个元素中取m个元素–子集】<br><strong>例题1.</strong> LeetCode-78-<a href="https://leetcode-cn.com/problems/subsets/">子集</a> </p>
-<blockquote>
-</blockquote>
-<p>给定一组<strong>不含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: nums &#x3D; [1,2,3]<br>输出: [[3],[1],[2],[1,2,3],[1,3],[2,3],[1,2],[] ]</p>
-<p><strong>题解</strong>：从数组中连续至少0个元素，构成的子集问题，可以模拟成一个层次遍历的过程；从空集合开始，然后空集合的基础上依次插入元素，先是1个元素的集合，接着是2个元素的集合，依次类推。<br>首先，创建一个局部变量存放结果，把空集合插入存进去<code>vector&lt;vector&lt;int&gt; &gt; res(1)</code>；遍历整个数组，同事嵌套遍历结果数组，往结果数组中依次插入当前遍历到的数组元素，由于结果数组中有一个空子集，嵌套遍历结果数组的时候，就是往空子集中插入第1个元素，此时这个结果肯定是没有出现的排列，再把这个排列插入结果数组；这样结果中就存入了[]和[1];此时进去下一次迭代，数组的第二个元组，在依次往结果数组中的子集插入，也就是[2]依次插入[]和[1]中；以此类推，就可以遍历完所有的排列。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**代码实现**/</span><br><span class="line">vector&gt; subsets(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>例题2.</strong> LeetCode-90-<a href="https://leetcode-cn.com/problems/subsets-ii/">子集II</a></p>
-<blockquote>
-</blockquote>
-<p>给定一个可能<strong>包含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: [1,2,2]<br>输出: [[2],[1],[1,2,2],[2,2],[1,2],[]]</p>
-<p><strong>题解</strong> 题目中描述有重复元素，所以去重是在排列里面很关键，在上一题的基础上增加去重的操作即可，这里用一个set去去重，由于排列不考虑数的顺序，所以需要排序一下，进行归一化，然后设计一个hash表去重，这里hash表示就是unordered_map,键值用排序后的数组字符化表示；</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string clcHashValue(vector&amp; nums)&#123;</span><br><span class="line">    string res = &quot;&quot;;</span><br><span class="line">    sort(nums.begin(),nums.end());</span><br><span class="line">    for(int i=0; i &gt; subsetsWithDup(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    unordered_set numstt;</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            string tempHash = clcHashValue(tmp);</span><br><span class="line">            if(numstt.find(tempHash) == numstt.end())&#123;</span><br><span class="line">                res.push_back(tmp);</span><br><span class="line">                numstt.insert(tempHash);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-排列问题"><a href="#2-排列问题" class="headerlink" title="2. 排列问题"></a><a href="#2-%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"></a>2. 排列问题</h5><p><strong>例题1.</strong> 面试题 08.07. <a href="https://leetcode-cn.com/problems/permutation-i-lcci/">无重复字符串的排列组合</a></p>
-<blockquote>
-</blockquote>
-<p>无重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合，字符串每个字符均不相同。<br><strong>示例1</strong>:<br> 输入：S &#x3D; “qwe”<br> 输出：[“qwe”,”qew”,”wqe”,”weq”,”ewq”,”eqw”]<br><strong>示例2</strong>:<br> 输入：S &#x3D; “ab”<br> 输出：[“ab”,”ba”]</p>
-<p> <strong>题解</strong> 我们把字符串看成两部分，第一部分是它的第一个字符，第二部分是后边的字符。求整个字符串的排列，可以就可以看成两部分，首先求所有可能出现在第一个位置的字符，也就是把第一个字符和后边所有的字符交换。第二部分固定第一个字符求后面字符的排列。在第二部分的时候仍把后边的字符分成2部分，依次类推。这样就是很典型的递归了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPerm(vector &amp;result, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(beginIndex == s.size()-1) &#123;</span><br><span class="line">        result.push_back(s);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    strPerm(result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>例题2.</strong> 面试题 08.08. <a href="https://leetcode-cn.com/problems/permutation-ii-lcci/">有重复字符串的排列组合</a></p>
-<blockquote>
-</blockquote>
-<p>有重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合。<br>示例1: 输入：S &#x3D; “qqe”  输出：[“eqq”,”qeq”,”qqe”]<br>示例2: 输入：S &#x3D; “ab”  输出：[“ab”, “ba”]<br>提示: 字符都是英文字母。字符串长度在[1, 9]之间。</p>
-<p> <strong>题解</strong> 如上题一样，这里主要去重，去重，可以简单地额用一个hash表来解决，这里用unordered_set来创建hash。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPermu(unordered_set&amp; perLib, vector&amp; res, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(s.size()-1 == beginIndex) &#123;</span><br><span class="line">        if(perLib.find(s)==perLib.end()) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">            perLib.insert(s);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;return result;&#125;</span><br><span class="line">    unordered_set perLib;</span><br><span class="line">    strPermu(perLib, result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估</title>
-    <url>/2021/05/21/PDSCH%E7%9A%84MCS%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A0%81%E7%8E%87%E7%A1%AE%E5%AE%9A%E4%BB%A5%E5%8F%8ATBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0/</url>
-    <content><![CDATA[<h5 id="1-mcs的选择和码率的确定"><a href="#1-mcs的选择和码率的确定" class="headerlink" title="1. mcs的选择和码率的确定"></a><a href="#1-mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1. <a href="#mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A">mcs的选择和码率的确定</a></h5><p>对月PDSCH的调度，主要有两种方式的<strong>一种是</strong>有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；<strong>另一种是</strong>在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。<br>PDSCH调制阶数通过DCI中5bit的字段<code>I_MCS</code>来指数，5bit最大32，协议中定义了3张mcs表，分别是1个256QAM，2个64QAM的表；在不同的场景选用不同的mcs表。比如UE不希望在解码P-RNTI, RA-RNTI, SI-RNTI加扰的PDSCH时，使用Qm &gt; 2的调制方式。</p>
-<p><strong>case1</strong>： 高层配置PDSCH-config种使用<strong>qam256</strong>的mcs表，那么对DCI1_1指示的PDSCH使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。</p>
-<p><strong>case2</strong>： 如果UE没有通过SPS-config来配置mcs表，而是通过pdsch-config配置了成<strong>qam256</strong>，那么UE使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。<br><img src="http://1.116.145.136/NR/pdsch_mcsTable2.png" alt="pdsch_mcsTable2"></p>
-<p><strong>case3</strong>： 如果UE没有配置MCS-C-RNTI，且高曾参数pdsch-config种配置的mcs表是<strong>qam64LowSE</strong>，那么针对UE USS 搜索空间的对应的PDSCH调度使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率，也就是低码率的64qam的表格。</p>
-<p><strong>case4</strong>： 如果UE配置了MCS-C-RNTI，pdsch是被MCS-C-RNTI加扰的PDCCH指示调度，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；</p>
-<p><strong>case5</strong>： 如果UE的mcs表通过SPS-Config配置并且配置成<strong>qam64LowSE</strong>，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable3.png" alt="pdsch_mcsTable3"></p>
-<p><strong>case6</strong>：除了上述5种情况外，使用<strong>Table 5.1.3.1-1</strong>；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable1.png" alt="pdsch_mcsTable1">从上述的mcs表种可以看出，当mcs确定之后相应的传输码率就确定了。因此码率是通过mcs查表间接确认得到的。</p>
-<h5 id="2-TBsize的计算和RB预估"><a href="#2-TBsize的计算和RB预估" class="headerlink" title="2. TBsize的计算和RB预估"></a><a href="#2-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0"></a>2. <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0">TBsize的计算和RB预估</a></h5><p>pdsch传输的tbsize宏观上见与码字数和码率强相关，码字由基站高层参数<code>maxNrofCodeWordsScheduledByDCI</code>指示，表示使用1个码字还是两个码字；码率由上mcs表确定，针对64qam可以使用mcs 0-28；256qam可以使用0-27；</p>
-<h6 id="2-1-TBsize的计算"><a href="#2-1-TBsize的计算" class="headerlink" title="2.1 TBsize的计算"></a><a href="#2-1-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97"></a>2.1 <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97">TBsize的计算</a></h6><p>一个slot对应的PDSCH可用的TBSIZE计算公式如下，在PDSCH可用的RE是上除去DMRS占用和PDCCH占用的RE等资源占用以后的频谱资源。一个slot种pdsch的有效RE数由如下公式获得：</p>
-<p>其中：<code>N ^&#123;RB&#125;_&#123;sc&#125;</code>是一个RB的子载波个数，<code>N^&#123;sh&#125;_&#123;symb&#125;</code>是时域上一个slot对应的符号数,<code>N^&#123;PRB&#125;_&#123;DMRS&#125;</code>是一个RB上DMRS占用的RE数；<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>在高层参数PDSCH-ServingCellConfig-&gt;xOverhead配置，可配置为0，6，12，18；当xOverhead没有配置或者调度pdsch的pdcch由SI-RNTI, RA-RNTI 或者 P-RNTI加扰时，<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>是0。<br>一个slot内频域上所有的pdsch可用RE，由以下公式获取：<br>$$<br>\begin{equation}<br>N_{RE} &#x3D; min(156, N^{‘}*{RE})<em>n</em>{prb}<br>\end{eqnarray}<br>$$<br>其中，<code>n_&#123;prb&#125;</code>是slot内可分配的PRB数。</p>
-<p>有了RE数解可以计算当前的TB-Size了，TB-Size的计算如下：</p>
-<p>$$<br>\begin{equation}<br>N_{info} &#x3D; N_{RE}<em>R</em>Q_{m}*v<br>\end{eqnarray}<br>$$<br>其中，R是目标码率，Qm是调制阶数，V标识layer数。</p>
-<p>有了<code>N_info</code>之后还需要跟3824作量化比较才能确认最终的tbsize：</p>
+    <title>windows搭建git环境</title>
+    <url>/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[<p>Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
+<h5 id="1-git安装"><a href="#1-git安装" class="headerlink" title="1. git安装"></a><a href="#1-git%E5%AE%89%E8%A3%85"></a>1. git安装</h5><p>  下载<a href="https://gitforwindows.org/">git windows</a>一路安装下来.</p>
+<h5 id="2-注册github账户"><a href="#2-注册github账户" class="headerlink" title="2. 注册github账户"></a><a href="#2-%E6%B3%A8%E5%86%8Cgithub%E8%B4%A6%E6%88%B7"></a>2. 注册github账户</h5><p>  访问<a href="https://github.com/">github</a>官网，注册一个<code>github</code>账户.</p>
+<h5 id="3-git-bash添加本地仓"><a href="#3-git-bash添加本地仓" class="headerlink" title="3. git bash添加本地仓"></a><a href="#3-git-bash%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E4%BB%93"></a>3. git bash添加本地仓</h5><p>  通过 <code>git bash</code> 客户端添加添加一个本地文件夹作为本地仓库；可以通过 <code>pwd</code> 命令来查看当前bash窗口的路径。<br><img src="/images/windows_git/1.png" alt="image">  此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用<code>git init</code>命令初始化这个文件夹。<img src="/images/windows_git/3.png" alt="image">  初始化之后，再调用 <code>git config --global</code> config 本地仓库关联到远端的 <code>github</code> 账户，也就是你注册 <code>github</code> 的时候填的用户名和邮箱。<img src="/images/windows_git/4.png" alt="image">  到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 <code>ssh key</code>， 可以根据官网的 <a href="https://help.github.com/categories/ssh/">git help</a> 创建ssh秘钥。这里首先调用 <code>$ ssh-keygen -t rsa -C &quot;liuru@host.com&quot;</code> 调用创建秘钥的指令。<br><img src="/images/windows_git/5.png" alt="image">  如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：<strong>1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。</strong> </p>
 <ul>
-<li><code>N_info</code> &lt;&#x3D; 3824 : 在N_info的小于3824的场景下确定TB-Size需要先量化，然后再查表确认TB-Size;量化公式如下：</li>
-</ul>
-<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(24, 2^{n}<em>⌊\frac{N</em>{info}}{2^n} ⌋)，其中 n &#x3D; max(3, ⌊ log_2(N_{info})⌋-6)<br>\end{eqnarray}<br>$$<br>通过量化公式获得的<code>N_&#39;_info</code>在Table 5.1.3.2-1中查找不小于他的最接近的值，比如算出来的量化值是606，那么通过查表就获得的TB-Size就是608；<br><img src="http://1.116.145.136/NR/tbs_low_3824.png" alt="tbs_low_3824"></p>
-<ul>
-<li><code>N_info</code> &gt; 3824 :</li>
-</ul>
-<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(3840, 2^{n}<em>round(\frac{N</em>{info}-24}{2^n} ))，其中 n &#x3D; ⌊ log_2(N_{info}-24)⌋-5)<br>\end{eqnarray}<br>$$</p>
-<p><strong>当码率R&lt;&#x3D;1&#x2F;4时</strong>，<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> ⌈(\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}*{info}+24}{8424}⌉<br>\end{eqnarray}<br>$$</p>
-<p><strong>当码率R&gt;1&#x2F;4时</strong>，<br><strong>(1)</strong> 如果<code>N_&#39;_info</code>&gt;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> (\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}<em>{info}+24}{3816}⌉<br>\end{eqnarray}<br>$$<br><strong>(2)</strong> 如果<code>N_&#39;_info</code>&lt;&#x3D;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8</em>C* (\frac{N^{‘}<em>{info}+24}{8})-24<br>\end{eqnarray}<br>$$<br>需要注意的是：**(1)** 当调度PDSCH的PDCCH是通过SI-RNTI加扰的话，也就是传输sib1消息时，TB-Size的大小不能超过2976，因为sib1只能通过qpsk的调制方式发送；**(2)** 当调度的DCI是P-RNTI、RA-RNTI加扰的时候，在信息量N_info计算时需要带上一个缩放因子，具体如下图所示：<br><img src="http://1.116.145.136/NR/tbs_Scaling_factor.png" alt="tbs_Scaling_factor"><br>那么新的<code>N_info</code>计算公式就编程如下的样子：<br>$$<br>\begin{equation}<br>N</em>{info} &#x3D; S*N_{RE}<em>R</em>Q_{m}*v, 其中S是缩放因子<br>$$</p>
-<h6 id="2-2-RB预估"><a href="#2-2-RB预估" class="headerlink" title="2.2 RB预估"></a><a href="#2-2-RB%E9%A2%84%E4%BC%B0"></a>2.2 <a href="RB%E9%A2%84%E4%BC%B0">RB预估</a></h6><p>UE进行上下行数传的时候，基站根据UE的数据量来判断UE的调度时刻使用的RB数，数据量的计算公式如下：<br>&#96;$$<br>\begin{equation}<br>数据量 &#x3D; {N_{prb}<em>N_{re}<em>layer</em>Qm</em>CodeRate},<br>$$<br>N_prb是传递这些数据量需要的RB数，N_re是每个RB中有效的RE数，layer是数传的UE的rank，QM是调试bit数，CodeRate是传输的码率。</p>
-<p>预估RB就是通过上边的公式反算UE传输当前数据量需要的RB数，在确定RB数之前需要先确定，每个RB中的RE数，这些RE数跟基站的配置相关，特别是PDCCH和PDSCH DMRS的配置。</p>
-<blockquote>
-</blockquote>
-<p>PDSCH DMRS : NR中定义了两种DMRS type，分别是type1和type2，在这两种type中，有1符号或者2符号的DMRS，除此之外还可以配置额外的附加导频的DMRS。</p>
-<p><img src="http://1.116.145.136/NR/pdsch_pusch_type.png" alt="pdsch_pusch_type"></p>
-<p>-<br>PDSCH DMRS Type A ：固定在第三或(pos2)者第四(pos3)个符号上，无论PDSCH的起始符号是多少，最小资源组是一个RE；</p>
-<p>-<br>PDSCH DMRS Type B ：DMRS固定在分配PDSCH的第一个符号上；最小资源组是2个RE；</p>
-<ul>
-<li>附加导频   ，可以配置0-4个</li>
-</ul>
-<p>【参考文献】：<a href="https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html">https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html</a></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>windows下基于python的Tensorflow环境搭建</title>
-    <url>/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
-<h5 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1. 环境准备"></a><a href="#1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"></a>1. <a href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87">环境准备</a></h5><p>下载<code>python</code>，<code>setuptools</code>，<code>pip</code>. 安装python后在，将python.exe所在的路径添加到环境变量中，</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37  假设python.exe所在的路径</span><br></pre></td></tr></table></figure>
-
-<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>setuptools</code>，下载压缩包版本的，解压之后，将setuptools拷贝到python安装路径下的tool路径下即可。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">D:\Python\Python37\Tools  假设python的tools路径</span><br></pre></td></tr></table></figure>
-
-<p>从<a href="https://pypi.org/project/setuptools/#files">pypi源</a>上下载<code>pip</code>，下载压缩版本，解压之后，打开windows的cmd，在cmd里面cd到pip-20.1.tar.gz解压（假设是这个版本）文件所在的路径中，安装pip:<code>python setup.py install</code>.</p>
-<h5 id="2-切换pypi源"><a href="#2-切换pypi源" class="headerlink" title="2. 切换pypi源"></a><a href="#2-%E5%88%87%E6%8D%A2pypi%E6%BA%90"></a>2. <a href="#%E5%88%87%E6%8D%A2pypi%E6%BA%90">切换pypi源</a></h5><p>默认的pypi源，由于服务器在国外，蜗牛一样的下载速度，试过的同学非常清楚；解决这个下载慢的问题，将默认的pypi源到国内的镜像；建议切换到阿里云的镜像，稳定快速；</p>
-<table>
-<thead>
-<tr>
-<th>pypi源</th>
-<th>地址</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>清华大学</td>
-<td><a href="https://pypi.tuna.tsinghua.edu.cn/simple/">https://pypi.tuna.tsinghua.edu.cn/simple/</a></td>
-</tr>
-<tr>
-<td>中国科大</td>
-<td><a href="https://mirrors.ustc.edu.cn/pypi/web/simple/">https://mirrors.ustc.edu.cn/pypi/web/simple/</a></td>
-</tr>
-<tr>
-<td>豆瓣</td>
-<td><a href="https://pypi.doubanio.com/simple/">https://pypi.doubanio.com/simple/</a></td>
-</tr>
-<tr>
-<td>阿里云</td>
-<td><a href="https://mirrors.aliyun.com/pypi/simple/">https://mirrors.aliyun.com/pypi/simple/</a></td>
-</tr>
-</tbody></table>
-<p>打开cmd输入set，找到USERPROFILE所在的路径，这个路径一般是用户的目录;在这个路径下创建一个pip文件夹在文件夹里面创建一个pip.ini文件，文件里面写入镜像地址。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[global]</span><br><span class="line">trusted-host=aliyun.com</span><br><span class="line">index-url=https://mirrors.aliyun.com/pypi/simple</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-安装virtualenv虚拟化环境"><a href="#3-安装virtualenv虚拟化环境" class="headerlink" title="3. 安装virtualenv虚拟化环境"></a><a href="#3-%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83"></a>3. <a href="#%E5%AE%89%E8%A3%85virtualenv%E8%99%9A%E6%8B%9F%E5%8C%96%E7%8E%AF%E5%A2%83">安装virtualenv虚拟化环境</a></h5><p>会不会有人问为啥要安装虚拟化环境，这个根据个人喜好和使用习惯来定。有虚拟化环境之后可以创建多个不同的配置的环境，可以在虚拟化的环境中装各种不同场景不同配置的应用，相互不影响。linux&#x2F;mac可参考：<a href="https://www.v2ex.com/t/354625">Virtualenv 的理解和使用</a><br>以管理员权限打开cmd，安装virtualenv，</p>
-<ul>
-<li><p>安装virtualenv， <code>pip install virtualenv</code>;</p>
+<li><p><strong>关联的到github账户</strong>: 在github账户的setting地方有一个ssh key的你添加输入，<br>生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;</p>
 </li>
-<li><p>在一个路径创建一个存放虚拟环境的路径，这里用了<code>E:\python_lib</code>这个路径</p>
-</li>
-<li><p>用命令<code>virtualenv  web</code>创建虚拟化环境;</p>
-</li>
-<li><p>激活该环境,window使用cd web进入当前目录下的web中，然后用<code>Scripts\activate</code>激活;<br><img src="/images/imglib/virtualenv.png" alt="image"></p>
+<li><p><strong>关联本地客户端</strong>: 根据上述创建的过程中的提示，我们找到相应的.ssh&#x2F;id_rsa.pub找到文件。首先确保ssh客户端能用，调用 <code>evel &quot;$(ssh-agent -s)&quot;</code> 命令查看, 有 agent id 即为有用； <img src="/images/windows_git/6.png" alt="image">然后, 调用 <code>ssh-add ~/.ssh/id_rsa</code> <img src="/images/windows_git/7.png" alt="image">把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。</p>
 </li>
 </ul>
-<h5 id="4-安装tensorflow"><a href="#4-安装tensorflow" class="headerlink" title="4. 安装tensorflow"></a><a href="#4-%E5%AE%89%E8%A3%85tensorflow"></a>4. <a href="#%E5%AE%89%E8%A3%85tensorflow">安装tensorflow</a></h5><p>由于笔者的pc是渣渣，这里只能安装cpu版本的tensorflow，进入想要安装的虚拟化环境之后，直接安装tensorflow</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">pip install tensorflow-cpu==2.1 指定到cpu版本的2.1版本，当然也可以不指定</span><br></pre></td></tr></table></figure>
-
-<p><img src="/images/imglib/tensorflow.png" alt="image"><br>安装完成之后进入：进入python 输入：<code>import tensorflow as tf</code> 看是否正常，无报错说明可以安装好了。然后就可以嗨皮的使用tensorflow了。</p>
+<h5 id="4-从github仓库clone内容"><a href="#4-从github仓库clone内容" class="headerlink" title="4. 从github仓库clone内容"></a><a href="#4-%E4%BB%8Egithub%E4%BB%93%E5%BA%93clone%E5%86%85%E5%AE%B9"></a>4. 从github仓库clone内容</h5><p>  在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用 <code>$ git clone git@github.com:ruitear/C-C-plus-plus.git</code>   (其中ruitear是账户名)<br><img src="/images/windows_git/8.png" alt="image"></p>
+<h5 id="5-在仓库里面创建子文件夹"><a href="#5-在仓库里面创建子文件夹" class="headerlink" title="5. 在仓库里面创建子文件夹"></a><a href="#5-%E5%9C%A8%E4%BB%93%E5%BA%93%E9%87%8C%E9%9D%A2%E5%88%9B%E5%BB%BA%E5%AD%90%E6%96%87%E4%BB%B6%E5%A4%B9"></a>5. 在仓库里面创建子文件夹</h5><p>  陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用<code>$ git add Sort/</code> . 这样就在<code>C-Cplus-plus</code>仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：<code>$ git commit -m &quot;相关说明&quot;</code><br><img src="/images/windows_git/9.png" alt="image"><br>  最后调用push把添加之后的仓库push到github仓库了 <code>$git push origin master</code> ， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。<br>【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在<br>push，如果有冲突就解决冲突，没有的话就直接push。</p>
 <p>————-本文结束感谢您的阅读————-</p>
 <p>坚持创作，坚持分享！</p>
 <pre><code>打赏
@@ -1886,10 +1926,11 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
 <p>支付宝</p>
 ]]></content>
       <categories>
-        <category>Python</category>
+        <category>git使用</category>
       </categories>
       <tags>
         <tag>环境搭建</tag>
+        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -1978,20 +2019,49 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       </tags>
   </entry>
   <entry>
-    <title>windows搭建git环境</title>
-    <url>/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/</url>
-    <content><![CDATA[<p>Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
-<h5 id="1-git安装"><a href="#1-git安装" class="headerlink" title="1. git安装"></a><a href="#1-git%E5%AE%89%E8%A3%85"></a>1. git安装</h5><p>  下载<a href="https://gitforwindows.org/">git windows</a>一路安装下来.</p>
-<h5 id="2-注册github账户"><a href="#2-注册github账户" class="headerlink" title="2. 注册github账户"></a><a href="#2-%E6%B3%A8%E5%86%8Cgithub%E8%B4%A6%E6%88%B7"></a>2. 注册github账户</h5><p>  访问<a href="https://github.com/">github</a>官网，注册一个<code>github</code>账户.</p>
-<h5 id="3-git-bash添加本地仓"><a href="#3-git-bash添加本地仓" class="headerlink" title="3. git bash添加本地仓"></a><a href="#3-git-bash%E6%B7%BB%E5%8A%A0%E6%9C%AC%E5%9C%B0%E4%BB%93"></a>3. git bash添加本地仓</h5><p>  通过 <code>git bash</code> 客户端添加添加一个本地文件夹作为本地仓库；可以通过 <code>pwd</code> 命令来查看当前bash窗口的路径。<br><img src="/images/windows_git/1.png" alt="image">  此处静载本地f盘创建了一个git的空文夹名为:git，用来作为本地的仓库。然后，cd到git文件夹下，用<code>git init</code>命令初始化这个文件夹。<img src="/images/windows_git/3.png" alt="image">  初始化之后，再调用 <code>git config --global</code> config 本地仓库关联到远端的 <code>github</code> 账户，也就是你注册 <code>github</code> 的时候填的用户名和邮箱。<img src="/images/windows_git/4.png" alt="image">  到这里，其实已经基本建好了本地仓库和远程github仓库的连接。但是每次使用的时候都让你输入用户名和密码，很是麻烦。怎么解决呢？添加 <code>ssh key</code>， 可以根据官网的 <a href="https://help.github.com/categories/ssh/">git help</a> 创建ssh秘钥。这里首先调用 <code>$ ssh-keygen -t rsa -C &quot;liuru@host.com&quot;</code> 调用创建秘钥的指令。<br><img src="/images/windows_git/5.png" alt="image">  如上图所示，使用默然的方式生成，并没有进行设置，密码根据自己的喜好设置。然后一直enter到末尾，有了这个秘钥之后，我们还需要做两件事情：<strong>1、把这个密码和github账户关联起来；2、把它和本地客户端关联起来。</strong> </p>
+    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
+    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
+<table>
+<thead>
+<tr>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>处理器</td>
+<td>英特尔 i5-8400</td>
+<td>主板</td>
+<td>Nvidia RTX 2060 SUPER</td>
+</tr>
+<tr>
+<td>主板</td>
+<td>华硕PRIME Z370-P</td>
+<td>电源</td>
+<td>爱国者GT-550 550W</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>4*DDR4 2400MHz</td>
+<td>系统</td>
+<td>WIN10 2004</td>
+</tr>
+</tbody></table>
+<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
+<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
 <ul>
-<li><p><strong>关联的到github账户</strong>: 在github账户的setting地方有一个ssh key的你添加输入，<br>生成的秘钥内容（id_rsa.pub文件中保存），到相应的地方即可;</p>
+<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
 </li>
-<li><p><strong>关联本地客户端</strong>: 根据上述创建的过程中的提示，我们找到相应的.ssh&#x2F;id_rsa.pub找到文件。首先确保ssh客户端能用，调用 <code>evel &quot;$(ssh-agent -s)&quot;</code> 命令查看, 有 agent id 即为有用； <img src="/images/windows_git/6.png" alt="image">然后, 调用 <code>ssh-add ~/.ssh/id_rsa</code> <img src="/images/windows_git/7.png" alt="image">把秘钥添加到ssh客户端，这样整个过程就创建完成，就可以享受git带来的便利了。</p>
+<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
+</li>
+<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
 </li>
 </ul>
-<h5 id="4-从github仓库clone内容"><a href="#4-从github仓库clone内容" class="headerlink" title="4. 从github仓库clone内容"></a><a href="#4-%E4%BB%8Egithub%E4%BB%93%E5%BA%93clone%E5%86%85%E5%AE%B9"></a>4. 从github仓库clone内容</h5><p>  在本地创建了一个与github的账号同名的文件夹，比如我的github上有一个仓库叫C-Cplus-plus的仓库，然后调用 <code>$ git clone git@github.com:ruitear/C-C-plus-plus.git</code>   (其中ruitear是账户名)<br><img src="/images/windows_git/8.png" alt="image"></p>
-<h5 id="5-在仓库里面创建子文件夹"><a href="#5-在仓库里面创建子文件夹" class="headerlink" title="5. 在仓库里面创建子文件夹"></a><a href="#5-%E5%9C%A8%E4%BB%93%E5%BA%93%E9%87%8C%E9%9D%A2%E5%88%9B%E5%BB%BA%E5%AD%90%E6%96%87%E4%BB%B6%E5%A4%B9"></a>5. 在仓库里面创建子文件夹</h5><p>  陆github账户在网页上只能以单个文件的形式进行upload，然而并不符合我们管理文档的习惯，建立文件夹来管理文档和代码是我们必须的，为此，就需要进行添加文件夹的操作，cd到相应的版本仓库的本地文件夹，调用<code>$ git add Sort/</code> . 这样就在<code>C-Cplus-plus</code>仓库内添加了一个Sort文件夹，当然这并不是最终形式没还需要commit操作才能生效, 也就是保存到本地仓库：<code>$ git commit -m &quot;相关说明&quot;</code><br><img src="/images/windows_git/9.png" alt="image"><br>  最后调用push把添加之后的仓库push到github仓库了 <code>$git push origin master</code> ， 到这里就完成了git本地环境的搭建并与github创建了相应的连接。<br>【注意】，当我们往已经有的仓库中添加新的代码时记得，先pull下来更新代码赖，然后在<br>push，如果有冲突就解决冲突，没有的话就直接push。</p>
+<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
+<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
 <p>————-本文结束感谢您的阅读————-</p>
 <p>坚持创作，坚持分享！</p>
 <pre><code>打赏
@@ -2011,11 +2081,10 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
 <p>支付宝</p>
 ]]></content>
       <categories>
-        <category>git使用</category>
+        <category>环境搭建</category>
       </categories>
       <tags>
         <tag>环境搭建</tag>
-        <tag>git</tag>
       </tags>
   </entry>
   <entry>
@@ -2062,6 +2131,41 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       <tags>
         <tag>CNN</tag>
         <tag>神经网络，机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>学习资源收集</title>
+    <url>/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/</url>
+    <content><![CDATA[<h5 id="1、Python"><a href="#1、Python" class="headerlink" title="1、Python"></a><a href="#1%E3%80%81Python"></a>1、Python</h5><p>1）<a href="https://mp.weixin.qq.com/s/OOBckD-FobvJJvkFk7MNng">Python_交互式的学习资源</a><br>2）<a href="https://mp.weixin.qq.com/s/_OG4yX2ZYTyN8URKuywMdw">Python生成动态图表</a><br>3）<a href="https://mp.weixin.qq.com/s/niH1N-khxwDJXtvRCngqSg">Python文章中精选Top10</a><br>4）<a href="https://zhuanlan.zhihu.com/p/46257877">忘了Python关键语句？这份备忘录拯救你的记忆</a><br>5）<a href="https://zhuanlan.zhihu.com/p/42171409">Python教程：17个冷门但实用的小技巧</a></p>
+<h5 id="2、机器学习相关"><a href="#2、机器学习相关" class="headerlink" title="2、机器学习相关"></a><a href="#2%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3"></a>2、机器学习相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/0tCxAZzVr22liaJpmTJYSg">通俗理解PCA降维作用</a><br>2）<a href="https://mp.weixin.qq.com/s/JsnQq2FOf3bpa5vkJ-SZTg">18年9月机器学习开源项目Top10</a><br>3）<a href="https://mp.weixin.qq.com/s/aV9Rj-CnJZRXRm0rDOK6gg">LSTM和GRU的解析</a><br>4）<a href="https://mp.weixin.qq.com/s/cfvId6E0tc5gIMau6EM9ag">算法和编程面试题精选TOP50</a><br>5）<a href="https://mp.weixin.qq.com/s/59bNdkFUzkjRYDAR3qqW5A">5种回归损失函数</a><br>6）<a href="https://mp.weixin.qq.com/s/DFyafGAUPNc70rG643ozbA">精选机器学习文章Top10</a><br>7）<a href="https://mp.weixin.qq.com/s/AjwOlktv0BGDiHfJ4kvfuA">如何通过引入硬注意力机制来学习视觉问答任务？</a><br>8）<a href="https://mp.weixin.qq.com/s/gcjVNmr3BFMg27rFfpzMMw">深度学习必备数学知识之线性代数篇</a><br>9）<a href="https://mp.weixin.qq.com/s/2gKYtona0Z6szsjaj8c9Vg">构建深度神经网络的实用技巧</a><br>10）<a href="https://mp.weixin.qq.com/s/G0jY23Sui5a7P9m9_HkRNg">ICML2018见闻 | 迁移学习、多任务学习领域的进展</a><br>11）<a href="https://zhuanlan.zhihu.com/p/43831189">8 个超赞的深度学习课程</a><br>12）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484920&idx=1&sn=74d2e9d11da046098a4f52c48e7e929f&chksm=97a0ce2ca0d7473a23d254047f550c41850be4a97b9ddff75baa2d85eb74b9835f0a4ed4aef7&scene=21#wechat_redirect">合成注意力推理神经网络-Christopher Manning-ICLR2018</a><br>13）<a href="https://pan.baidu.com/s/1OUecGv5OKAL_GCve7S8w4Q">李宏毅-201806-中文-Deep Reinforcement Learning精品课程</a>  提取码：3eig<br>14）<a href="https://v.qq.com/x/page/d0748orcuzt.html">最新深度学习面试题目及答案集锦</a><br>15）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484960&idx=1&sn=17f07ffd8dc8a5df2fb0a1e1f5fd05cf&chksm=97a0cdf4a0d744e2c869f60df5bd0b3fe0735e6ef660d41c95d370af4c2368a6e992b2fcb0cd&scene=21#wechat_redirect">MIT 6.S094 深度学习与自动驾驶课程（下）</a><br>16）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484998&idx=1&sn=c6b3a98412c45aeba50d82a0d09b74c1&chksm=97a0cd92a0d74484b9e3a1221ac1ad926cfd88891748b82d37667f6cc29a8251e5c190ca7712&scene=21#wechat_redirect">迁移学习在自然语言处理中的应用之通用语言建模</a><br>17）<a href="https://zhuanlan.zhihu.com/p/39912633">图说卡尔曼滤波_一份通俗易懂的教程</a><br>18)）<a href="https://zhuanlan.zhihu.com/p/35814495">面试了10家公司，以下是一份机器学习面试内容总结</a><br>19）<a href="https://zhuanlan.zhihu.com/p/41777804">献给新手的深度学习综述 | 入门</a><br>20）<a href="https://zhuanlan.zhihu.com/p/46396329">https://zhuanlan.zhihu.com/p/46396329</a></p>
+<h5 id="3、Git相关"><a href="#3、Git相关" class="headerlink" title="3、Git相关"></a><a href="#3%E3%80%81Git%E7%9B%B8%E5%85%B3"></a>3、Git相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/ahyco9UvUqTlAD6NLcdHNQ">泪流满面的 11 个 Git 面试题</a></p>
+<h5 id="4、图像处理-计算机视觉"><a href="#4、图像处理-计算机视觉" class="headerlink" title="4、图像处理&amp;计算机视觉"></a><a href="#4%E3%80%81%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86-amp-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89"></a>4、图像处理&amp;计算机视觉</h5><p>1）<a href="https://mp.weixin.qq.com/s/zeruKQOye_QNWgluVIN0BA">从R-CNN到RFBNet，目标检测架构5年演进全盘点</a><br>2）<a href="R-CNN%EF%BC%88%E8%AF%91%EF%BC%89https://zhuanlan.zhihu.com/p/26652657">CNN图像分割简史：从R-CNN到Mask</a><br>3）<a href="https://zhuanlan.zhihu.com/p/40902853">图像超级补全效果惊艳（附代码）</a><br>4）<a href="https://zhuanlan.zhihu.com/p/43318695">用神经网络操纵图像中的自然场景属性</a></p>
+<h5 id="5、文本相关"><a href="#5、文本相关" class="headerlink" title="5、文本相关"></a><a href="#5%E3%80%81%E6%96%87%E6%9C%AC%E7%9B%B8%E5%85%B3"></a>5、文本相关</h5><p>1、<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484778&idx=1&sn=630f43fa0060c76e490a53f9046e21b1&chksm=97a0cebea0d747a81455479e5465bdb914ee3965dabb9cd3fee5c7e1cb1348a4be19d91c1b54&scene=21#wechat_redirect">基于深度学习的文本分类6大算法</a><br>2、<a href="https://docs.opencv.org/3.0-beta/modules/text/doc/erfilter.html">Scene Text Detection</a>                                                      </p>
+<h5 id="6、hexo相关"><a href="#6、hexo相关" class="headerlink" title="6、hexo相关"></a><a href="#6%E3%80%81hexo%E7%9B%B8%E5%85%B3"></a>6、hexo相关</h5><p>1）hexo命令 <a href="https://hexo.io/zh-cn/docs/commands.html">https://hexo.io/zh-cn/docs/commands.html</a></p>
+<h5 id="Others"><a href="#Others" class="headerlink" title="Others"></a><a href="#Others"></a>Others</h5><p>脉冲神经网络(SNN)</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>学习资源</category>
+      </categories>
+      <tags>
+        <tag>coding，learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2139,110 +2243,6 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       </categories>
       <tags>
         <tag>blog环境</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
-    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
-<table>
-<thead>
-<tr>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>处理器</td>
-<td>英特尔 i5-8400</td>
-<td>主板</td>
-<td>Nvidia RTX 2060 SUPER</td>
-</tr>
-<tr>
-<td>主板</td>
-<td>华硕PRIME Z370-P</td>
-<td>电源</td>
-<td>爱国者GT-550 550W</td>
-</tr>
-<tr>
-<td>内存</td>
-<td>4*DDR4 2400MHz</td>
-<td>系统</td>
-<td>WIN10 2004</td>
-</tr>
-</tbody></table>
-<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
-<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
-<ul>
-<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
-</li>
-<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
-</li>
-<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
-</li>
-</ul>
-<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
-<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-      </categories>
-      <tags>
-        <tag>环境搭建</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>学习资源收集</title>
-    <url>/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/</url>
-    <content><![CDATA[<h5 id="1、Python"><a href="#1、Python" class="headerlink" title="1、Python"></a><a href="#1%E3%80%81Python"></a>1、Python</h5><p>1）<a href="https://mp.weixin.qq.com/s/OOBckD-FobvJJvkFk7MNng">Python_交互式的学习资源</a><br>2）<a href="https://mp.weixin.qq.com/s/_OG4yX2ZYTyN8URKuywMdw">Python生成动态图表</a><br>3）<a href="https://mp.weixin.qq.com/s/niH1N-khxwDJXtvRCngqSg">Python文章中精选Top10</a><br>4）<a href="https://zhuanlan.zhihu.com/p/46257877">忘了Python关键语句？这份备忘录拯救你的记忆</a><br>5）<a href="https://zhuanlan.zhihu.com/p/42171409">Python教程：17个冷门但实用的小技巧</a></p>
-<h5 id="2、机器学习相关"><a href="#2、机器学习相关" class="headerlink" title="2、机器学习相关"></a><a href="#2%E3%80%81%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3"></a>2、机器学习相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/0tCxAZzVr22liaJpmTJYSg">通俗理解PCA降维作用</a><br>2）<a href="https://mp.weixin.qq.com/s/JsnQq2FOf3bpa5vkJ-SZTg">18年9月机器学习开源项目Top10</a><br>3）<a href="https://mp.weixin.qq.com/s/aV9Rj-CnJZRXRm0rDOK6gg">LSTM和GRU的解析</a><br>4）<a href="https://mp.weixin.qq.com/s/cfvId6E0tc5gIMau6EM9ag">算法和编程面试题精选TOP50</a><br>5）<a href="https://mp.weixin.qq.com/s/59bNdkFUzkjRYDAR3qqW5A">5种回归损失函数</a><br>6）<a href="https://mp.weixin.qq.com/s/DFyafGAUPNc70rG643ozbA">精选机器学习文章Top10</a><br>7）<a href="https://mp.weixin.qq.com/s/AjwOlktv0BGDiHfJ4kvfuA">如何通过引入硬注意力机制来学习视觉问答任务？</a><br>8）<a href="https://mp.weixin.qq.com/s/gcjVNmr3BFMg27rFfpzMMw">深度学习必备数学知识之线性代数篇</a><br>9）<a href="https://mp.weixin.qq.com/s/2gKYtona0Z6szsjaj8c9Vg">构建深度神经网络的实用技巧</a><br>10）<a href="https://mp.weixin.qq.com/s/G0jY23Sui5a7P9m9_HkRNg">ICML2018见闻 | 迁移学习、多任务学习领域的进展</a><br>11）<a href="https://zhuanlan.zhihu.com/p/43831189">8 个超赞的深度学习课程</a><br>12）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484920&idx=1&sn=74d2e9d11da046098a4f52c48e7e929f&chksm=97a0ce2ca0d7473a23d254047f550c41850be4a97b9ddff75baa2d85eb74b9835f0a4ed4aef7&scene=21#wechat_redirect">合成注意力推理神经网络-Christopher Manning-ICLR2018</a><br>13）<a href="https://pan.baidu.com/s/1OUecGv5OKAL_GCve7S8w4Q">李宏毅-201806-中文-Deep Reinforcement Learning精品课程</a>  提取码：3eig<br>14）<a href="https://v.qq.com/x/page/d0748orcuzt.html">最新深度学习面试题目及答案集锦</a><br>15）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484960&idx=1&sn=17f07ffd8dc8a5df2fb0a1e1f5fd05cf&chksm=97a0cdf4a0d744e2c869f60df5bd0b3fe0735e6ef660d41c95d370af4c2368a6e992b2fcb0cd&scene=21#wechat_redirect">MIT 6.S094 深度学习与自动驾驶课程（下）</a><br>16）<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484998&idx=1&sn=c6b3a98412c45aeba50d82a0d09b74c1&chksm=97a0cd92a0d74484b9e3a1221ac1ad926cfd88891748b82d37667f6cc29a8251e5c190ca7712&scene=21#wechat_redirect">迁移学习在自然语言处理中的应用之通用语言建模</a><br>17）<a href="https://zhuanlan.zhihu.com/p/39912633">图说卡尔曼滤波_一份通俗易懂的教程</a><br>18)）<a href="https://zhuanlan.zhihu.com/p/35814495">面试了10家公司，以下是一份机器学习面试内容总结</a><br>19）<a href="https://zhuanlan.zhihu.com/p/41777804">献给新手的深度学习综述 | 入门</a><br>20）<a href="https://zhuanlan.zhihu.com/p/46396329">https://zhuanlan.zhihu.com/p/46396329</a></p>
-<h5 id="3、Git相关"><a href="#3、Git相关" class="headerlink" title="3、Git相关"></a><a href="#3%E3%80%81Git%E7%9B%B8%E5%85%B3"></a>3、Git相关</h5><p>1）<a href="https://mp.weixin.qq.com/s/ahyco9UvUqTlAD6NLcdHNQ">泪流满面的 11 个 Git 面试题</a></p>
-<h5 id="4、图像处理-计算机视觉"><a href="#4、图像处理-计算机视觉" class="headerlink" title="4、图像处理&amp;计算机视觉"></a><a href="#4%E3%80%81%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86-amp-%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89"></a>4、图像处理&amp;计算机视觉</h5><p>1）<a href="https://mp.weixin.qq.com/s/zeruKQOye_QNWgluVIN0BA">从R-CNN到RFBNet，目标检测架构5年演进全盘点</a><br>2）<a href="R-CNN%EF%BC%88%E8%AF%91%EF%BC%89https://zhuanlan.zhihu.com/p/26652657">CNN图像分割简史：从R-CNN到Mask</a><br>3）<a href="https://zhuanlan.zhihu.com/p/40902853">图像超级补全效果惊艳（附代码）</a><br>4）<a href="https://zhuanlan.zhihu.com/p/43318695">用神经网络操纵图像中的自然场景属性</a></p>
-<h5 id="5、文本相关"><a href="#5、文本相关" class="headerlink" title="5、文本相关"></a><a href="#5%E3%80%81%E6%96%87%E6%9C%AC%E7%9B%B8%E5%85%B3"></a>5、文本相关</h5><p>1、<a href="https://mp.weixin.qq.com/s?__biz=MzIxNDgzNDg3NQ==&mid=2247484778&idx=1&sn=630f43fa0060c76e490a53f9046e21b1&chksm=97a0cebea0d747a81455479e5465bdb914ee3965dabb9cd3fee5c7e1cb1348a4be19d91c1b54&scene=21#wechat_redirect">基于深度学习的文本分类6大算法</a><br>2、<a href="https://docs.opencv.org/3.0-beta/modules/text/doc/erfilter.html">Scene Text Detection</a>                                                      </p>
-<h5 id="6、hexo相关"><a href="#6、hexo相关" class="headerlink" title="6、hexo相关"></a><a href="#6%E3%80%81hexo%E7%9B%B8%E5%85%B3"></a>6、hexo相关</h5><p>1）hexo命令 <a href="https://hexo.io/zh-cn/docs/commands.html">https://hexo.io/zh-cn/docs/commands.html</a></p>
-<h5 id="Others"><a href="#Others" class="headerlink" title="Others"></a><a href="#Others"></a>Others</h5><p>脉冲神经网络(SNN)</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>学习资源</category>
-      </categories>
-      <tags>
-        <tag>coding，learning</tag>
       </tags>
   </entry>
   <entry>
