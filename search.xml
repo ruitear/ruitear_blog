@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>5G基础--SR</title>
-    <url>/2021/05/16/5G%E5%9F%BA%E7%A1%80--SR/</url>
+    <url>/2021/05/16/5G%E5%9F%BA%E7%A1%80-SR/</url>
     <content><![CDATA[<h5 id="1-SR-Scheduling-Request"><a href="#1-SR-Scheduling-Request" class="headerlink" title="1. SR(Scheduling Request)"></a><a href="#1-SR-Scheduling-Request"></a>1. <a href="#SR(Scheduling_Request)">SR(Scheduling Request)</a></h5><p>SR是UE的调度请求，用在UE像基站申请上行数据的新传调度,通过PUCCH传输，有些格式的PUCCH格式可以携带SR有些则不行。不是每次都能不一定能申请到PUCCH资源，只有UE处于RRC Connected状态且保持上行同步的UE才会发送SR；<br><img src="http://1.116.145.136/NR/SR_0.png" alt="SR"></p>
 <h5 id="2-SR的配置"><a href="#2-SR的配置" class="headerlink" title="2. SR的配置"></a><a href="#2-SR%E7%9A%84%E9%85%8D%E7%BD%AE"></a>2. SR的配置</h5><p>在基站中SR的配置在SchedulingRequestResourceId IE中定义了SR资源的数量，最大8个SR资源，对应的SchedulingRequestResourceId就是0-7 ；<br><img src="http://1.116.145.136/NR/SchedulingRequestId_0.png" alt="SchedulingRequestId"><br>MAC的配置中， 逻辑信道可以分别关联SR配置，一个MAC实体可以配置0个、1个或者多个SR配置，不同的逻辑信道可以关联相同的schedulingRequestID，<strong>如果没有给相应的逻辑信道配置SR</strong>，当该逻辑信道有数据发送时只能通过随机接入获得上行调度。<br>一个mac实体通过MAC-CellGroupConfig-&gt;<strong>schedulingRequestConfig</strong>-&gt;schedulingRequestToAddModList配置一个SR列表。其中每个SR配置对应一个schedulingRequestConfig；<br><img src="http://1.116.145.136/NR/SchedulingRequestConfig.jpg" alt="SchedulingRequestConfig"></p>
 <p>一个SR配置(SchedulingRequestConfig)包含了分布在不同bwp或者小区中用于传输SR的一组PUCCH资源，也就是SR资源，目前SR只支持PUCCH format0或者PUCCH format1. 从协议38.331的描述可以看到一个SchedulingRequestConfig中对应一组SchedulingRequestResourceConfig，也就是一个SR配置可以对应多个SR资源，他们实际使用是分布在不同的小区或者BWP上。在特定逻辑信道上，每个BWP最多配置1个用于SR的PUCCH资源。</p>
@@ -61,90 +61,28 @@
 ]]></content>
   </entry>
   <entry>
-    <title>5G常见问题定位</title>
-    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
-    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
-<li><p>check UE的盲检位置能否对上</p>
-</li>
-<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
-</li>
-<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
-</li>
-</ul>
-<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
-<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
-</li>
-<li><p>check DCI类型数值value是否正确</p>
-</li>
-<li><p>L2下发的L1报文是否被L1校验</p>
-</li>
-<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
-</li>
-</ul>
-<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
-<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
-</li>
-<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
-<blockquote>
-</blockquote>
-<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>协议栈</th>
-<th>影响因素</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>PDCP</td>
-<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
-</tr>
-<tr>
-<td>RLC</td>
-<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
-</tr>
-<tr>
-<td>MAC</td>
-<td>harq资源耗尽，DCI漏检</td>
-</tr>
-</tbody></table>
+    <title>5G基础-上行调度的BSR</title>
+    <url>/2021/05/20/5G%E5%9F%BA%E7%A1%80-%E4%B8%8A%E8%A1%8C%E8%B0%83%E5%BA%A6%E7%9A%84BSR/</url>
+    <content><![CDATA[<p>BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源；</p>
+<h5 id="1-BSR的配置和内容"><a href="#1-BSR的配置和内容" class="headerlink" title="1. BSR的配置和内容"></a><a href="#1-BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9"></a>1. <a href="#BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9">BSR的配置和内容</a></h5><p>UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在LogicalChannelConfig-&gt;logicalChannelGroup中配置。</p>
+<p><img src="http://1.116.145.136/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
+<p>在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示：</p>
+<p><img src="http://1.116.145.136/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
 <ul>
-<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
+<li><p>[1] <strong>retxBSR定时器</strong>，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况；</p>
 </li>
-<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
+<li><p>[2] <strong>periodicBSR定时器</strong>，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况；</p>
 </li>
-<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
-</li>
-<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
-</li>
-<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
-</li>
-<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
+<li><p>[3] <strong>logicalChannelSR-DelayTimer</strong>，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR；</p>
 </li>
 </ul>
-<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
-<li><p>检查切换前后流量是否已经降低；</p>
-</li>
-<li><p>切换的时延是否异常，如时延过大；</p>
-</li>
-<li><p>切换后来水不足导致调度不足；</p>
-</li>
-<li><p>切换后MCS异常，rank异常；</p>
-</li>
-<li><p>切换前后是否存在多径，频偏过大；</p>
-</li>
-<li><p>其他，比如干扰等；</p>
-</li>
-</ul>
-<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
-<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
-</li>
-<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
-</li>
-</ul>
-<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
+<p>BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR&#x2F;短截断BSR，长BSR&#x2F;长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示：</p>
+<p><img src="http://1.116.145.136/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
+<p>短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示：</p>
+<p><img src="http://1.116.145.136/NR/short-bsr.png" alt="pusch_bsr">长BSR&#x2F;长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
+<p><img src="http://1.116.145.136/NR/long-bsr.png" alt="pusch_bsr">长&#x2F;短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多。<br><img src="http://1.116.145.136/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
+<h5 id="2-BSR分类"><a href="#2-BSR分类" class="headerlink" title="2. BSR分类"></a><a href="#2-BSR%E5%88%86%E7%B1%BB"></a>2. <a href="BSR%E5%88%86%E7%B1%BB">BSR分类</a></h5><p>协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：</p>
+<p><img src="http://1.116.145.136/NR/bsr_fasong.png" alt="pusch_bsr"></p>
 <p>————-本文结束感谢您的阅读————-</p>
 <p>坚持创作，坚持分享！</p>
 <pre><code>打赏
@@ -295,123 +233,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>5G基础-时隙和帧结构</title>
-    <url>/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/</url>
-    <content><![CDATA[<h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a><a href="#1-%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84"></a>1. <a href="#%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
-<p><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
-<p>无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。<br><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
-<p>在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载波间隔越大（即频域越宽），相应的slot时间越短（即时域越窄），相应的每个symb符号长度也越短。<br>上表列出了NR支持的5中不同的帧结构，对应不同的μ，有着不同的帧结构。</p>
-<h5 id="2-slot-Format-slot-Format"><a href="#2-slot-Format-slot-Format" class="headerlink" title="2. [slot Format](#slot Format)"></a><a href="#2-slot-Format"></a>2. [slot Format](#slot Format)</h5><p>时隙格式slot format，是用来表示一个时隙里的每个OFDM符号的传输方向是什么；在NR中，一个时隙里的OFDM符号，被分类为三种：DL符号、flexible符号和UL符号。在TDD的系统就对应成DL slot、S slot 和UL slot；下行数据可以在DL符合和flexible符号中传输，上行数据可以在UL和flexible中传输。在38.213-f60协议中，定义了56中时隙格式，如下表所示：</p>
-<p><img src="http://1.116.145.136/NR/slot_format.png" alt="image"></p>
-<p>为了能够<strong>调度的更加灵</strong>活，定义这么多的时隙格式，当前下行的数据负载很大，可以配置Slot Format 28#；当前上行的数据负载很大可以配置SlotFormat 34#。<strong>有这么多slot format，系统是怎么下发这个Slot Format配置？UE收到Slot Format配置之后，是怎么处理的呢？</strong></p>
-<h5 id="3-UE如何获取基站的slot-format-UE如何获取基站的slot-format"><a href="#3-UE如何获取基站的slot-format-UE如何获取基站的slot-format" class="headerlink" title="3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)"></a><a href="#3-UE%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%AB%99%E7%9A%84slot-format"></a>3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)</h5><p>上表的第一列是Slot Format Indicator，指示当前基站采用的时隙格式，该参数由基站侧配置并下发到UE。UE可以通过解析<strong>系统信息</strong>来获取小区的时隙格式Slot Format，也可以通过<strong>解析特定的DCI</strong>来更新时隙格式。</p>
-<blockquote>
-</blockquote>
-<p><strong>系统消息获取slot format</strong> ?</p>
-<p>SIB1中<strong>ServingCellConfigCommonSIB</strong>信元用于配置UE所在服务小区的小区特定参数，<strong>ServingCellConfigCommonSIB</strong>信元里有名为<strong>TDD-UL-DL-ConfigCommon</strong>的信元，该信元用于确定小区特定的上下行TDD配置；时隙格式相关的参数就可以通过解析<strong>TDD-UL-DL-ConfigCommon</strong>信元中的<strong>TDD-UL-DL-Pattern</strong>信元得到。UE获取到这些参数后，就可以得到当前基站的上下行时隙格式。<br><strong>TDD-UL-DL-Pattern</strong><br><img src="http://1.116.145.136/NR/tdd_ul_dl_pattern.png" alt="image"></p>
-<ul>
-<li><strong>dl-UL-TransmissionPeriodicity</strong>：表示DL-UL模式的周期，用变量P表示，单位是ms，它的取值范围是ms0p5, ms0p625, ms1, ms1p25, ms2,ms2p5, ms5, ms10，分别对应0.5ms、0.625ms、1ms、1.25ms、2ms、2.5ms、5ms、10ms。</li>
-</ul>
-<p>如果我们用变量u_ref来表示referenceSubcarrierSpacing这个值，那么：(1)<strong>只有当u_ref&#x3D;3的时候</strong>，P才能取0.625ms，此时如下表所示，子载波间隔为120kHz。(2)<strong>只有当u_ref&#x3D;2或3的时候</strong>，P才能取1.25ms，此时子载波间隔为60 kHz或120kHz。(3)<strong>只有当u_ref&#x3D;1或2或3的时候</strong>，P才能取2.5ms，此时子载波间隔为30kHz或60 kHz或120kHz。</p>
-<ul>
-<li><p><strong>nrofDownlinkSlots</strong>：表示从每一个DL-UL模式的开始位置起，全部连续的下行时隙的个数，用变量d_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80</p>
-</li>
-<li><p><strong>nrofDownlinkSymbols</strong>：表示从最近的一个全连续下行时隙开始，连续的下行符号个数，用变量d_sym表示。最小值是0，最大值可以取13。</p>
-</li>
-<li><p><strong>nrofUplinkSlots</strong>：表示在每一个DL-UL模式的结尾处，连续全上行时隙的个数，用变量u_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80。</p>
-</li>
-<li><p><strong>nrofUplinkSymbols</strong>：表示在第一个全上行时隙之前的最后一个时隙中，连续全上行符号的个数，用变量u_sym表示。<br><strong>dl-UL-TransmissionPeriodicity</strong>参数可以取8个周期值，这8个周期值，有一定的规则约束需要遵守，</p>
-</li>
-</ul>
-<blockquote>
-</blockquote>
-<p><strong>从DCI里获取slot format</strong> ?</p>
-<p>R15版本的38.213中表7.3.1-1中定义了8中DCI formats，其中DCI2_0指示UE组的slot format。DCI 2_0用<strong>SFI_RNTI</strong> (Slot Format Indicator- Radio Network Temporary Identifier)来加扰，<strong>SFI_RNTI</strong>在RRC的<strong>PDCCH-ServingCellConfig</strong>信元中的<strong>SlotFormatIndicator</strong>信元中得到.<br><strong>PDCCH-ServingCellConfig information element</strong><br><img src="http://1.116.145.136/NR/PDCCH_ServingCellConfig.png" alt="image"></p>
-<p>&#x3D;&#x3D;<strong>SlotFormatIndicator information element</strong>&#x3D;&#x3D;<br><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_1.png" alt="image"></p>
-<p><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_2.png" alt="image"></p>
-<p>在<strong>DCI 2_0</strong>码流中携带的是N个slot format indicator的比特流，格式为：</p>
-<p>DCI 2_0的码流大小由上边的dci-PayloadSize配置决定，最多可以携带128bits。DCI 2_0码流中的Slot Format Indicator为SFI-Index，只是一个ID索引号，范围是0~511；SFI-Index都对应一个SlotFormatCombinationsPerCell信元，这个信元被封装在SlotFormatIndicator信元中。</p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong><br><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_1.png" alt="image"></p>
-<p><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_2.png" alt="image"></p>
-<p><strong>SlotFormatCombinationsPerCell information element</strong>中的slotFormats参数才是真正的时隙格式参数，对应这个slot flormat的表中的第一列<strong>indicator 0-255</strong>；<strong>slotFormatCombinationId</strong>是DCI2_0码流中<strong>SFI_Index</strong>，</p>
-<hr>
-<p><strong>DCI 2_0能够动态的修改时隙格式参数并通知到UE</strong>，为了进一步提升系统的传输性能，<strong>DCI 2_0</strong>里尽量只考虑携带有限个比特的<strong>SFI_Index</strong>索引，UE在提取到N个SFI_Index之后，再通过匹配<strong>SlotFormatCombinationsPerCell</strong>信元中的<strong>slotFormatCombinationId</strong>字段，获取到<strong>SlotFormatCombinationsPerCell</strong>信元中的更多参数。</p>
-<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</a></h5><ul>
-<li><p>3GPP TS 38.211: “NR; Physical channels and modulation (Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.212: “NR; Multiplexing and channel coding(Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.213：“NR; Physical layer procedures for control (Release 15)”</p>
-</li>
-<li><p>3GPP TS 38.331:”NR; Radio Resource Control (RRC) protocol specification (Release 15)”</p>
-</li>
-<li><p><a href="http://www.sharetechnote.com/">http://www.sharetechnote.com</a></p>
-</li>
-</ul>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>5G基础-上行调度的BSR</title>
-    <url>/2021/05/20/5G%E5%9F%BA%E7%A1%80-%E4%B8%8A%E8%A1%8C%E8%B0%83%E5%BA%A6%E7%9A%84BSR/</url>
-    <content><![CDATA[<p>BSR是一种从UE到网络的MAC CE；它承载有关UE缓冲区中有多少数据要发送出去的信息，用来申请上行带调度资源通知基站需要多少资源；</p>
-<h5 id="1-BSR的配置和内容"><a href="#1-BSR的配置和内容" class="headerlink" title="1. BSR的配置和内容"></a><a href="#1-BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9"></a>1. <a href="#BSR%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E5%86%85%E5%AE%B9">BSR的配置和内容</a></h5><p>UE可以建立多个无线承载，每个承载对应一个逻辑信道，如果每个逻辑信道都上报一个BSR，会产生大量的开销，基于这种考虑就引入了逻辑信道组的概念LCG，将逻辑信道放到逻辑信道组中，UE基于LCG来上报BSR，而不是为每个逻辑信道上报BSR，这样把相似的逻辑信道放到一个LCG中，优化了BSR上报的机制。如何划分LCG是基站根基算法实现，这里不讨论。逻辑信道的配置在LogicalChannelConfig-&gt;logicalChannelGroup中配置。</p>
-<p><img src="http://1.116.145.136/NR/LogicalChannelConfig.png" alt="LogicalChannelConfig"></p>
-<p>在logicalChannelConfig中的参数logicalChannelSR-Mask需要注意一下，这个参数仅针对常规BSR有效，当UE触发一个常规BSR，且已经配置了上行授权同时该逻辑信道的logicalChannelSR-Mask为true，那么就不需要发送SR。如果logicalChannelSR-Mask为false，则需要发送SR；对应到每个MAC实体的bsr-config如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr-config.png" alt="bsr-config">从配置中可以看到BSR-Config有几个定时器相关的参数，分别是：</p>
-<ul>
-<li><p>[1] <strong>retxBSR定时器</strong>，重传定时器是为了避免UE一直发BSR而得不到UL Grant的情况；</p>
-</li>
-<li><p>[2] <strong>periodicBSR定时器</strong>，周期性检查UE的BSR，避免由于其他条件不满足导致UE的BSR得不到调度的情况；</p>
-</li>
-<li><p>[3] <strong>logicalChannelSR-DelayTimer</strong>，表示在logicalChannelSR-DelayTimerApplied的启用的逻辑信道的SR传输延时定时器；如果逻辑信道配置了logicalChannelSR-DelayTimerApplied，在触发常规BSR时，会启动或者重启logicalChannelSR-DelayTimer；如果没有配置logicalChannelSR-DelayTimerApplied，在没有上行调度资源来传输新传数据时会触发SR；</p>
-</li>
-</ul>
-<p>BSR通过MAC层的MAC CE上报，NR定义了有4种类型的BSR MAC CE，分别是: 短BSR&#x2F;短截断BSR，长BSR&#x2F;长截断BSR。一个BSR MAC CE与一个对应一个MAC subheader，也就是对应的LCID值，对应关系如下表所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr-lcid.png" alt="bsr-lcid">需要注意的是LCID和LCG不是一个概念，LCID是MAC PDU对应的逻辑信道号。</p>
-<p>短BSR和短截断BSR，只上报一个LCG的BSR，长度固定为8bit，并有一个长度为3bit的LCG ID字段和一个长度为5bit的buffer Size字段组成。如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/short-bsr.png" alt="pusch_bsr">长BSR&#x2F;长截断BSR可以上报一个或者多个LCG的BSR，长度不固定，如下图所示，LCG ID有3bit的字段，最多可以上报8个LCG，其值对应LogicalChannelConfig-&gt;logicalChannelGroup；图中的LCG序号标识对应编号的逻辑信道是否存在buffer size，如果改字段设置为1，则表明该编号对应的逻辑信道有BSR；否则没有；其中buffer size，长度8bit，是LCG所有逻辑信道的RLC和PDCP中剩余的可用于上行的有效传输数据综合，以byte为单位，不计算RLC和MAC的数据头。</p>
-<p><img src="http://1.116.145.136/NR/long-bsr.png" alt="pusch_bsr">长&#x2F;短BSR的buffersize分别是<strong>8bit</strong>和<strong>5bit</strong>，那么他们要给基站的参考数据量有下标定义给出一个大概的范围，表中的buffer size value作为基站分配合适上行资源的参考，并不表示一定能给UE分出来这么多。<br><img src="http://1.116.145.136/NR/buffer_size_for_5bit.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_01.png" alt="pusch_bsr"><img src="http://1.116.145.136/NR/NR_MAC_CE_BSR_8bit_02.png" alt="pusch_bsr"></p>
-<h5 id="2-BSR分类"><a href="#2-BSR分类" class="headerlink" title="2. BSR分类"></a><a href="#2-BSR%E5%88%86%E7%B1%BB"></a>2. <a href="BSR%E5%88%86%E7%B1%BB">BSR分类</a></h5><p>协议中定义了三种类型的BSR：分别是Regular BSR，Periodic BSR和Padding BSR。三种BSR场景下适配长短BSR关系主要根据要发的LCG数量和响应的传输bit决定，对应关系如下图所示：</p>
-<p><img src="http://1.116.145.136/NR/bsr_fasong.png" alt="pusch_bsr"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>C++函数对象与lambda表达式</title>
-    <url>/2020/06/13/C++%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    <url>/2020/06/13/C-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
     <content><![CDATA[<p><strong>函数对象</strong>，一个类如果将<code>()</code>运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。**<code>lambda</code>表达式**也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用<code>lambda</code>表达式会比较方便。</p>
 <h5 id="1-函数对象的如何实现"><a href="#1-函数对象的如何实现" class="headerlink" title="1. 函数对象的如何实现?"></a><a href="#1-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"></a>1. <a href="#%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0?">函数对象的如何实现?</a></h5><p>C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：<br>【1】无入参的函数对象：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">class ObjType</span><br><span class="line">&#123;</span><br><span class="line">public:</span><br><span class="line">    void operator() ()  // 无参数类型的()重载</span><br><span class="line">    &#123;</span><br><span class="line">        cout</span><br><span class="line">T accumulate(InIt first, InIt last, T val, Pred opt)</span><br><span class="line">&#123;</span><br><span class="line">    for (; first != last; ++first) &#123;</span><br><span class="line">        init = opt(init, *first);</span><br><span class="line">    &#125;</span><br><span class="line">    return init;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -530,8 +353,352 @@
       </tags>
   </entry>
   <entry>
+    <title>C与C++常用函数使用与表达式解析</title>
+    <url>/2020/05/24/C%E4%B8%8EC-%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%A3%E6%9E%90/</url>
+    <content><![CDATA[<h5 id="1-malloc和realloc"><a href="#1-malloc和realloc" class="headerlink" title="1. malloc和realloc"></a><a href="#1-malloc%E5%92%8Crealloc"></a>1. <a href="malloc%E5%92%8Crealloc">malloc和realloc</a></h5><p>这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数.</p>
+<h6 id="1-1-malloc函数"><a href="#1-1-malloc函数" class="headerlink" title="1.1  malloc函数"></a><a href="#1-1-malloc%E5%87%BD%E6%95%B0"></a>1.1  <a href="#malloc%E5%87%BD%E6%95%B0">malloc函数</a></h6><p><code>void *mallco(size_t size);</code> <code>malloc</code> 向系统申请分配指定size个字节的内存空间。返回类型是 <code>void*</code> 类型。</p>
+<table>
+<thead>
+<tr>
+<th>malloc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1、malloc 函数返回的是 void * 类型，定义的哪种类型的指针，必须强转为此类型指针;</td>
+</tr>
+<tr>
+<td>2、函数的实参为 sizeof(int) ，用于指明一个整型数据需要的大小；</td>
+</tr>
+<tr>
+<td>3、malloc是必须指定内存大小的空间，比如想分配50个int类型的空间：int* p &#x3D; (int*) malloc ( sizeof(int) * 50 )；</td>
+</tr>
+<tr>
+<td>4、是malloc 只管分配内存，并不能对所得的内存进行初始化，所以得到的一片新内存中，其值将是随机的；</td>
+</tr>
+</tbody></table>
+<blockquote>
+</blockquote>
+<p> 闲话长谈malloc(0)与malloc(-1)返回值是什么样的？</p>
+<pre><code>#include
+using namespace std;
+int main()&#123;
+    int *ptr1=(int*)malloc(sizeof(int)*(0));
+    int *ptr1=(int*)malloc(sizeof(int)*(-1));;
+    cout 
+**If size is zero**, the return value depends on the particular library implementation (it may or may not be a null pointer), but the returned pointer shall not be dereferenced.
+
+表明**malloc(0)**是跟据，不同库的设置有着不同的表现，翻翻glibc(是GNU发布的c运行库,linux系统中最底层的api)的源码瞅瞅，有如下的说明：
+
+&gt; 
+**If n is zero**, malloc **returns a minumum-sized chunk**. (The minimum size is 16 bytes on most 32bit systems, and 24 or 32 bytes on 64bit systems.)  On most systems, size_t is an unsigned type, so calls with negative arguments are interpreted as requests for huge amounts of space, which will often fail. The maximum supported value of n differs across systems, but is in all cases less than the maximum representable value of a size_t.
+
+也就是说在Linux上执行 malloc(0)时，会拿到一个指向一小块内存的指针，这个指针指向的内存的大小是由机器决定的。这里不再细究，有兴趣可以参考: [当你 malloc(0) 时会发生什么](https://zhuanlan.zhihu.com/p/40490357)
+
+###### [](#1-2-realloc函数)1.2 [realloc函数](#realloc函数)
+
+`void *realloc(void *mem_address, unsigned int newsize);`
+作用：重新申请内存空间，不影响原有数据，但是新分配的地址可能不一样。
+
+| realloc |
+|---|
+| 1、当mem_address为null，size不为0，则realloc()和malloc()类似。分配一个newsize的内存块，返回一个指向该内存块的指针；如果没有足够可用的内存用来完成重新分配，则返回null而原来的内存块保持不变； |  |
+| 2、将分配的内存扩大，则有以下情况：（1）如果当前内存段后面有需要的内存空间，则直接扩展这段内存空间，realloc()将返回原指针；（2）如果当前内存段后面的空闲字节不够，那么就使用堆中的第一个能够满足这一要求的内存块，将目前的数据复制到新的位置，并将原来的数据块释放掉，返回新的内存块位置。（3）如果申请失败，将返回NULL，原来的指针仍然有效； |  |
+| 3、如果内存减少，则仅改变下索引信息，但并不代表被减少的部分内存还可以安全访问，这己经释放； |  |
+| 4、如果newsize大小为 0，行为是未定义的，受具体实现来说， 目前VC++是相当于free(ptr)，并返回一个空指针，具体描述。 |  |
+
+&gt; 
+ **If there is not enough memory**, the old memory block is not freed and null pointer is returned.
+
+&gt; 
+ **If ptr is NULL**, the behavior is the same as calling malloc(new_size).
+
+&gt; 
+ **If new_size is zero**, the behavior is implementation defined (null pointer may be returned (in which case the old memory block may or may not be freed), or some non-null pointer may be returned that may not be used to access storage).
+
+ 【参考文献】：
+ 1、[https://en.cppreference.com/w/c/memory/realloc](https://en.cppreference.com/w/c/memory/realloc)
+ 2、[https://en.cppreference.com/w/c/memory/malloc](https://en.cppreference.com/w/c/memory/malloc)
+
+      
+    
+
+    
+
+  
+    
+
+    
+        
+-------------本文结束感谢您的阅读-------------
+
+    
+
+  
+
+    
+    
+    
+
+    
+
+    
+      
+
+        
+
+  
+坚持创作，坚持分享！
+
+  
+    打赏
+  
+  
+
+    
+      
+
+        ![liurui 微信支付](/images/wechatpay.png)
+        
+微信支付
+
+      
+
+    
+
+    
+      
+
+        ![liurui 支付宝](/images/alipay.png)
+        
+支付宝
+</code></pre>
+]]></content>
+      <categories>
+        <category>语言特性</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C和C++关键特性浅析</title>
+    <url>/2020/05/12/C%E5%92%8CC-%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/</url>
+    <content><![CDATA[<h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a><a href="#1-%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic"></a>1. <a href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
+<ul>
+<li><p><strong>什么是命名空间？</strong> 一个由程序设计者命名的内存区域，程序设计者可以根据需要指定一些有名字的空间域，把一些全局实体分别放在各个命名空间中，从而与其他全局实体分隔开来。</p>
+</li>
+<li><p><strong>命名空间的作用</strong><br>建立一些互相分隔的作用域，把一些全局实体分隔开来。</p>
+</li>
+<li><p><strong>命名空间的定义</strong><br><code>namespace ns1 &#123;int a；double b; void fun() &#123; //do something&#125;;&#125;</code></p>
+</li>
+<li><p><strong>使用命名空间成员</strong><br>命名空间名：：命名空间成员名，例如 <code>std::vector</code></p>
+</li>
+<li><p><strong>命名空间的使用</strong> (1)使用命名空间中的全部成员<br><code>using namespace std;</code>在本作用域(using语句所在的作用域)中引入命名空间std所有的成员的声明，以备使用；(2)使用命名空间中的特定成员;using后面的命名空间成员名必须是由命名空间限定的名字。<code>using std::string;</code>在本作用域(using语句所在的作用域)中引入命名空间std成员string的声明以备使用；也就是在使用了无命名namespace的文件中，使用命名空间中的成员，不必(也无法)用命名空间名限定。</p>
+</li>
+<li><p><strong>无名的命名空间</strong> C++还允许使用没有名字的命名空间，由于命名空间没有名字，在其他文件中显然无法引用，它只在本文件的作用域内有效。</p>
+</li>
+</ul>
+<h6 id="1-1-编译属性"><a href="#1-1-编译属性" class="headerlink" title="1.1 编译属性"></a><a href="#1-1-%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"></a>1.1 <a href="%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"><strong>编译属性</strong></a></h6><p>在C中，给变量(局部&#x2F;全局变量)、函数，加上 static表示当前函数和变量的linkage 为 internal，也就是对外部不可见, 这样就可以在不同的unit(源一般指当前文件) 中定义同名的函数和变量了。在C++中，在不同的编译unit中定义同名的函数和变量的，这样就有了命名空间namespace，解决了变量和函数名字冲突问题，同时给函数和变量限定为 internal linkage。</p>
+<h6 id="1-2-static-修饰的对象成员和成员函数"><a href="#1-2-static-修饰的对象成员和成员函数" class="headerlink" title="1.2 static 修饰的对象成员和成员函数"></a><a href="#1-2-static-%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"></a>1.2 <a href="%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><strong>static 修饰的对象成员和成员函数</strong></a></h6><p><strong>static修饰的对象成员</strong>不能通过调用构造函数来进行初始化，因此static修饰的数据成员必须在类外进行初始化且只会初始化一次。【静态变量内存分配在 .data段】<br><strong>static修饰的成员函数</strong>为静态成员方法，静态成员方法可以在类内或类外定义，但必须在类内声明；；static成员方法没有this指针，不能直接引用非static数据成员或调用类的非static成员方法，只能调用类的static成员数据和static成员方法；static成员不是任何对象的组成，不依赖对象的调用所以static成员方法不能被声明为const，因为const只限定该类的对象；static成员方法不能同时被声明为虚函数。</p>
+<p>参考文献：</p>
+<ul>
+<li><p><a href="https://www.cnblogs.com/skullboyer/p/10200039.html">https://www.cnblogs.com/skullboyer/p/10200039.html</a></p>
+</li>
+<li><p><a href="https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html">https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html</a></p>
+</li>
+</ul>
+<h5 id="2-虚函数表vtbl与（虚）函数表指针vptr"><a href="#2-虚函数表vtbl与（虚）函数表指针vptr" class="headerlink" title="2. 虚函数表vtbl与（虚）函数表指针vptr"></a><a href="#2-%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr"></a>2. <a href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr">虚函数表vtbl与（虚）函数表指针vptr</a></h5><p><strong>虚函数表</strong>：存储虚函数信息的表； <strong>虚函数表指针</strong>：指向虚函数表的指针。</p>
+<h6 id="2-1-无虚函数的类"><a href="#2-1-无虚函数的类" class="headerlink" title="2.1 无虚函数的类"></a><a href="#2-1-%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.1 <a href="#%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><strong>无虚函数的类</strong></a></h6><p>讲C++的虚函数表之前，先看一下C语言是如何实现一个面向对象的类。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 方法1</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    </span><br><span class="line">    void (*func)(struct* stu);</span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.func = profile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>要有面向对象的效果，只能给struct里面添加函数指针，然后把函数赋值给指针；实际使用中这种用法比较少，主要因为函数指针的空间成本；每实例化一个结构体对象，就会有一个函数指针，例如8字节吗，如果有这个对象有m个函数指针，n个实例对象，那么消耗额外的内存是<code>m*8*n</code>字节。因此C语言通常不这样用，而是直接用外部定义一个函数。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 方法2</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    profile(&amp;jhon);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对于一个C++的类，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.profile();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟C语言实现对比，看着像第一种方式通过在结构体定义函数指针的方式来实现。但实际相当于第二种方式。为什么呢？<strong>C++中类的操作和封装只是针对程序员的，而编译器还是面向过程的</strong>，编译器会给类的成员函数添加额外的类指针参数，在运行期间传入对象实际的指针。这说明<strong>类的数据成员和成员函数是分离的</strong>。每个函数都有一个地址（指针），不论这个函数是全局函数还是类的成员函数；在类不含虚函数的情况下，编译器在编译的时候就会把函数的地址确定下来，运行期间直接去调用这个地址的函数，这就是<strong>静态绑定</strong>方式（static binding）的函数调用。</p>
+<h6 id="2-2-有虚函数的类"><a href="#2-2-有虚函数的类" class="headerlink" title="2.2 有虚函数的类"></a><a href="#2-2-%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.2 <a href="#%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB">有虚函数的类</a></h6><p>为什么会出现虚函数？为了解决面向对象中多态的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">class seniorStu: public student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    string address;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n address:%s&quot;, height, age, address.c_str());&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student bob(185,20);</span><br><span class="line">    seniorStu jhon(170,25,&quot;四川成都&quot;);</span><br><span class="line">    jhon.profile();</span><br><span class="line">    // 输出 height: 170 age:25 address:四川成都</span><br><span class="line">    bob.profile();</span><br><span class="line">    // 输出 height: 185 age:20</span><br><span class="line">    student* jim = &amp;jhon;</span><br><span class="line">    jim-&gt;profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25 </span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上述，可以看到用父类指针指向子类的地址，最终调用的profile函数韩式子类的<br>这个现象称之为<strong>动态绑定</strong>（dynamic binding）后者说<strong>延迟绑定</strong>（lazy binding）。这里如果把子类的virtual，这个代码将调用父类的profile，输出：</p>
+<blockquote>
+</blockquote>
+<p>输出 height: 170 age:25 </p>
+<p>输出 height: 170 age:25 </p>
+<p>这是由于<strong>类的数据成员和函数成员是分离的</strong>。</p>
+<h6 id="2-3-虚表指针和虚函数表"><a href="#2-3-虚表指针和虚函数表" class="headerlink" title="2.3 虚表指针和虚函数表"></a><a href="#2-3-%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"></a>2.3 <a href="#%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8">虚表指针和虚函数表</a></h6><p>从内存布局上，只能看到成员变量，看不到成员函数。因为在编译的时候就确定调用哪个函数。<br>将了这么多，可以回归到整体函数虚函数表了，也就是C++多态的实现。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123; printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">    virtual void status() &#123; std::coutprofile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个示例父类有两个虚函数，子类重载了这两个虚函数。查看编译器的内存布局，<br>clang有个命令可以输出对象的内存布局（不同编译器内存布局未必相同），</p>
+<blockquote>
+</blockquote>
+<p>clang -cc1 -fdump-record-layouts -stdlib&#x3D;libc++ student.cpp</p>
+<p>可以看到类似于这样的内存分布：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class student</span><br><span class="line">    0  | (student vtable pointer)</span><br><span class="line">    x  | int height</span><br><span class="line">    x  | int age</span><br><span class="line"></span><br><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class seniorStu</span><br><span class="line">    0  |   class student (primary base)</span><br><span class="line">    0  |     (student vtable pointer)</span><br><span class="line">    x  |     int height</span><br><span class="line">    x  |     int age</span><br><span class="line">    x  |   string status</span><br></pre></td></tr></table></figure>
+
+<p>在父类student的起始位置有一个student vtable pointer；子类seniorStu是在他的基础上多了自己的成员status。对于含有虚函数的类，在编译期间编译器会给这种类自动的在起始位置添加一个<strong>虚表指针</strong>（vptr），让虚表指针vptr指向一个虚表；虚表中存储了实际的函数地址。<strong>那么虚表里面存储了那些详细的内容呢？</strong> g++有打印虚表的操作（请在Linux上使用g++）会自动写到一个文件里：</p>
+<blockquote>
+</blockquote>
+<p>g++ -fdump-class-hierarchy student.cpp</p>
+<p>可以看出如果vptr指向的并不是虚表的表头而是表头加偏移量而获得一个地址，也就是虚函数的位置。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Vtable for student</span><br><span class="line">student::_ZTV7student: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI7student)</span><br><span class="line">    16 (int (*)(...))student::profile</span><br><span class="line">    24 (int (*)(...))student::status</span><br><span class="line"></span><br><span class="line">Class student</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=20 base align=8</span><br><span class="line">    student (0x0x7f9b1fa8c960) 0</span><br><span class="line">    vptr=((&amp; student::_ZTV7Actress) + 16u)</span><br><span class="line"></span><br><span class="line">Vtable for Sensei</span><br><span class="line">    seniorStu::_ZTV6seniorStu: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI6seniorStu)</span><br><span class="line">    16 (int (*)(...))seniorStu::profile</span><br><span class="line">    24 (int (*)(...))seniorStu::status</span><br><span class="line"></span><br><span class="line">Class seniorStu</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=24 base align=8</span><br><span class="line">    seniorStu (0x0x7f9b1fa81138) 0</span><br><span class="line">    vptr=((&amp; seniorStu::_ZTV6seniorStu) + 16u)</span><br><span class="line">    student (0x0x7f9b1fa8c9c0) 0</span><br><span class="line">    primary-for seniorStu (0x0x7f9b1fa81138)</span><br></pre></td></tr></table></figure>
+
+<h6 id="2-4-总结一下"><a href="#2-4-总结一下" class="headerlink" title="2.4 总结一下"></a><a href="#2-4-%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"></a>2.4 <a href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><strong>总结一下</strong></a></h6><p><strong>1、如果一个类中有一个虚函数</strong>，这个类就有一个虚函数表。虚函数表示类的，而不是属于对象的，在编译时就确定了，存放在只读的数据段（非代码段）。每实例化一个类对象都有一个虚函数表指针，指向类的虚函数。虚函数表指针属于类的对象。存放在堆上或者栈上(<strong>什么时候存放在堆，什么时候存放在栈</strong>上需要再探讨一下)。<strong>2、对于有派生子类的情况</strong>：如果基类有虚函数，不管派生类实现或者没有虚函数，都有虚函数表。基类的虚函数表和派生类的虚函数表不是同一个表。如果派生类没有重写基类的函数，则派生类的虚函数表和基类的虚函数表内容是一样的。如果派生类重写了基类的虚函数，则培生累的虚函数表中用的是派生类的函数。<strong>3、对于多继承的情况</strong>，含有虚函数的基类有多少个，派生类就有多少个虚函数表；派生类有的而基类没有的，添加在派生类的第一个虚函数表中，虚函数表的结果是*表示还有下一个虚函数表，结果是0表示是最后一个虚函数表。</p>
+<p>参考文献： </p>
+<ul>
+<li><p><a href="https://www.zhihu.com/question/389546003/answer/1194780618">https://www.zhihu.com/question/389546003/answer/1194780618</a></p>
+</li>
+<li><p><a href="https://blog.csdn.net/weixin_30552635/article/details/99157190">https://blog.csdn.net/weixin_30552635&#x2F;article&#x2F;details&#x2F;99157190</a></p>
+</li>
+</ul>
+<h5 id="3-C-C-的内存分布"><a href="#3-C-C-的内存分布" class="headerlink" title="3. C&#x2F;C++的内存分布"></a><a href="#3-C-C-%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"></a>3. <a href="#C/C++%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83">C&#x2F;C++的内存分布</a></h5><table>
+<thead>
+<tr>
+<th>内存区</th>
+<th>用途</th>
+<th>申请释放方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>栈区</td>
+<td>存储局部和临时变量，函数调用时存储函数调用时，存储函数的返回指针用于控制函数的调用和返回</td>
+<td>程序开始是自动分配内存，结束自动释放</td>
+</tr>
+<tr>
+<td>堆区</td>
+<td>存储动态内存分配</td>
+<td>程序员手动申请，手动释放；若程序员不释放，在程序结束是，系统回收</td>
+</tr>
+<tr>
+<td>BSS段</td>
+<td>存储未初始化的变量数据，包括初始化为0的全局变量</td>
+<td>只占运行时内存空间不占文件空间。在程序整个周期内，BSS段的数据一致存在</td>
+</tr>
+<tr>
+<td>data区</td>
+<td>存储已经初始化的变量数据，为数据分配空间，数据保存在目标文件中</td>
+<td>—–</td>
+</tr>
+<tr>
+<td>代码段TXT</td>
+<td>存储程序代码的内存映射，以及函数体的二进制代码</td>
+<td>—–</td>
+</tr>
+<tr>
+<td>文字(只读)常量区</td>
+<td>存字符串常量放等</td>
+<td>程序结束后有系统释放</td>
+</tr>
+<tr>
+<td>全局区(静态区)</td>
+<td>全局变量和静态变量存储在一起，未初始化或者初始化为0的存在BSS，初始化不为0的全局变量或者静态变量存在此处</td>
+<td>程序结束后由系统释放</td>
+</tr>
+</tbody></table>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>语言特性</category>
+      </categories>
+      <tags>
+        <tag>C++</tag>
+        <tag>C</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>5G基础-时隙和帧结构</title>
+    <url>/2021/04/28/5G%E5%9F%BA%E7%A1%80-%E6%97%B6%E9%9A%99%E5%92%8C%E5%B8%A7%E7%BB%93%E6%9E%84/</url>
+    <content><![CDATA[<h5 id="1-时隙结构"><a href="#1-时隙结构" class="headerlink" title="1. 时隙结构"></a><a href="#1-%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84"></a>1. <a href="#%E6%97%B6%E9%9A%99%E7%BB%93%E6%9E%84">时隙结构</a></h5><p>LTE的子载波间隔是固定的15kHz，在NR中针对不同频谱的应用场景设计了5种不同的子载波间隔，图下表：</p>
+<p><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
+<p>无论是哪种子载波间隔，每个RB包含的子载波个数仍然是12个。在NR中，对于normal CP类型，每个slot包含的符号数是14，每个帧包含的slot数根据子载波间隔的不同也有差异。<br><img src="http://1.116.145.136/NR/numerologles.png" alt="image"></p>
+<p>在NR里，每个frame帧仍然包括10个subframe子帧，每个子帧的长度固定是1ms。子载波间隔越大（即频域越宽），相应的slot时间越短（即时域越窄），相应的每个symb符号长度也越短。<br>上表列出了NR支持的5中不同的帧结构，对应不同的μ，有着不同的帧结构。</p>
+<h5 id="2-slot-Format-slot-Format"><a href="#2-slot-Format-slot-Format" class="headerlink" title="2. [slot Format](#slot Format)"></a><a href="#2-slot-Format"></a>2. [slot Format](#slot Format)</h5><p>时隙格式slot format，是用来表示一个时隙里的每个OFDM符号的传输方向是什么；在NR中，一个时隙里的OFDM符号，被分类为三种：DL符号、flexible符号和UL符号。在TDD的系统就对应成DL slot、S slot 和UL slot；下行数据可以在DL符合和flexible符号中传输，上行数据可以在UL和flexible中传输。在38.213-f60协议中，定义了56中时隙格式，如下表所示：</p>
+<p><img src="http://1.116.145.136/NR/slot_format.png" alt="image"></p>
+<p>为了能够<strong>调度的更加灵</strong>活，定义这么多的时隙格式，当前下行的数据负载很大，可以配置Slot Format 28#；当前上行的数据负载很大可以配置SlotFormat 34#。<strong>有这么多slot format，系统是怎么下发这个Slot Format配置？UE收到Slot Format配置之后，是怎么处理的呢？</strong></p>
+<h5 id="3-UE如何获取基站的slot-format-UE如何获取基站的slot-format"><a href="#3-UE如何获取基站的slot-format-UE如何获取基站的slot-format" class="headerlink" title="3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)"></a><a href="#3-UE%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E5%9F%BA%E7%AB%99%E7%9A%84slot-format"></a>3. [UE如何获取基站的slot format](#UE如何获取基站的slot format)</h5><p>上表的第一列是Slot Format Indicator，指示当前基站采用的时隙格式，该参数由基站侧配置并下发到UE。UE可以通过解析<strong>系统信息</strong>来获取小区的时隙格式Slot Format，也可以通过<strong>解析特定的DCI</strong>来更新时隙格式。</p>
+<blockquote>
+</blockquote>
+<p><strong>系统消息获取slot format</strong> ?</p>
+<p>SIB1中<strong>ServingCellConfigCommonSIB</strong>信元用于配置UE所在服务小区的小区特定参数，<strong>ServingCellConfigCommonSIB</strong>信元里有名为<strong>TDD-UL-DL-ConfigCommon</strong>的信元，该信元用于确定小区特定的上下行TDD配置；时隙格式相关的参数就可以通过解析<strong>TDD-UL-DL-ConfigCommon</strong>信元中的<strong>TDD-UL-DL-Pattern</strong>信元得到。UE获取到这些参数后，就可以得到当前基站的上下行时隙格式。<br><strong>TDD-UL-DL-Pattern</strong><br><img src="http://1.116.145.136/NR/tdd_ul_dl_pattern.png" alt="image"></p>
+<ul>
+<li><strong>dl-UL-TransmissionPeriodicity</strong>：表示DL-UL模式的周期，用变量P表示，单位是ms，它的取值范围是ms0p5, ms0p625, ms1, ms1p25, ms2,ms2p5, ms5, ms10，分别对应0.5ms、0.625ms、1ms、1.25ms、2ms、2.5ms、5ms、10ms。</li>
+</ul>
+<p>如果我们用变量u_ref来表示referenceSubcarrierSpacing这个值，那么：(1)<strong>只有当u_ref&#x3D;3的时候</strong>，P才能取0.625ms，此时如下表所示，子载波间隔为120kHz。(2)<strong>只有当u_ref&#x3D;2或3的时候</strong>，P才能取1.25ms，此时子载波间隔为60 kHz或120kHz。(3)<strong>只有当u_ref&#x3D;1或2或3的时候</strong>，P才能取2.5ms，此时子载波间隔为30kHz或60 kHz或120kHz。</p>
+<ul>
+<li><p><strong>nrofDownlinkSlots</strong>：表示从每一个DL-UL模式的开始位置起，全部连续的下行时隙的个数，用变量d_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80</p>
+</li>
+<li><p><strong>nrofDownlinkSymbols</strong>：表示从最近的一个全连续下行时隙开始，连续的下行符号个数，用变量d_sym表示。最小值是0，最大值可以取13。</p>
+</li>
+<li><p><strong>nrofUplinkSlots</strong>：表示在每一个DL-UL模式的结尾处，连续全上行时隙的个数，用变量u_slots表示。最小值是0，目前的R15版本协议规定最大值可以取80。</p>
+</li>
+<li><p><strong>nrofUplinkSymbols</strong>：表示在第一个全上行时隙之前的最后一个时隙中，连续全上行符号的个数，用变量u_sym表示。<br><strong>dl-UL-TransmissionPeriodicity</strong>参数可以取8个周期值，这8个周期值，有一定的规则约束需要遵守，</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p><strong>从DCI里获取slot format</strong> ?</p>
+<p>R15版本的38.213中表7.3.1-1中定义了8中DCI formats，其中DCI2_0指示UE组的slot format。DCI 2_0用<strong>SFI_RNTI</strong> (Slot Format Indicator- Radio Network Temporary Identifier)来加扰，<strong>SFI_RNTI</strong>在RRC的<strong>PDCCH-ServingCellConfig</strong>信元中的<strong>SlotFormatIndicator</strong>信元中得到.<br><strong>PDCCH-ServingCellConfig information element</strong><br><img src="http://1.116.145.136/NR/PDCCH_ServingCellConfig.png" alt="image"></p>
+<p>&#x3D;&#x3D;<strong>SlotFormatIndicator information element</strong>&#x3D;&#x3D;<br><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_1.png" alt="image"></p>
+<p><img src="http://1.116.145.136/NR/SlotFormatIndicator_information_2.png" alt="image"></p>
+<p>在<strong>DCI 2_0</strong>码流中携带的是N个slot format indicator的比特流，格式为：</p>
+<p>DCI 2_0的码流大小由上边的dci-PayloadSize配置决定，最多可以携带128bits。DCI 2_0码流中的Slot Format Indicator为SFI-Index，只是一个ID索引号，范围是0~511；SFI-Index都对应一个SlotFormatCombinationsPerCell信元，这个信元被封装在SlotFormatIndicator信元中。</p>
+<p><strong>SlotFormatCombinationsPerCell information element</strong><br><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_1.png" alt="image"></p>
+<p><img src="http://1.116.145.136/NR/SlotFormatCombinationsPerCell_2.png" alt="image"></p>
+<p><strong>SlotFormatCombinationsPerCell information element</strong>中的slotFormats参数才是真正的时隙格式参数，对应这个slot flormat的表中的第一列<strong>indicator 0-255</strong>；<strong>slotFormatCombinationId</strong>是DCI2_0码流中<strong>SFI_Index</strong>，</p>
+<hr>
+<p><strong>DCI 2_0能够动态的修改时隙格式参数并通知到UE</strong>，为了进一步提升系统的传输性能，<strong>DCI 2_0</strong>里尽量只考虑携带有限个比特的<strong>SFI_Index</strong>索引，UE在提取到N个SFI_Index之后，再通过匹配<strong>SlotFormatCombinationsPerCell</strong>信元中的<strong>slotFormatCombinationId</strong>字段，获取到<strong>SlotFormatCombinationsPerCell</strong>信元中的更多参数。</p>
+<h5 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE">参考文献</a></h5><ul>
+<li><p>3GPP TS 38.211: “NR; Physical channels and modulation (Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.212: “NR; Multiplexing and channel coding(Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.213：“NR; Physical layer procedures for control (Release 15)”</p>
+</li>
+<li><p>3GPP TS 38.331:”NR; Radio Resource Control (RRC) protocol specification (Release 15)”</p>
+</li>
+<li><p><a href="http://www.sharetechnote.com/">http://www.sharetechnote.com</a></p>
+</li>
+</ul>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
     <title>LeetCode刷题--典型字符串问题</title>
-    <url>/2020/05/05/LeetCode%E5%88%B7%E9%A2%98--%E5%85%B8%E5%9E%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%97%AE%E9%A2%98/</url>
+    <url>/2020/05/05/LeetCode%E5%88%B7%E9%A2%98-%E5%85%B8%E5%9E%8B%E5%AD%97%E7%AC%A6%E4%B8%B2%E9%97%AE%E9%A2%98/</url>
     <content><![CDATA[<p>字符串的<strong>子串</strong>和<strong>子序列</strong>，<strong>子串必须是连续的</strong>，<strong>子序列不一定要求联系</strong> 。<strong>什么叫回文串</strong>？如果一个字符串正着读和反着读是一样的，那它就是<strong>回文串</strong>。</p>
 <h5 id="1-最长回文串"><a href="#1-最长回文串" class="headerlink" title="1. 最长回文串"></a><a href="#1-%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E4%B8%B2"></a>1. 最长回文串</h5><p><strong>例题1.</strong> 409. <a href="https://leetcode-cn.com/problems/longest-palindrome/">最长回文串</a></p>
 <blockquote>
@@ -671,6 +838,181 @@
       <tags>
         <tag>leetcode</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>NR PDSCH资源分配</title>
+    <url>/2021/06/25/NR-PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
+    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
+<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
+<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
+</li>
+<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
+</li>
+</ul>
+<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
+<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
+</li>
+<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
+</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
+<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
+<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
+<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
+</li>
+<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
+</li>
+</ul>
+<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
+<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
+<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
+<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
+</blockquote>
+Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
+</ul>
+<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
+<ul>
+<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
+</ul>
+<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
+<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
+<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
+<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
+<ul>
+<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
+</li>
+<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
+</li>
+</ul>
+<blockquote>
+</blockquote>
+<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
+<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
+<blockquote>
+</blockquote>
+<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>5G常见问题定位</title>
+    <url>/2021/04/29/5G%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/</url>
+    <content><![CDATA[<h5 id="1-SR达到最大重传次数"><a href="#1-SR达到最大重传次数" class="headerlink" title="1. SR达到最大重传次数"></a><a href="#1-SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0"></a>1. <a href="#SR%E8%BE%BE%E5%88%B0%E6%9C%80%E5%A4%A7%E9%87%8D%E4%BC%A0%E6%AC%A1%E6%95%B0">SR达到最大重传次数</a></h5><ul>
+<li><p>check UE的盲检位置能否对上</p>
+</li>
+<li><p>BWP的位置是否正确，若基站已经切换了BWP，而UE还在BWP上解调就解不出DCI</p>
+</li>
+<li><p>聚集级别是否正确  1CCE &#x3D; 6REG</p>
+</li>
+</ul>
+<h5 id="2-DCI漏检问题"><a href="#2-DCI漏检问题" class="headerlink" title="2.  DCI漏检问题"></a><a href="#2-DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98"></a>2.  <a href="#DCI%E6%BC%8F%E6%A3%80%E9%97%AE%E9%A2%98">DCI漏检问题</a></h5><ul>
+<li><p>检查PDCCH是否存在问题<br>-SSR波束和RACH波束是否使用正确，SSB用cell的静态波束，RAR用RACH的测量波束；普通的数传报文，有SRS波束用SRS波束，没有SRS听RACH波束；</p>
+</li>
+<li><p>check DCI类型数值value是否正确</p>
+</li>
+<li><p>L2下发的L1报文是否被L1校验</p>
+</li>
+<li><p>查看是否有大量的DTX，看UE接收到的DCI个数是否满足是满的</p>
+</li>
+</ul>
+<h5 id="3-影响峰值速率的因素"><a href="#3-影响峰值速率的因素" class="headerlink" title="3. 影响峰值速率的因素"></a><a href="#3-%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0"></a>3. <a href="#%E5%BD%B1%E5%93%8D%E5%B3%B0%E5%80%BC%E9%80%9F%E7%8E%87%E7%9A%84%E5%9B%A0%E7%B4%A0">影响峰值速率的因素</a></h5><ul>
+<li><p><strong>pdcch_grant不足</strong>，以100M，30kHz，上下行时隙配比8:2，pdcch dl&#x2F;ul grant 分别是1600次和400次；</p>
+</li>
+<li><p><strong>RB调度不足</strong>，100M在每个时刻都有对应的RB数，平均下来峰值场景大概265个RB；</p>
+<blockquote>
+</blockquote>
+<p>pdcch_grant不足和RB调度不足可以归纳为<strong>调度不足</strong>，主要看（1）<strong>是否有来水不足</strong>；（2）<strong>是否有AMBR限</strong>；核心网开户信息中包含了两个重要息<strong>：AMBR</strong>，<strong>QCI</strong>。AMBR限制了UE的Non-GBR速率；用户QCI信息会与基站侧的QCI级的PDCP、RLC相关定时器参数（包含SN bit数、RLC模式等）进行关联，从而影响到用户的吞吐率性能；UE AMBR&#x2F;QCI信息可以通过S1口跟踪S1AP_INITIAL CONTEXT SETUP REQ或者X2口SgNBAdd Req查看。(3)<strong>是否有DCI漏检</strong>，查看CSI-RSRP，是否是覆盖差导致DCI漏检；检查配置查看PDCCH聚合级别，聚合级别太低会造成DCI漏检，推荐自适应；DCI资源不足，调度用户数太多也会导致DCI漏检；(4)<strong>传输问题</strong>，如果是TCP业务，先通过UDP灌包排查是是空口问题还是TCP问题；<br><strong>针对上述问题总结下来主要可以归纳为以下三类</strong>：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>协议栈</th>
+<th>影响因素</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PDCP</td>
+<td>入口流量不足，缓存满丢包，超时丢包，PDCP SN长度不够</td>
+</tr>
+<tr>
+<td>RLC</td>
+<td>RLC入口流量不足，RLC重传，RLC窗口满停止调度</td>
+</tr>
+<tr>
+<td>MAC</td>
+<td>harq资源耗尽，DCI漏检</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p><strong>mcs低</strong>，MCS反应的是信道质量SINR映射到CQI关系，**(1)当CQI比较低<strong>，MCS会比较低，要跑满调度，就需要提升CQI；</strong>(2)当基站接收功率过高<strong>，引起接收器件的削波，导致SINR降低从而导致MCS下降，会使速率下降; 一般情况下，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm；</strong>(3)时频偏问题<strong>；</strong>(4)干扰问题<strong>，主要分为邻区干扰、越区干扰和外部干扰。</strong>邻区干扰<strong>一般由于邻区过覆盖对当前小区产生干扰；</strong>越区干扰<strong>，需要看是否有较远距离的小区越至服务小区的范围；</strong>外部干扰<strong>，需要进行扫描人工分析；</strong>当出现高RSRP低SINR（如：RSRP均值&gt;&#x3D;-80dBm，SINR均值&lt;&#x3D;15dB）且MCS等指标都偏低，那么就有必要进行干扰问题排查**；</p>
+</li>
+<li><p><strong>mcs&#x2F;rank 被固定</strong>，导致UE无法调度更高的mcs和rank；</p>
+</li>
+<li><p><strong>cqi上报异常</strong>，CQI上报分为CSI-RS异常和SRS异常，(1)<strong>CSIRS异常</strong>，CSIRS基站侧配置端口数与测试终端数不一致时会导致CSI&#x2F;CQI测量异常，导致UE无法上报CQI，此时会导致mcs&amp;rank低；(2)<strong>SRS异常</strong>，Massive MIMO主要通过SRS信号来做上下行互异性，基站收到终端上报的SRS或，才会下发CSI测量，UE才会上报CSI测量(CQI&#x2F;PMI&#x2F;RI), 然后网络侧基于UE上报的CQI进行链路自适应；因此SRS异常会使CQI异常。</p>
+</li>
+<li><p><strong>rank低</strong>，rank用来指示PDSCH的有效的数据层数，Rank最大值min(gNB天线,UE天线数)，一般基站的天线远大于UE的天线数，因此rank主要取决于UE端的天线数。(1)<strong>测试环境</strong>【优先选择站下近点，CSI-RS SINR&gt;25dB，CSI-RSRP在（-65dbm~-80dbm），不宜超过-65dBm】；(2)<strong>小区间频繁切换</strong>,切换后用户初始接入，低RANK、低MCS能保证接入和切换成功率，切换后初始的RANK值默认为1，大概在30ms左右可调整回来，影响较小；但是如果发生频繁切换，会导致RANK无法快速爬升。(3)<strong>MCS表频繁切换</strong>, MCS表格切换指的是在一定条件下进行64QAM和256QAM的MCS表格切换。在切换期间RANK固定为1进行调度; (4)<strong>终端能力</strong>,协议规定单用户下行最多可支持8流；上行最多可支持4流。</p>
+</li>
+<li><p><strong>通道校正异常</strong>，通道校正失败后，系统由于无法准确评估SRS权值，所以会默认使用DFT开环权进行业务，gNB会根据UE上报的RI来选择rank，遵从如下规则：<br>1）UE CSI的RI为1，则当前使用RANK为1；2）UE CSI的RI为2-3，当前使用RANK为2；3）UE CSI的RI为4-8，则当时使用RANK为4。</p>
+</li>
+<li><p><strong>下行SRS权与PMI权自适应</strong>，下行SRS权与PMI权自适应，允许用户在SRS SINR较大时，选择基于SRS得到的BF权值；在SRS SINR较小时，选择基于PMl的BF权值，相对于SRS权，远点用户的PMI权可以提升权值准确性，提升边缘用户的SNR，进而提升边缘用户的速率；1）当用户上行SRS SNR大于ThsRs（默认-2dB）该用户选择SRS权；2）当用户上行SRS SNR小于ThpMl（默认-8dB）该用户选择PMI权；3）当用户的SRS SNR在ThsRs和ThpM之间时，该用户权保持不变；<strong>当使用SRS权值时，基站使用Rank自适应算法确定最终使用Rank值</strong>；使用PMI权时，Rank自适应算法不生效，直接使用UE上报的RI当PMI未上报，或刚刚切换，或通道校正未通过时，则使用DFT权，根据UE上报的RI来选择Rank，但遵从如下规则1)UE CSI的RI为1，则当前使用RANK为1;2)UECSI的RI为2-3，当前使用RANK为2;3)UECSI的RI为4-8，则当时使用RANK为4;</p>
+</li>
+</ul>
+<h5 id="4-切换后流量不足掉坑"><a href="#4-切换后流量不足掉坑" class="headerlink" title="4. 切换后流量不足掉坑"></a><a href="#4-%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91"></a>4. <a href="#%E5%88%87%E6%8D%A2%E5%90%8E%E6%B5%81%E9%87%8F%E4%B8%8D%E8%B6%B3%E6%8E%89%E5%9D%91">切换后流量不足掉坑</a></h5><ul>
+<li><p>检查切换前后流量是否已经降低；</p>
+</li>
+<li><p>切换的时延是否异常，如时延过大；</p>
+</li>
+<li><p>切换后来水不足导致调度不足；</p>
+</li>
+<li><p>切换后MCS异常，rank异常；</p>
+</li>
+<li><p>切换前后是否存在多径，频偏过大；</p>
+</li>
+<li><p>其他，比如干扰等；</p>
+</li>
+</ul>
+<h6 id="5-rank和mcs不符合预期"><a href="#5-rank和mcs不符合预期" class="headerlink" title="5. rank和mcs不符合预期"></a><a href="#5-rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F"></a>5. <a href="#rank%E5%92%8Cmcs%E4%B8%8D%E7%AC%A6%E5%90%88%E9%A2%84%E6%9C%9F">rank和mcs不符合预期</a></h6><ul>
+<li><p><strong>rank不符合预期</strong>：（1）确认UE的天线数，L3配置的CSIRS port数是否大于等于UE上报的RI；（2）rank自适应是否正常；</p>
+</li>
+<li><p><strong>误码较低的时候mcs差</strong>：（1）当前是否处于弱覆盖；（2）下行频段较大；（3）权值自适应异常；（4）上行TA异常；<strong>其他参考影响峰值的内容</strong>。</p>
+</li>
+</ul>
+<h5 id="参考文献："><a href="#参考文献：" class="headerlink" title="参考文献："></a><a href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%EF%BC%9A"></a>参考文献：</h5><p>[1]. xxx厂问题定位指导书</p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
   </entry>
   <entry>
     <title>LTE和NR共存之动态频谱共享</title>
@@ -942,79 +1284,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>NR PDSCH资源分配</title>
-    <url>/2021/06/25/NR%20PDSCH%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D/</url>
-    <content><![CDATA[<h5 id="1-PDSCH频域资源分配"><a href="#1-PDSCH频域资源分配" class="headerlink" title="1. PDSCH频域资源分配"></a><a href="#1-PDSCH%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH频域资源分配</a></h5><p>PDSCH频域资源分配方式有两种，称为<strong>type0</strong>和<strong>type1</strong>，<strong>支持动态和静态配置</strong>；动态配置由DCI进行指示，而静态配置通过IE pdsch-Config中参数resourceAllocation指示，如下图所示；<br><img src="http://1.116.145.136/NR/pdsch-config-1.png" alt="pdsch-config-1"></p>
-<h6 id="1-1-终端如何获取频域资源分配方式的信息"><a href="#1-1-终端如何获取频域资源分配方式的信息" class="headerlink" title="1.1 终端如何获取频域资源分配方式的信息"></a><a href="#1-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF"></a>1.1 <a href="#%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BF%A1%E6%81%AF">终端如何获取频域资源分配方式的信息</a></h6><ul>
-<li><p>如果终端通过<strong>DCI 1_0</strong>接收调度，那么只能是<strong>Type 1</strong>；</p>
-</li>
-<li><p>如果终端通过<strong>DCI 1_1</strong>接收调度，需要参考RRC参数配置决定。通过基站在<strong>pdsch-Config</strong>中配置<strong>resourceAllocation</strong>来指示UE采用哪种频域资源分配方式，如上表PDSCH-Config所示。如果配置的是<strong>dynamicSwitch</strong>，UE需要借助DCI中Frequency domain resource assignment的MSB这个bit来判定这次调度是type0还是type1。如果是resourceAllocationType0或者resourceAllocationType1，配的什么就用什么；</p>
-</li>
-</ul>
-<h6 id="1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定"><a href="#1-2-RB资源起始和RBG-size的确定-RB资源起始和RBG-size的确定" class="headerlink" title="1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)"></a><a href="#1-2-RB%E8%B5%84%E6%BA%90%E8%B5%B7%E5%A7%8B%E5%92%8CRBG-size%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1.2 [RB资源起始和RBG size的确定](#RB资源起始和RBG size的确定)</h6><ul>
-<li><p><strong>RB起始的确定</strong>：UE在检测到预期用于UE的PDCCH时将首先确定下行载波BWP，然后确定BWP内的资源分配。如果在DCI中未配置BWP指示符字段或者UE不支持由DCI改变激活BWP，那么在UE激活的BWP内确定用于下行type0和type1资源分配的RB索引。如果DCI中配置了BWP指示符字段并且UE支持由DCI改变激活BWP，则DCI中BWP指示符字段的值指示的UE的BWP内确定用于下行type0和type1资源分配的RB索引。对于PDCCH CSS中由DCI_1_0调度的PDSCH，无论哪个激活BWP，RB编号从接收DCI的CORESET的最低RB开始；否则，RB编号从所确定的下行BWP中的最低RB开始。</p>
-</li>
-<li><p><strong>RBG Size的确定</strong>：其由IE PDSCH-Config中参数rbg-Size和当前的BWP带宽决定，如下图所示：rbg-size确定配置类型是configuration 1还是configuration 2，然后再根据当前BWP的大小确认RBG Size。</p>
-</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/normal_rbg_size.png" alt="normal_rbg_size"></p>
-<p>RBG个数的确定在协议中有如下的定义：<img src="http://1.116.145.136/NR/RBG-num-1.png" alt="RBG-num-1.png"></p>
-<h6 id="1-3-type0和type1的频域资源分配"><a href="#1-3-type0和type1的频域资源分配" class="headerlink" title="1.3 type0和type1的频域资源分配"></a><a href="#1-3-type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>1.3 <a href="#type0%E5%92%8Ctype1%E7%9A%84%E9%A2%91%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">type0和type1的频域资源分配</a></h6><ul>
-<li><p><strong>Type0</strong>：是一种频域资源非连续分配的方式，相对灵活：使用bitmap来指示用于分配给终端的频域资源，1表示分配，0表示未分配。每个bit代表一个RBG，<strong>RBG是的大小</strong>和两个因素相关，一个是<strong>当前BWP的大小</strong>，二是<strong>参数rbg-Size</strong>是Configuration 1还是Configuration 2。RBG的index在频域上是从BWP的low frequency向high frequency来计数；</p>
-</li>
-<li><p><strong>Type1</strong>：是一种频域资源连续分配的方式：使用RIV的方式告知终端所分配RB的起始位置RB_start和分配了多少个连续的RB，即L_RB；【38214的5.1.2.2.2有RIV计算的过程】。<strong>RB_start和L_RB的使用范围</strong>：对于DCI 1_0 common search space的情况，此时使用CORESET0的大小 (if CORESET0 configured)或者初始BWP大小(if CORESET0 not configured)；对于其他情况使用当前BWP的大小。</p>
-</li>
-</ul>
-<p>终端在收到DCI后，通过其中的的Frequency domain resource assignment这个字段根据结合当前的配置类型，来选择通过Bitmap还是RIV的方式计算到底分配了哪些RB资源。DCI中的Frequency domain resource assignment实际是一串指示rbg或者RB的bitmap或者RIV值。协议中关于Frequency domain resource assignment的<strong>描述如下图所示</strong>，<br><img src="http://1.116.145.136/NR/pdsch-rbg_alloc.png" alt="pdsch-rbg_alloc.png"></p>
-<h5 id="2-PDSCH时域资源分配"><a href="#2-PDSCH时域资源分配" class="headerlink" title="2. PDSCH时域资源分配"></a><a href="#2-PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D"></a>2. <a href="#PDSCH%E6%97%B6%E5%9F%9F%E8%B5%84%E6%BA%90%E5%88%86%E9%85%8D">PDSCH时域资源分配</a></h5><p>终端需要获取的PDSCH时域资源信息主要有3个，分别是：<strong>K0</strong>、<strong>起始symbol和长度</strong>和<strong>Mapping TypeA&#x2F;B</strong>；其中：K0是终端接收到PDCCH DCI调度信息到真正接收PDSCH数据的时间间隔，单位为slot；起始symbol和长度指的是终端需要知道在所调度的slot内那些symbol是属于分配给自己的；Mapping TypeA&#x2F;B是slot内symbol映射的类型。<br><img src="http://1.116.145.136/NR/pdsch_mapping_type.png" alt="pdsch_mapping_type"></p>
-<h6 id="2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B"><a href="#2-1-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B-终端如何获取配置K0、起始symbol和长度和Mapping-TypeA-B" class="headerlink" title="2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)"></a><a href="#2-1-%E7%BB%88%E7%AB%AF%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E9%85%8D%E7%BD%AEK0%E3%80%81%E8%B5%B7%E5%A7%8Bsymbol%E5%92%8C%E9%95%BF%E5%BA%A6%E5%92%8CMapping-TypeA-B"></a>2.1 [终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B](#终端如何获取配置K0、起始symbol和长度和Mapping TypeA&#x2F;B)</h6><ul>
-<li><strong>通过DCI_1_0&#x2F;DCI_1_1获取</strong> ：在DCI_1_1中，有一个Time domain resource assignment字段, 有0、1、2、3或4bit信息，确定表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5的行索引Row index，协议中的描述如下：<blockquote>
-</blockquote>
-Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5.1.2.1 of [6, TS 38.214]. The bitwidth for this field is determined as log2 (I) bits, where I is the number of entries in the higher layer parameter pdsch-TimeDomainAllocationList if the higher layer parameter is configured; otherwise I is the number of entries in the default table.</li>
-</ul>
-<p>协议38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5给出了PDSCH的时域信息配置表，可以通过row index去获取，表格信息如下图所示：<br><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-23.png" alt="38214_5.1.2.1.1-23.png"><img src="http://1.116.145.136/NR/38214_5.1.2.1.1-45.png" alt="38214_5.1.2.1.1-45.png"></p>
-<ul>
-<li>通过pdsch-ConfigCommon或pdsch-Config配置的pdsch-TimeDomainAllocationList获取时域信息，这个参数组中包含多组{K0，mappingType, startSymbolAndLength}的参数组，其中startSymbolAndLength是以SLIV的形式给出的，可以计算出Start Symbol和Length，下图是配置的示例：</li>
-</ul>
-<p><img src="http://1.116.145.136/NR/pdsch_config_setup.png" alt="38214_5.1.2.1.1-45.png">SLIV具体计算过程在38214-5.1.2.1中介绍，通过TimeDomainAllocationList获取时域信息参数组，结合SLIV的计算公式和有效的SLIV的约束表38_214_5_1_2_1-1，可以计算出起始符号和长度分别是多少。<br><img src="http://1.116.145.136/NR/38_214_5_1_2_1-1.png" alt="38_214_5_1_2_1-1.png"></p>
-<p>例如：上图中SLIV是54，其中映射类型是typeA，使用normal cp在，遍历可以计算得到S&#x3D;1，L&#x3D;12。<br>SLIV对应的SL表格，可通过如下链接查看获取<a href="https://www.sharetechnote.com/html/5G/5G_SLIV.html">5G-SLIV</a>.</p>
-<h6 id="2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息"><a href="#2-2-什么时候使用DCI或者RRC配置获取时域pdsch信息" class="headerlink" title="2.2 什么时候使用DCI或者RRC配置获取时域pdsch信息"></a><a href="#2-2-%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF"></a>2.2 <a href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8DCI%E6%88%96%E8%80%85RRC%E9%85%8D%E7%BD%AE%E8%8E%B7%E5%8F%96%E6%97%B6%E5%9F%9Fpdsch%E4%BF%A1%E6%81%AF">什么时候使用DCI或者RRC配置获取时域pdsch信息</a></h6><p>PDSCH的时域资源是根据DCI format 1_0&#x2F; DCI format 1_1中Time domain resource assignment字段进行确定。其中Time domain resource assignment的bits数取决于RNTI、PDCCH搜索空间以及高层是否在IE pdsch-ConfigCommon或pdsch-Config中配置pdsch-TimeDomainAllocationList相关；如果pdsch-ConfigCommon或pdsch-Config中配置了pdsch-TimeDomainAllocationList，则UE采用pdsch-TimeDomainAllocationList进行时域资源的确定，否则UE根据RNTI、PDCCH搜索空间等信息采用默认的时域资源表进行查表也就是38214中表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5。通过字段Time domain resource assignment的值m用于确定时域资源分配表中的行索引m+1。<br><img src="http://1.116.145.136/NR/pdsch_common.png" alt="pdsch_common.png"></p>
-<p>pdsch-ConfigCommon中的配置适用于c-rnti或者cs-rnti加扰的pdcch，不适用于38214表5.1.2.1.1-1中默认值的coreset#0；<br><img src="http://1.116.145.136/NR/pdsch-TimeDomainAllocationList.png" alt="pdsch-TimeDomainAllocationList.png"></p>
-<ul>
-<li><p><strong>如果pdsch-TimeDomainAllocationList被配置</strong>，那么DCI中Time domain resource assignment的字段宽度就由他确定，DCI中value 0,对应pdsch-TimeDomainAllocationList中的第一个元素，value 2对应第二个，一次类推，其中maxNrofDL-Allocations为16，也就是Time domain resource assignment最大是4bit。</p>
-</li>
-<li><p><strong>如果pdsch-TimeDomainAllocationList没有被配置</strong>，那么Time domain resource assignment的bit数由38214表5.1.2.1.1-2&#x2F;3&#x2F;4&#x2F;5确认，默认是4bit。</p>
-</li>
-</ul>
-<blockquote>
-</blockquote>
-<p>例1：如果UE在PDCCH的Type0A common搜索空间中搜到了由SI-RNTI加扰的PDCCH，S&#x2F;PBCH block and CORESET multiplexing pattern 是2，那么查表38214-5.1.2.1.1-1，如下，可以得到需要查default B的表，也就是<br>表38214-5.1.2.1.1-4，根据DCI的Time domain resource assignment确定Row Index，然后找到对应的PDSCH时域资源信息。</p>
-<p><img src="http://1.116.145.136/NR/38214-5.1.2.1.1-1.png" alt="38214-5.1.2.1.1-1.png"></p>
-<blockquote>
-</blockquote>
-<p>例2：如果UE在UE specific 搜索空间中搜到了由C-RNTI加扰的PDCCH，其中pdsch-ConfigCommon 包含 pdsch-TimeDomainAllocationList，pdsch-Config中包含了 pdsch-TimeDomainAllocationList，那么pdsch-Config中的pdsch-TimeDomainAllocationList的配置将覆盖pdsch-ConfigCommon中的。从表38214-5.1.2.1.1-1中可以得知，DCI中Time domain resource assignment字段值指示的是pdsch-Config中的pdsch-TimeDomainAllocationList的索引，从而得到PDSCH时域资源{k0，mapping type， sliv}信息对，通过其中SLIV通过上述的反推方式可以计算出psdch的起始符号和符号长度。</p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
     <title>python socket编程</title>
-    <url>/2018/07/22/python%20socket%E7%BC%96%E7%A8%8B/</url>
+    <url>/2018/07/22/python-socket%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<p>Socket(套接字)，应用程序通常通过”套接字”向网络发出请求或者应答网络请求，使主机间或者一台计算机上的进程间可以通讯。<strong>服务器端</strong>：<code>socket()</code>建立套接字，绑定（bind）并监听（listen），用accept（）等待客户端连接。将accept()写入死循环，每次连接一个客户端，开一个线程。一般情况下建立<code>socket</code>连接后服务器与客户端建立了一个管道，当关闭<code>socket</code>或关闭客户端的时候，会导致管道破裂信号。如果使用默认处理则会导致服务器程序退出。</p>
 <h5 id="0-socket函数"><a href="#0-socket函数" class="headerlink" title="0. socket函数"></a><a href="#0-socket%E5%87%BD%E6%95%B0"></a>0. <a href="#socket%E5%87%BD%E6%95%B0">socket函数</a></h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">socket.socket(family, type, protocol)</span><br></pre></td></tr></table></figure>
 
@@ -1121,245 +1392,8 @@ Time domain resource assignment – 0, 1, 2, 3, or 4 bits as defined in Clause 5
       </tags>
   </entry>
   <entry>
-    <title>PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估</title>
-    <url>/2021/05/21/PDSCH%E7%9A%84MCS%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A0%81%E7%8E%87%E7%A1%AE%E5%AE%9A%E4%BB%A5%E5%8F%8ATBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0/</url>
-    <content><![CDATA[<h5 id="1-mcs的选择和码率的确定"><a href="#1-mcs的选择和码率的确定" class="headerlink" title="1. mcs的选择和码率的确定"></a><a href="#1-mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1. <a href="#mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A">mcs的选择和码率的确定</a></h5><p>对月PDSCH的调度，主要有两种方式的<strong>一种是</strong>有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；<strong>另一种是</strong>在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。<br>PDSCH调制阶数通过DCI中5bit的字段<code>I_MCS</code>来指数，5bit最大32，协议中定义了3张mcs表，分别是1个256QAM，2个64QAM的表；在不同的场景选用不同的mcs表。比如UE不希望在解码P-RNTI, RA-RNTI, SI-RNTI加扰的PDSCH时，使用Qm &gt; 2的调制方式。</p>
-<p><strong>case1</strong>： 高层配置PDSCH-config种使用<strong>qam256</strong>的mcs表，那么对DCI1_1指示的PDSCH使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。</p>
-<p><strong>case2</strong>： 如果UE没有通过SPS-config来配置mcs表，而是通过pdsch-config配置了成<strong>qam256</strong>，那么UE使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。<br><img src="http://1.116.145.136/NR/pdsch_mcsTable2.png" alt="pdsch_mcsTable2"></p>
-<p><strong>case3</strong>： 如果UE没有配置MCS-C-RNTI，且高曾参数pdsch-config种配置的mcs表是<strong>qam64LowSE</strong>，那么针对UE USS 搜索空间的对应的PDSCH调度使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率，也就是低码率的64qam的表格。</p>
-<p><strong>case4</strong>： 如果UE配置了MCS-C-RNTI，pdsch是被MCS-C-RNTI加扰的PDCCH指示调度，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；</p>
-<p><strong>case5</strong>： 如果UE的mcs表通过SPS-Config配置并且配置成<strong>qam64LowSE</strong>，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable3.png" alt="pdsch_mcsTable3"></p>
-<p><strong>case6</strong>：除了上述5种情况外，使用<strong>Table 5.1.3.1-1</strong>；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable1.png" alt="pdsch_mcsTable1">从上述的mcs表种可以看出，当mcs确定之后相应的传输码率就确定了。因此码率是通过mcs查表间接确认得到的。</p>
-<h5 id="2-TBsize的计算和RB预估"><a href="#2-TBsize的计算和RB预估" class="headerlink" title="2. TBsize的计算和RB预估"></a><a href="#2-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0"></a>2. <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0">TBsize的计算和RB预估</a></h5><p>pdsch传输的tbsize宏观上见与码字数和码率强相关，码字由基站高层参数<code>maxNrofCodeWordsScheduledByDCI</code>指示，表示使用1个码字还是两个码字；码率由上mcs表确定，针对64qam可以使用mcs 0-28；256qam可以使用0-27；</p>
-<h6 id="2-1-TBsize的计算"><a href="#2-1-TBsize的计算" class="headerlink" title="2.1 TBsize的计算"></a><a href="#2-1-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97"></a>2.1 <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97">TBsize的计算</a></h6><p>一个slot对应的PDSCH可用的TBSIZE计算公式如下，在PDSCH可用的RE是上除去DMRS占用和PDCCH占用的RE等资源占用以后的频谱资源。一个slot种pdsch的有效RE数由如下公式获得：</p>
-<p>其中：<code>N ^&#123;RB&#125;_&#123;sc&#125;</code>是一个RB的子载波个数，<code>N^&#123;sh&#125;_&#123;symb&#125;</code>是时域上一个slot对应的符号数,<code>N^&#123;PRB&#125;_&#123;DMRS&#125;</code>是一个RB上DMRS占用的RE数；<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>在高层参数PDSCH-ServingCellConfig-&gt;xOverhead配置，可配置为0，6，12，18；当xOverhead没有配置或者调度pdsch的pdcch由SI-RNTI, RA-RNTI 或者 P-RNTI加扰时，<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>是0。<br>一个slot内频域上所有的pdsch可用RE，由以下公式获取：<br>$$<br>\begin{equation}<br>N_{RE} &#x3D; min(156, N^{‘}*{RE})<em>n</em>{prb}<br>\end{eqnarray}<br>$$<br>其中，<code>n_&#123;prb&#125;</code>是slot内可分配的PRB数。</p>
-<p>有了RE数解可以计算当前的TB-Size了，TB-Size的计算如下：</p>
-<p>$$<br>\begin{equation}<br>N_{info} &#x3D; N_{RE}<em>R</em>Q_{m}*v<br>\end{eqnarray}<br>$$<br>其中，R是目标码率，Qm是调制阶数，V标识layer数。</p>
-<p>有了<code>N_info</code>之后还需要跟3824作量化比较才能确认最终的tbsize：</p>
-<ul>
-<li><code>N_info</code> &lt;&#x3D; 3824 : 在N_info的小于3824的场景下确定TB-Size需要先量化，然后再查表确认TB-Size;量化公式如下：</li>
-</ul>
-<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(24, 2^{n}<em>⌊\frac{N</em>{info}}{2^n} ⌋)，其中 n &#x3D; max(3, ⌊ log_2(N_{info})⌋-6)<br>\end{eqnarray}<br>$$<br>通过量化公式获得的<code>N_&#39;_info</code>在Table 5.1.3.2-1中查找不小于他的最接近的值，比如算出来的量化值是606，那么通过查表就获得的TB-Size就是608；<br><img src="http://1.116.145.136/NR/tbs_low_3824.png" alt="tbs_low_3824"></p>
-<ul>
-<li><code>N_info</code> &gt; 3824 :</li>
-</ul>
-<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(3840, 2^{n}<em>round(\frac{N</em>{info}-24}{2^n} ))，其中 n &#x3D; ⌊ log_2(N_{info}-24)⌋-5)<br>\end{eqnarray}<br>$$</p>
-<p><strong>当码率R&lt;&#x3D;1&#x2F;4时</strong>，<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> ⌈(\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}*{info}+24}{8424}⌉<br>\end{eqnarray}<br>$$</p>
-<p><strong>当码率R&gt;1&#x2F;4时</strong>，<br><strong>(1)</strong> 如果<code>N_&#39;_info</code>&gt;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> (\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}<em>{info}+24}{3816}⌉<br>\end{eqnarray}<br>$$<br><strong>(2)</strong> 如果<code>N_&#39;_info</code>&lt;&#x3D;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8</em>C* (\frac{N^{‘}<em>{info}+24}{8})-24<br>\end{eqnarray}<br>$$<br>需要注意的是：**(1)** 当调度PDSCH的PDCCH是通过SI-RNTI加扰的话，也就是传输sib1消息时，TB-Size的大小不能超过2976，因为sib1只能通过qpsk的调制方式发送；**(2)** 当调度的DCI是P-RNTI、RA-RNTI加扰的时候，在信息量N_info计算时需要带上一个缩放因子，具体如下图所示：<br><img src="http://1.116.145.136/NR/tbs_Scaling_factor.png" alt="tbs_Scaling_factor"><br>那么新的<code>N_info</code>计算公式就编程如下的样子：<br>$$<br>\begin{equation}<br>N</em>{info} &#x3D; S*N_{RE}<em>R</em>Q_{m}*v, 其中S是缩放因子<br>$$</p>
-<h6 id="2-2-RB预估"><a href="#2-2-RB预估" class="headerlink" title="2.2 RB预估"></a><a href="#2-2-RB%E9%A2%84%E4%BC%B0"></a>2.2 <a href="RB%E9%A2%84%E4%BC%B0">RB预估</a></h6><p>UE进行上下行数传的时候，基站根据UE的数据量来判断UE的调度时刻使用的RB数，数据量的计算公式如下：<br>&#96;$$<br>\begin{equation}<br>数据量 &#x3D; {N_{prb}<em>N_{re}<em>layer</em>Qm</em>CodeRate},<br>$$<br>N_prb是传递这些数据量需要的RB数，N_re是每个RB中有效的RE数，layer是数传的UE的rank，QM是调试bit数，CodeRate是传输的码率。</p>
-<p>预估RB就是通过上边的公式反算UE传输当前数据量需要的RB数，在确定RB数之前需要先确定，每个RB中的RE数，这些RE数跟基站的配置相关，特别是PDCCH和PDSCH DMRS的配置。</p>
-<blockquote>
-</blockquote>
-<p>PDSCH DMRS : NR中定义了两种DMRS type，分别是type1和type2，在这两种type中，有1符号或者2符号的DMRS，除此之外还可以配置额外的附加导频的DMRS。</p>
-<p><img src="http://1.116.145.136/NR/pdsch_pusch_type.png" alt="pdsch_pusch_type"></p>
-<p>-<br>PDSCH DMRS Type A ：固定在第三或(pos2)者第四(pos3)个符号上，无论PDSCH的起始符号是多少，最小资源组是一个RE；</p>
-<p>-<br>PDSCH DMRS Type B ：DMRS固定在分配PDSCH的第一个符号上；最小资源组是2个RE；</p>
-<ul>
-<li>附加导频   ，可以配置0-4个</li>
-</ul>
-<p>【参考文献】：<a href="https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html">https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html</a></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>leetcode刷题-排列和组合问题</title>
-    <url>/2020/05/05/leetcode%E5%88%B7%E9%A2%98-%E6%8E%92%E5%88%97%E5%92%8C%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98/</url>
-    <content><![CDATA[<p>以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
-<h5 id="1-组合问题"><a href="#1-组合问题" class="headerlink" title="1. 组合问题"></a><a href="#1-%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98"></a>1. 组合问题</h5><p>【从n个元素中取m个元素–子集】<br><strong>例题1.</strong> LeetCode-78-<a href="https://leetcode-cn.com/problems/subsets/">子集</a> </p>
-<blockquote>
-</blockquote>
-<p>给定一组<strong>不含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: nums &#x3D; [1,2,3]<br>输出: [[3],[1],[2],[1,2,3],[1,3],[2,3],[1,2],[] ]</p>
-<p><strong>题解</strong>：从数组中连续至少0个元素，构成的子集问题，可以模拟成一个层次遍历的过程；从空集合开始，然后空集合的基础上依次插入元素，先是1个元素的集合，接着是2个元素的集合，依次类推。<br>首先，创建一个局部变量存放结果，把空集合插入存进去<code>vector&lt;vector&lt;int&gt; &gt; res(1)</code>；遍历整个数组，同事嵌套遍历结果数组，往结果数组中依次插入当前遍历到的数组元素，由于结果数组中有一个空子集，嵌套遍历结果数组的时候，就是往空子集中插入第1个元素，此时这个结果肯定是没有出现的排列，再把这个排列插入结果数组；这样结果中就存入了[]和[1];此时进去下一次迭代，数组的第二个元组，在依次往结果数组中的子集插入，也就是[2]依次插入[]和[1]中；以此类推，就可以遍历完所有的排列。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**代码实现**/</span><br><span class="line">vector&gt; subsets(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>例题2.</strong> LeetCode-90-<a href="https://leetcode-cn.com/problems/subsets-ii/">子集II</a></p>
-<blockquote>
-</blockquote>
-<p>给定一个可能<strong>包含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: [1,2,2]<br>输出: [[2],[1],[1,2,2],[2,2],[1,2],[]]</p>
-<p><strong>题解</strong> 题目中描述有重复元素，所以去重是在排列里面很关键，在上一题的基础上增加去重的操作即可，这里用一个set去去重，由于排列不考虑数的顺序，所以需要排序一下，进行归一化，然后设计一个hash表去重，这里hash表示就是unordered_map,键值用排序后的数组字符化表示；</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string clcHashValue(vector&amp; nums)&#123;</span><br><span class="line">    string res = &quot;&quot;;</span><br><span class="line">    sort(nums.begin(),nums.end());</span><br><span class="line">    for(int i=0; i &gt; subsetsWithDup(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    unordered_set numstt;</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            string tempHash = clcHashValue(tmp);</span><br><span class="line">            if(numstt.find(tempHash) == numstt.end())&#123;</span><br><span class="line">                res.push_back(tmp);</span><br><span class="line">                numstt.insert(tempHash);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-排列问题"><a href="#2-排列问题" class="headerlink" title="2. 排列问题"></a><a href="#2-%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"></a>2. 排列问题</h5><p><strong>例题1.</strong> 面试题 08.07. <a href="https://leetcode-cn.com/problems/permutation-i-lcci/">无重复字符串的排列组合</a></p>
-<blockquote>
-</blockquote>
-<p>无重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合，字符串每个字符均不相同。<br><strong>示例1</strong>:<br> 输入：S &#x3D; “qwe”<br> 输出：[“qwe”,”qew”,”wqe”,”weq”,”ewq”,”eqw”]<br><strong>示例2</strong>:<br> 输入：S &#x3D; “ab”<br> 输出：[“ab”,”ba”]</p>
-<p> <strong>题解</strong> 我们把字符串看成两部分，第一部分是它的第一个字符，第二部分是后边的字符。求整个字符串的排列，可以就可以看成两部分，首先求所有可能出现在第一个位置的字符，也就是把第一个字符和后边所有的字符交换。第二部分固定第一个字符求后面字符的排列。在第二部分的时候仍把后边的字符分成2部分，依次类推。这样就是很典型的递归了。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPerm(vector &amp;result, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(beginIndex == s.size()-1) &#123;</span><br><span class="line">        result.push_back(s);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    strPerm(result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><strong>例题2.</strong> 面试题 08.08. <a href="https://leetcode-cn.com/problems/permutation-ii-lcci/">有重复字符串的排列组合</a></p>
-<blockquote>
-</blockquote>
-<p>有重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合。<br>示例1: 输入：S &#x3D; “qqe”  输出：[“eqq”,”qeq”,”qqe”]<br>示例2: 输入：S &#x3D; “ab”  输出：[“ab”, “ba”]<br>提示: 字符都是英文字母。字符串长度在[1, 9]之间。</p>
-<p> <strong>题解</strong> 如上题一样，这里主要去重，去重，可以简单地额用一个hash表来解决，这里用unordered_set来创建hash。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPermu(unordered_set&amp; perLib, vector&amp; res, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(s.size()-1 == beginIndex) &#123;</span><br><span class="line">        if(perLib.find(s)==perLib.end()) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">            perLib.insert(s);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;return result;&#125;</span><br><span class="line">    unordered_set perLib;</span><br><span class="line">    strPermu(perLib, result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>C与C++常用函数使用与表达式解析</title>
-    <url>/2020/05/24/C%E4%B8%8EC++%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%E4%BD%BF%E7%94%A8%E4%B8%8E%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%A7%A3%E6%9E%90/</url>
-    <content><![CDATA[<h5 id="1-malloc和realloc"><a href="#1-malloc和realloc" class="headerlink" title="1. malloc和realloc"></a><a href="#1-malloc%E5%92%8Crealloc"></a>1. <a href="malloc%E5%92%8Crealloc">malloc和realloc</a></h5><p>这两个函数都是申请内存的函数，他们有什么区别和联系呢？那些场景会出现意想不到的结果呢？下面具体探讨这两个函数.</p>
-<h6 id="1-1-malloc函数"><a href="#1-1-malloc函数" class="headerlink" title="1.1  malloc函数"></a><a href="#1-1-malloc%E5%87%BD%E6%95%B0"></a>1.1  <a href="#malloc%E5%87%BD%E6%95%B0">malloc函数</a></h6><p><code>void *mallco(size_t size);</code> <code>malloc</code> 向系统申请分配指定size个字节的内存空间。返回类型是 <code>void*</code> 类型。</p>
-<table>
-<thead>
-<tr>
-<th>malloc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>1、malloc 函数返回的是 void * 类型，定义的哪种类型的指针，必须强转为此类型指针;</td>
-</tr>
-<tr>
-<td>2、函数的实参为 sizeof(int) ，用于指明一个整型数据需要的大小；</td>
-</tr>
-<tr>
-<td>3、malloc是必须指定内存大小的空间，比如想分配50个int类型的空间：int* p &#x3D; (int*) malloc ( sizeof(int) * 50 )；</td>
-</tr>
-<tr>
-<td>4、是malloc 只管分配内存，并不能对所得的内存进行初始化，所以得到的一片新内存中，其值将是随机的；</td>
-</tr>
-</tbody></table>
-<blockquote>
-</blockquote>
-<p> 闲话长谈malloc(0)与malloc(-1)返回值是什么样的？</p>
-<pre><code>#include
-using namespace std;
-int main()&#123;
-    int *ptr1=(int*)malloc(sizeof(int)*(0));
-    int *ptr1=(int*)malloc(sizeof(int)*(-1));;
-    cout 
-**If size is zero**, the return value depends on the particular library implementation (it may or may not be a null pointer), but the returned pointer shall not be dereferenced.
-
-表明**malloc(0)**是跟据，不同库的设置有着不同的表现，翻翻glibc(是GNU发布的c运行库,linux系统中最底层的api)的源码瞅瞅，有如下的说明：
-
-&gt; 
-**If n is zero**, malloc **returns a minumum-sized chunk**. (The minimum size is 16 bytes on most 32bit systems, and 24 or 32 bytes on 64bit systems.)  On most systems, size_t is an unsigned type, so calls with negative arguments are interpreted as requests for huge amounts of space, which will often fail. The maximum supported value of n differs across systems, but is in all cases less than the maximum representable value of a size_t.
-
-也就是说在Linux上执行 malloc(0)时，会拿到一个指向一小块内存的指针，这个指针指向的内存的大小是由机器决定的。这里不再细究，有兴趣可以参考: [当你 malloc(0) 时会发生什么](https://zhuanlan.zhihu.com/p/40490357)
-
-###### [](#1-2-realloc函数)1.2 [realloc函数](#realloc函数)
-
-`void *realloc(void *mem_address, unsigned int newsize);`
-作用：重新申请内存空间，不影响原有数据，但是新分配的地址可能不一样。
-
-| realloc |
-|---|
-| 1、当mem_address为null，size不为0，则realloc()和malloc()类似。分配一个newsize的内存块，返回一个指向该内存块的指针；如果没有足够可用的内存用来完成重新分配，则返回null而原来的内存块保持不变； |  |
-| 2、将分配的内存扩大，则有以下情况：（1）如果当前内存段后面有需要的内存空间，则直接扩展这段内存空间，realloc()将返回原指针；（2）如果当前内存段后面的空闲字节不够，那么就使用堆中的第一个能够满足这一要求的内存块，将目前的数据复制到新的位置，并将原来的数据块释放掉，返回新的内存块位置。（3）如果申请失败，将返回NULL，原来的指针仍然有效； |  |
-| 3、如果内存减少，则仅改变下索引信息，但并不代表被减少的部分内存还可以安全访问，这己经释放； |  |
-| 4、如果newsize大小为 0，行为是未定义的，受具体实现来说， 目前VC++是相当于free(ptr)，并返回一个空指针，具体描述。 |  |
-
-&gt; 
- **If there is not enough memory**, the old memory block is not freed and null pointer is returned.
-
-&gt; 
- **If ptr is NULL**, the behavior is the same as calling malloc(new_size).
-
-&gt; 
- **If new_size is zero**, the behavior is implementation defined (null pointer may be returned (in which case the old memory block may or may not be freed), or some non-null pointer may be returned that may not be used to access storage).
-
- 【参考文献】：
- 1、[https://en.cppreference.com/w/c/memory/realloc](https://en.cppreference.com/w/c/memory/realloc)
- 2、[https://en.cppreference.com/w/c/memory/malloc](https://en.cppreference.com/w/c/memory/malloc)
-
-      
-    
-
-    
-
-  
-    
-
-    
-        
--------------本文结束感谢您的阅读-------------
-
-    
-
-  
-
-    
-    
-    
-
-    
-
-    
-      
-
-        
-
-  
-坚持创作，坚持分享！
-
-  
-    打赏
-  
-  
-
-    
-      
-
-        ![liurui 微信支付](/images/wechatpay.png)
-        
-微信支付
-
-      
-
-    
-
-    
-      
-
-        ![liurui 支付宝](/images/alipay.png)
-        
-支付宝
-</code></pre>
-]]></content>
-      <categories>
-        <category>语言特性</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>C</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>python工具包之matplotlib的使用--pyplot画图</title>
-    <url>/2018/07/15/python%E5%B7%A5%E5%85%B7%E5%8C%85%E4%B9%8Bmatplotlib%E7%9A%84%E4%BD%BF%E7%94%A8--pyplot%E7%94%BB%E5%9B%BE/</url>
+    <url>/2018/07/15/python%E5%B7%A5%E5%85%B7%E5%8C%85%E4%B9%8Bmatplotlib%E7%9A%84%E4%BD%BF%E7%94%A8-pyplot%E7%94%BB%E5%9B%BE/</url>
     <content><![CDATA[<p><code>Matplotlib</code> 是一个 <code>Python</code> 的 2D绘图库, 使用<code>matplotlib</code>能够非常简单的可视化数据。在<code>matplotlib</code>中使用最多的模块就是<code>pyplot</code>。<code>pyplot</code>非常接近<code>Matlab</code>的绘图实现，而且大多数的命令及其类似<code>Matlab</code>。在使用<code>Matplotlib</code>的时候需要import这个模块：</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import matplotlib.pyplot as plot</span><br></pre></td></tr></table></figure>
 
@@ -1672,6 +1706,114 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
+    <title>leetcode刷题-排列和组合问题</title>
+    <url>/2020/05/05/leetcode%E5%88%B7%E9%A2%98-%E6%8E%92%E5%88%97%E5%92%8C%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98/</url>
+    <content><![CDATA[<p>以数组和字符串形式的例题总结，涉及到排列和组合相关问题的,主要通过递归或者循环解决问题。</p>
+<h5 id="1-组合问题"><a href="#1-组合问题" class="headerlink" title="1. 组合问题"></a><a href="#1-%E7%BB%84%E5%90%88%E9%97%AE%E9%A2%98"></a>1. 组合问题</h5><p>【从n个元素中取m个元素–子集】<br><strong>例题1.</strong> LeetCode-78-<a href="https://leetcode-cn.com/problems/subsets/">子集</a> </p>
+<blockquote>
+</blockquote>
+<p>给定一组<strong>不含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: nums &#x3D; [1,2,3]<br>输出: [[3],[1],[2],[1,2,3],[1,3],[2,3],[1,2],[] ]</p>
+<p><strong>题解</strong>：从数组中连续至少0个元素，构成的子集问题，可以模拟成一个层次遍历的过程；从空集合开始，然后空集合的基础上依次插入元素，先是1个元素的集合，接着是2个元素的集合，依次类推。<br>首先，创建一个局部变量存放结果，把空集合插入存进去<code>vector&lt;vector&lt;int&gt; &gt; res(1)</code>；遍历整个数组，同事嵌套遍历结果数组，往结果数组中依次插入当前遍历到的数组元素，由于结果数组中有一个空子集，嵌套遍历结果数组的时候，就是往空子集中插入第1个元素，此时这个结果肯定是没有出现的排列，再把这个排列插入结果数组；这样结果中就存入了[]和[1];此时进去下一次迭代，数组的第二个元组，在依次往结果数组中的子集插入，也就是[2]依次插入[]和[1]中；以此类推，就可以遍历完所有的排列。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/**代码实现**/</span><br><span class="line">vector&gt; subsets(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            res.push_back(tmp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>例题2.</strong> LeetCode-90-<a href="https://leetcode-cn.com/problems/subsets-ii/">子集II</a></p>
+<blockquote>
+</blockquote>
+<p>给定一个可能<strong>包含重复元素</strong>的整数数组 nums，返回该数组所有可能的子集（幂集）。<br>说明：解集不能包含重复的子集。<br>示例:<br>输入: [1,2,2]<br>输出: [[2],[1],[1,2,2],[2,2],[1,2],[]]</p>
+<p><strong>题解</strong> 题目中描述有重复元素，所以去重是在排列里面很关键，在上一题的基础上增加去重的操作即可，这里用一个set去去重，由于排列不考虑数的顺序，所以需要排序一下，进行归一化，然后设计一个hash表去重，这里hash表示就是unordered_map,键值用排序后的数组字符化表示；</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">string clcHashValue(vector&amp; nums)&#123;</span><br><span class="line">    string res = &quot;&quot;;</span><br><span class="line">    sort(nums.begin(),nums.end());</span><br><span class="line">    for(int i=0; i &gt; subsetsWithDup(vector&amp; nums) &#123;</span><br><span class="line">    vector &gt; res(1);</span><br><span class="line">    unordered_set numstt;</span><br><span class="line">    for(int i=0;i tmp=res[j];  </span><br><span class="line">            tmp.push_back(nums[i]);</span><br><span class="line">            string tempHash = clcHashValue(tmp);</span><br><span class="line">            if(numstt.find(tempHash) == numstt.end())&#123;</span><br><span class="line">                res.push_back(tmp);</span><br><span class="line">                numstt.insert(tempHash);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="2-排列问题"><a href="#2-排列问题" class="headerlink" title="2. 排列问题"></a><a href="#2-%E6%8E%92%E5%88%97%E9%97%AE%E9%A2%98"></a>2. 排列问题</h5><p><strong>例题1.</strong> 面试题 08.07. <a href="https://leetcode-cn.com/problems/permutation-i-lcci/">无重复字符串的排列组合</a></p>
+<blockquote>
+</blockquote>
+<p>无重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合，字符串每个字符均不相同。<br><strong>示例1</strong>:<br> 输入：S &#x3D; “qwe”<br> 输出：[“qwe”,”qew”,”wqe”,”weq”,”ewq”,”eqw”]<br><strong>示例2</strong>:<br> 输入：S &#x3D; “ab”<br> 输出：[“ab”,”ba”]</p>
+<p> <strong>题解</strong> 我们把字符串看成两部分，第一部分是它的第一个字符，第二部分是后边的字符。求整个字符串的排列，可以就可以看成两部分，首先求所有可能出现在第一个位置的字符，也就是把第一个字符和后边所有的字符交换。第二部分固定第一个字符求后面字符的排列。在第二部分的时候仍把后边的字符分成2部分，依次类推。这样就是很典型的递归了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPerm(vector &amp;result, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(beginIndex == s.size()-1) &#123;</span><br><span class="line">        result.push_back(s);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;</span><br><span class="line">        return result;</span><br><span class="line">    &#125;</span><br><span class="line">    strPerm(result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>例题2.</strong> 面试题 08.08. <a href="https://leetcode-cn.com/problems/permutation-ii-lcci/">有重复字符串的排列组合</a></p>
+<blockquote>
+</blockquote>
+<p>有重复字符串的排列组合。编写一种方法，计算某字符串的所有排列组合。<br>示例1: 输入：S &#x3D; “qqe”  输出：[“eqq”,”qeq”,”qqe”]<br>示例2: 输入：S &#x3D; “ab”  输出：[“ab”, “ba”]<br>提示: 字符都是英文字母。字符串长度在[1, 9]之间。</p>
+<p> <strong>题解</strong> 如上题一样，这里主要去重，去重，可以简单地额用一个hash表来解决，这里用unordered_set来创建hash。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void strPermu(unordered_set&amp; perLib, vector&amp; res, string &amp;s, int beginIndex) &#123;</span><br><span class="line">    if(s.size()-1 == beginIndex) &#123;</span><br><span class="line">        if(perLib.find(s)==perLib.end()) &#123;</span><br><span class="line">            res.push_back(s);</span><br><span class="line">            perLib.insert(s);</span><br><span class="line">        &#125;</span><br><span class="line">            </span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for(int i = beginIndex; i permutation(string s) &#123;</span><br><span class="line">    vector result;</span><br><span class="line">    if(s.empty()) &#123;return result;&#125;</span><br><span class="line">    unordered_set perLib;</span><br><span class="line">    strPermu(perLib, result, s, 0);</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>PDSCH的MCS选择与码率确定以及TBsize的计算和RB预估</title>
+    <url>/2021/05/21/PDSCH%E7%9A%84MCS%E9%80%89%E6%8B%A9%E4%B8%8E%E7%A0%81%E7%8E%87%E7%A1%AE%E5%AE%9A%E4%BB%A5%E5%8F%8ATBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0/</url>
+    <content><![CDATA[<h5 id="1-mcs的选择和码率的确定"><a href="#1-mcs的选择和码率的确定" class="headerlink" title="1. mcs的选择和码率的确定"></a><a href="#1-mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A"></a>1. <a href="#mcs%E7%9A%84%E9%80%89%E6%8B%A9%E5%92%8C%E7%A0%81%E7%8E%87%E7%9A%84%E7%A1%AE%E5%AE%9A">mcs的选择和码率的确定</a></h5><p>对月PDSCH的调度，主要有两种方式的<strong>一种是</strong>有PDCCH并通过C-RNTI, MCS-C- RNTI, TC-RNTI, CS-RNTI, SI-RNTI, RA-RNTI, 或者 P-RNTI加扰，下发DCI_1_0或者DCI_1_1来调度；<strong>另一种是</strong>在没有PDCCH的情况下通过高层提供的SPS-Config配置来进行PDSCH调度。<br>PDSCH调制阶数通过DCI中5bit的字段<code>I_MCS</code>来指数，5bit最大32，协议中定义了3张mcs表，分别是1个256QAM，2个64QAM的表；在不同的场景选用不同的mcs表。比如UE不希望在解码P-RNTI, RA-RNTI, SI-RNTI加扰的PDSCH时，使用Qm &gt; 2的调制方式。</p>
+<p><strong>case1</strong>： 高层配置PDSCH-config种使用<strong>qam256</strong>的mcs表，那么对DCI1_1指示的PDSCH使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。</p>
+<p><strong>case2</strong>： 如果UE没有通过SPS-config来配置mcs表，而是通过pdsch-config配置了成<strong>qam256</strong>，那么UE使用<strong>Table 5.1.3.1-2</strong>来确定MCS和码率，也就是256qam的表格。<br><img src="http://1.116.145.136/NR/pdsch_mcsTable2.png" alt="pdsch_mcsTable2"></p>
+<p><strong>case3</strong>： 如果UE没有配置MCS-C-RNTI，且高曾参数pdsch-config种配置的mcs表是<strong>qam64LowSE</strong>，那么针对UE USS 搜索空间的对应的PDSCH调度使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率，也就是低码率的64qam的表格。</p>
+<p><strong>case4</strong>： 如果UE配置了MCS-C-RNTI，pdsch是被MCS-C-RNTI加扰的PDCCH指示调度，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；</p>
+<p><strong>case5</strong>： 如果UE的mcs表通过SPS-Config配置并且配置成<strong>qam64LowSE</strong>，那么UE使用<strong>Table 5.1.3.1-3</strong>来确定MCS和码率；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable3.png" alt="pdsch_mcsTable3"></p>
+<p><strong>case6</strong>：除了上述5种情况外，使用<strong>Table 5.1.3.1-1</strong>；<br><img src="http://1.116.145.136/NR/pdsch_mcsTable1.png" alt="pdsch_mcsTable1">从上述的mcs表种可以看出，当mcs确定之后相应的传输码率就确定了。因此码率是通过mcs查表间接确认得到的。</p>
+<h5 id="2-TBsize的计算和RB预估"><a href="#2-TBsize的计算和RB预估" class="headerlink" title="2. TBsize的计算和RB预估"></a><a href="#2-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0"></a>2. <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97%E5%92%8CRB%E9%A2%84%E4%BC%B0">TBsize的计算和RB预估</a></h5><p>pdsch传输的tbsize宏观上见与码字数和码率强相关，码字由基站高层参数<code>maxNrofCodeWordsScheduledByDCI</code>指示，表示使用1个码字还是两个码字；码率由上mcs表确定，针对64qam可以使用mcs 0-28；256qam可以使用0-27；</p>
+<h6 id="2-1-TBsize的计算"><a href="#2-1-TBsize的计算" class="headerlink" title="2.1 TBsize的计算"></a><a href="#2-1-TBsize%E7%9A%84%E8%AE%A1%E7%AE%97"></a>2.1 <a href="TBsize%E7%9A%84%E8%AE%A1%E7%AE%97">TBsize的计算</a></h6><p>一个slot对应的PDSCH可用的TBSIZE计算公式如下，在PDSCH可用的RE是上除去DMRS占用和PDCCH占用的RE等资源占用以后的频谱资源。一个slot种pdsch的有效RE数由如下公式获得：</p>
+<p>其中：<code>N ^&#123;RB&#125;_&#123;sc&#125;</code>是一个RB的子载波个数，<code>N^&#123;sh&#125;_&#123;symb&#125;</code>是时域上一个slot对应的符号数,<code>N^&#123;PRB&#125;_&#123;DMRS&#125;</code>是一个RB上DMRS占用的RE数；<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>在高层参数PDSCH-ServingCellConfig-&gt;xOverhead配置，可配置为0，6，12，18；当xOverhead没有配置或者调度pdsch的pdcch由SI-RNTI, RA-RNTI 或者 P-RNTI加扰时，<code>N^&#123;PRB&#125;_&#123;oh&#125;</code>是0。<br>一个slot内频域上所有的pdsch可用RE，由以下公式获取：<br>$$<br>\begin{equation}<br>N_{RE} &#x3D; min(156, N^{‘}*{RE})<em>n</em>{prb}<br>\end{eqnarray}<br>$$<br>其中，<code>n_&#123;prb&#125;</code>是slot内可分配的PRB数。</p>
+<p>有了RE数解可以计算当前的TB-Size了，TB-Size的计算如下：</p>
+<p>$$<br>\begin{equation}<br>N_{info} &#x3D; N_{RE}<em>R</em>Q_{m}*v<br>\end{eqnarray}<br>$$<br>其中，R是目标码率，Qm是调制阶数，V标识layer数。</p>
+<p>有了<code>N_info</code>之后还需要跟3824作量化比较才能确认最终的tbsize：</p>
+<ul>
+<li><code>N_info</code> &lt;&#x3D; 3824 : 在N_info的小于3824的场景下确定TB-Size需要先量化，然后再查表确认TB-Size;量化公式如下：</li>
+</ul>
+<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(24, 2^{n}<em>⌊\frac{N</em>{info}}{2^n} ⌋)，其中 n &#x3D; max(3, ⌊ log_2(N_{info})⌋-6)<br>\end{eqnarray}<br>$$<br>通过量化公式获得的<code>N_&#39;_info</code>在Table 5.1.3.2-1中查找不小于他的最接近的值，比如算出来的量化值是606，那么通过查表就获得的TB-Size就是608；<br><img src="http://1.116.145.136/NR/tbs_low_3824.png" alt="tbs_low_3824"></p>
+<ul>
+<li><code>N_info</code> &gt; 3824 :</li>
+</ul>
+<p>$$<br>\begin{equation}<br>N^{‘}*{info} &#x3D; max(3840, 2^{n}<em>round(\frac{N</em>{info}-24}{2^n} ))，其中 n &#x3D; ⌊ log_2(N_{info}-24)⌋-5)<br>\end{eqnarray}<br>$$</p>
+<p><strong>当码率R&lt;&#x3D;1&#x2F;4时</strong>，<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> ⌈(\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}*{info}+24}{8424}⌉<br>\end{eqnarray}<br>$$</p>
+<p><strong>当码率R&gt;1&#x2F;4时</strong>，<br><strong>(1)</strong> 如果<code>N_&#39;_info</code>&gt;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8<em>C</em> (\frac{N^{‘}<em>{info}+24}{8</em>C})⌉-24,其中C&#x3D;⌈\frac{N^{‘}<em>{info}+24}{3816}⌉<br>\end{eqnarray}<br>$$<br><strong>(2)</strong> 如果<code>N_&#39;_info</code>&lt;&#x3D;8424, 那么TBS通过以下公式计算：<br>$$<br>\begin{equation}<br>TBS &#x3D; 8</em>C* (\frac{N^{‘}<em>{info}+24}{8})-24<br>\end{eqnarray}<br>$$<br>需要注意的是：**(1)** 当调度PDSCH的PDCCH是通过SI-RNTI加扰的话，也就是传输sib1消息时，TB-Size的大小不能超过2976，因为sib1只能通过qpsk的调制方式发送；**(2)** 当调度的DCI是P-RNTI、RA-RNTI加扰的时候，在信息量N_info计算时需要带上一个缩放因子，具体如下图所示：<br><img src="http://1.116.145.136/NR/tbs_Scaling_factor.png" alt="tbs_Scaling_factor"><br>那么新的<code>N_info</code>计算公式就编程如下的样子：<br>$$<br>\begin{equation}<br>N</em>{info} &#x3D; S*N_{RE}<em>R</em>Q_{m}*v, 其中S是缩放因子<br>$$</p>
+<h6 id="2-2-RB预估"><a href="#2-2-RB预估" class="headerlink" title="2.2 RB预估"></a><a href="#2-2-RB%E9%A2%84%E4%BC%B0"></a>2.2 <a href="RB%E9%A2%84%E4%BC%B0">RB预估</a></h6><p>UE进行上下行数传的时候，基站根据UE的数据量来判断UE的调度时刻使用的RB数，数据量的计算公式如下：<br>&#96;$$<br>\begin{equation}<br>数据量 &#x3D; {N_{prb}<em>N_{re}<em>layer</em>Qm</em>CodeRate},<br>$$<br>N_prb是传递这些数据量需要的RB数，N_re是每个RB中有效的RE数，layer是数传的UE的rank，QM是调试bit数，CodeRate是传输的码率。</p>
+<p>预估RB就是通过上边的公式反算UE传输当前数据量需要的RB数，在确定RB数之前需要先确定，每个RB中的RE数，这些RE数跟基站的配置相关，特别是PDCCH和PDSCH DMRS的配置。</p>
+<blockquote>
+</blockquote>
+<p>PDSCH DMRS : NR中定义了两种DMRS type，分别是type1和type2，在这两种type中，有1符号或者2符号的DMRS，除此之外还可以配置额外的附加导频的DMRS。</p>
+<p><img src="http://1.116.145.136/NR/pdsch_pusch_type.png" alt="pdsch_pusch_type"></p>
+<p>-<br>PDSCH DMRS Type A ：固定在第三或(pos2)者第四(pos3)个符号上，无论PDSCH的起始符号是多少，最小资源组是一个RE；</p>
+<p>-<br>PDSCH DMRS Type B ：DMRS固定在分配PDSCH的第一个符号上；最小资源组是2个RE；</p>
+<ul>
+<li>附加导频   ，可以配置0-4个</li>
+</ul>
+<p>【参考文献】：<a href="https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html">https://www.sharetechnote.com/html/5G/5G_PDSCH_DMRS.html</a></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+  </entry>
+  <entry>
     <title>windows下基于python的Tensorflow环境搭建</title>
     <url>/2020/05/17/windows%E4%B8%8B%E5%9F%BA%E4%BA%8Epython%E7%9A%84Tensorflow%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[<p>windows下搭建python的tensorflow环境，最简单地是利用pip安装。</p>
@@ -1751,150 +1893,8 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
-    <title>C和C++关键特性浅析</title>
-    <url>/2020/05/12/C%E5%92%8CC++%E5%85%B3%E9%94%AE%E7%89%B9%E6%80%A7%E6%B5%85%E6%9E%90/</url>
-    <content><![CDATA[<h5 id="1-命名空间namespace与static"><a href="#1-命名空间namespace与static" class="headerlink" title="1. 命名空间namespace与static"></a><a href="#1-%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic"></a>1. <a href="#%E5%91%BD%E5%90%8D%E7%A9%BA%E9%97%B4namespace%E4%B8%8Estatic">命名空间namespace与static</a></h5><p>namespace的是前世今生，在C语言中定义了3个层次的作用域，即文件(编译单元)、函数和复合语句。<code>C++</code>引入了类作用域，类是出现在文件内的。在不同的作用域中可以定义相同名字的变量，互不于扰，系统能够区别它们。全局变量的作用域是整个程序，在同一作用域中不应有两个或多个同名的实体，包括变量、函数和类等。在程序设计中，只要小心注意，可以争取不发生错误。但是，大型的应用软件，往往不是由一个人独立完成的，而是若干人合作完成的，不同的人分别完成不同的部分，最后组合成一个完整的程序。假如不同的人分别定义了类，放在不同的头文件中，在主文件(包含主函数的文件)需要用这些类时，就用#include命令行将这些头文件包含进来。由于各头文件是由不同的人设计的，有可能在不同的头文件中用了相同的名字来命名所定义的类或函数，这样就会产生命名冲突。在程序中还往往需要引用一些库(包括<code>C++</code>编译系统提供的库、由软件开发商提供的库或者用户自己开发的库)，为此需要包含有关的头文件。如果在这些库中包含有与程序的全局实体同名的实体，或者不同的库中有相同的实体名，则在编译时就会出现名字冲突。<br>C 语言和早期的C++语言没有提供有效的机制来解决这个问题，没有使库的提供者能够建立自己的命名空间的工具。人们希望<code>ANSI C++</code>标准能够解决这个问题，提供—种机制或者工具，使由库的设计者命名的全局标识符能够和程序的全局实体名以及其他库的全局标识符区别开来。这个时候namespace就应运而生了。【namespace支持跨文件】</p>
-<ul>
-<li><p><strong>什么是命名空间？</strong> 一个由程序设计者命名的内存区域，程序设计者可以根据需要指定一些有名字的空间域，把一些全局实体分别放在各个命名空间中，从而与其他全局实体分隔开来。</p>
-</li>
-<li><p><strong>命名空间的作用</strong><br>建立一些互相分隔的作用域，把一些全局实体分隔开来。</p>
-</li>
-<li><p><strong>命名空间的定义</strong><br><code>namespace ns1 &#123;int a；double b; void fun() &#123; //do something&#125;;&#125;</code></p>
-</li>
-<li><p><strong>使用命名空间成员</strong><br>命名空间名：：命名空间成员名，例如 <code>std::vector</code></p>
-</li>
-<li><p><strong>命名空间的使用</strong> (1)使用命名空间中的全部成员<br><code>using namespace std;</code>在本作用域(using语句所在的作用域)中引入命名空间std所有的成员的声明，以备使用；(2)使用命名空间中的特定成员;using后面的命名空间成员名必须是由命名空间限定的名字。<code>using std::string;</code>在本作用域(using语句所在的作用域)中引入命名空间std成员string的声明以备使用；也就是在使用了无命名namespace的文件中，使用命名空间中的成员，不必(也无法)用命名空间名限定。</p>
-</li>
-<li><p><strong>无名的命名空间</strong> C++还允许使用没有名字的命名空间，由于命名空间没有名字，在其他文件中显然无法引用，它只在本文件的作用域内有效。</p>
-</li>
-</ul>
-<h6 id="1-1-编译属性"><a href="#1-1-编译属性" class="headerlink" title="1.1 编译属性"></a><a href="#1-1-%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"></a>1.1 <a href="%E7%BC%96%E8%AF%91%E5%B1%9E%E6%80%A7"><strong>编译属性</strong></a></h6><p>在C中，给变量(局部&#x2F;全局变量)、函数，加上 static表示当前函数和变量的linkage 为 internal，也就是对外部不可见, 这样就可以在不同的unit(源一般指当前文件) 中定义同名的函数和变量了。在C++中，在不同的编译unit中定义同名的函数和变量的，这样就有了命名空间namespace，解决了变量和函数名字冲突问题，同时给函数和变量限定为 internal linkage。</p>
-<h6 id="1-2-static-修饰的对象成员和成员函数"><a href="#1-2-static-修饰的对象成员和成员函数" class="headerlink" title="1.2 static 修饰的对象成员和成员函数"></a><a href="#1-2-static-%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"></a>1.2 <a href="%E4%BF%AE%E9%A5%B0%E7%9A%84%E5%AF%B9%E8%B1%A1%E6%88%90%E5%91%98%E5%92%8C%E6%88%90%E5%91%98%E5%87%BD%E6%95%B0"><strong>static 修饰的对象成员和成员函数</strong></a></h6><p><strong>static修饰的对象成员</strong>不能通过调用构造函数来进行初始化，因此static修饰的数据成员必须在类外进行初始化且只会初始化一次。【静态变量内存分配在 .data段】<br><strong>static修饰的成员函数</strong>为静态成员方法，静态成员方法可以在类内或类外定义，但必须在类内声明；；static成员方法没有this指针，不能直接引用非static数据成员或调用类的非static成员方法，只能调用类的static成员数据和static成员方法；static成员不是任何对象的组成，不依赖对象的调用所以static成员方法不能被声明为const，因为const只限定该类的对象；static成员方法不能同时被声明为虚函数。</p>
-<p>参考文献：</p>
-<ul>
-<li><p><a href="https://www.cnblogs.com/skullboyer/p/10200039.html">https://www.cnblogs.com/skullboyer/p/10200039.html</a></p>
-</li>
-<li><p><a href="https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html">https://www.cnblogs.com/JefferyZhou/archive/2012/09/24/2700306.html</a></p>
-</li>
-</ul>
-<h5 id="2-虚函数表vtbl与（虚）函数表指针vptr"><a href="#2-虚函数表vtbl与（虚）函数表指针vptr" class="headerlink" title="2. 虚函数表vtbl与（虚）函数表指针vptr"></a><a href="#2-%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr"></a>2. <a href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8vtbl%E4%B8%8E%EF%BC%88%E8%99%9A%EF%BC%89%E5%87%BD%E6%95%B0%E8%A1%A8%E6%8C%87%E9%92%88vptr">虚函数表vtbl与（虚）函数表指针vptr</a></h5><p><strong>虚函数表</strong>：存储虚函数信息的表； <strong>虚函数表指针</strong>：指向虚函数表的指针。</p>
-<h6 id="2-1-无虚函数的类"><a href="#2-1-无虚函数的类" class="headerlink" title="2.1 无虚函数的类"></a><a href="#2-1-%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.1 <a href="#%E6%97%A0%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><strong>无虚函数的类</strong></a></h6><p>讲C++的虚函数表之前，先看一下C语言是如何实现一个面向对象的类。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 方法1</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    </span><br><span class="line">    void (*func)(struct* stu);</span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.func = profile;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>要有面向对象的效果，只能给struct里面添加函数指针，然后把函数赋值给指针；实际使用中这种用法比较少，主要因为函数指针的空间成本；每实例化一个结构体对象，就会有一个函数指针，例如8字节吗，如果有这个对象有m个函数指针，n个实例对象，那么消耗额外的内存是<code>m*8*n</code>字节。因此C语言通常不这样用，而是直接用外部定义一个函数。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 方法2</span><br><span class="line">#include</span><br><span class="line">typedef struct&#123;</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line"></span><br><span class="line">&#125; student;</span><br><span class="line">void profile(struct* stu) &#123;printf(&quot;height:%d age:%d\n&quot;, stu.height, obj-&gt;age);&#125;</span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    profile(&amp;jhon);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>对于一个C++的类，</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student jhon;</span><br><span class="line">    jhon.height = 170;</span><br><span class="line">    jhon.age = 20;</span><br><span class="line">    jhon.profile();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>跟C语言实现对比，看着像第一种方式通过在结构体定义函数指针的方式来实现。但实际相当于第二种方式。为什么呢？<strong>C++中类的操作和封装只是针对程序员的，而编译器还是面向过程的</strong>，编译器会给类的成员函数添加额外的类指针参数，在运行期间传入对象实际的指针。这说明<strong>类的数据成员和成员函数是分离的</strong>。每个函数都有一个地址（指针），不论这个函数是全局函数还是类的成员函数；在类不含虚函数的情况下，编译器在编译的时候就会把函数的地址确定下来，运行期间直接去调用这个地址的函数，这就是<strong>静态绑定</strong>方式（static binding）的函数调用。</p>
-<h6 id="2-2-有虚函数的类"><a href="#2-2-有虚函数的类" class="headerlink" title="2.2 有虚函数的类"></a><a href="#2-2-%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"></a>2.2 <a href="#%E6%9C%89%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB">有虚函数的类</a></h6><p>为什么会出现虚函数？为了解决面向对象中多态的实现。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">class seniorStu: public student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    string address;</span><br><span class="line">    virtual void profile() &#123;printf(&quot;height:%d age:%d\n address:%s&quot;, height, age, address.c_str());&#125;</span><br><span class="line">&#125; ;</span><br><span class="line">int main() &#123;</span><br><span class="line">    student bob(185,20);</span><br><span class="line">    seniorStu jhon(170,25,&quot;四川成都&quot;);</span><br><span class="line">    jhon.profile();</span><br><span class="line">    // 输出 height: 170 age:25 address:四川成都</span><br><span class="line">    bob.profile();</span><br><span class="line">    // 输出 height: 185 age:20</span><br><span class="line">    student* jim = &amp;jhon;</span><br><span class="line">    jim-&gt;profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25 </span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>上述，可以看到用父类指针指向子类的地址，最终调用的profile函数韩式子类的<br>这个现象称之为<strong>动态绑定</strong>（dynamic binding）后者说<strong>延迟绑定</strong>（lazy binding）。这里如果把子类的virtual，这个代码将调用父类的profile，输出：</p>
-<blockquote>
-</blockquote>
-<p>输出 height: 170 age:25 </p>
-<p>输出 height: 170 age:25 </p>
-<p>这是由于<strong>类的数据成员和函数成员是分离的</strong>。</p>
-<h6 id="2-3-虚表指针和虚函数表"><a href="#2-3-虚表指针和虚函数表" class="headerlink" title="2.3 虚表指针和虚函数表"></a><a href="#2-3-%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8"></a>2.3 <a href="#%E8%99%9A%E8%A1%A8%E6%8C%87%E9%92%88%E5%92%8C%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8">虚表指针和虚函数表</a></h6><p>从内存布局上，只能看到成员变量，看不到成员函数。因为在编译的时候就确定调用哪个函数。<br>将了这么多，可以回归到整体函数虚函数表了，也就是C++多态的实现。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#include</span><br><span class="line">#include</span><br><span class="line">class student&#123;</span><br><span class="line">public:</span><br><span class="line">    int height;</span><br><span class="line">    int age;</span><br><span class="line">    virtual void profile() &#123; printf(&quot;height:%d age:%d\n&quot;, height, age);&#125;</span><br><span class="line">    virtual void status() &#123; std::coutprofile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    student&amp; tom = &amp;jhon;</span><br><span class="line">    tom.profile();</span><br><span class="line">    // 输出 height: 170 age:25</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个示例父类有两个虚函数，子类重载了这两个虚函数。查看编译器的内存布局，<br>clang有个命令可以输出对象的内存布局（不同编译器内存布局未必相同），</p>
-<blockquote>
-</blockquote>
-<p>clang -cc1 -fdump-record-layouts -stdlib&#x3D;libc++ student.cpp</p>
-<p>可以看到类似于这样的内存分布：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class student</span><br><span class="line">    0  | (student vtable pointer)</span><br><span class="line">    x  | int height</span><br><span class="line">    x  | int age</span><br><span class="line"></span><br><span class="line">*** Dumping AST Record Layout</span><br><span class="line">    0  | class seniorStu</span><br><span class="line">    0  |   class student (primary base)</span><br><span class="line">    0  |     (student vtable pointer)</span><br><span class="line">    x  |     int height</span><br><span class="line">    x  |     int age</span><br><span class="line">    x  |   string status</span><br></pre></td></tr></table></figure>
-
-<p>在父类student的起始位置有一个student vtable pointer；子类seniorStu是在他的基础上多了自己的成员status。对于含有虚函数的类，在编译期间编译器会给这种类自动的在起始位置添加一个<strong>虚表指针</strong>（vptr），让虚表指针vptr指向一个虚表；虚表中存储了实际的函数地址。<strong>那么虚表里面存储了那些详细的内容呢？</strong> g++有打印虚表的操作（请在Linux上使用g++）会自动写到一个文件里：</p>
-<blockquote>
-</blockquote>
-<p>g++ -fdump-class-hierarchy student.cpp</p>
-<p>可以看出如果vptr指向的并不是虚表的表头而是表头加偏移量而获得一个地址，也就是虚函数的位置。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Vtable for student</span><br><span class="line">student::_ZTV7student: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI7student)</span><br><span class="line">    16 (int (*)(...))student::profile</span><br><span class="line">    24 (int (*)(...))student::status</span><br><span class="line"></span><br><span class="line">Class student</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=20 base align=8</span><br><span class="line">    student (0x0x7f9b1fa8c960) 0</span><br><span class="line">    vptr=((&amp; student::_ZTV7Actress) + 16u)</span><br><span class="line"></span><br><span class="line">Vtable for Sensei</span><br><span class="line">    seniorStu::_ZTV6seniorStu: 4u entries</span><br><span class="line">    0 (int (*)(...))0</span><br><span class="line">    8 (int (*)(...))(&amp; _ZTI6seniorStu)</span><br><span class="line">    16 (int (*)(...))seniorStu::profile</span><br><span class="line">    24 (int (*)(...))seniorStu::status</span><br><span class="line"></span><br><span class="line">Class seniorStu</span><br><span class="line">    size=24 align=8</span><br><span class="line">    base size=24 base align=8</span><br><span class="line">    seniorStu (0x0x7f9b1fa81138) 0</span><br><span class="line">    vptr=((&amp; seniorStu::_ZTV6seniorStu) + 16u)</span><br><span class="line">    student (0x0x7f9b1fa8c9c0) 0</span><br><span class="line">    primary-for seniorStu (0x0x7f9b1fa81138)</span><br></pre></td></tr></table></figure>
-
-<h6 id="2-4-总结一下"><a href="#2-4-总结一下" class="headerlink" title="2.4 总结一下"></a><a href="#2-4-%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"></a>2.4 <a href="#%E6%80%BB%E7%BB%93%E4%B8%80%E4%B8%8B"><strong>总结一下</strong></a></h6><p><strong>1、如果一个类中有一个虚函数</strong>，这个类就有一个虚函数表。虚函数表示类的，而不是属于对象的，在编译时就确定了，存放在只读的数据段（非代码段）。每实例化一个类对象都有一个虚函数表指针，指向类的虚函数。虚函数表指针属于类的对象。存放在堆上或者栈上(<strong>什么时候存放在堆，什么时候存放在栈</strong>上需要再探讨一下)。<strong>2、对于有派生子类的情况</strong>：如果基类有虚函数，不管派生类实现或者没有虚函数，都有虚函数表。基类的虚函数表和派生类的虚函数表不是同一个表。如果派生类没有重写基类的函数，则派生类的虚函数表和基类的虚函数表内容是一样的。如果派生类重写了基类的虚函数，则培生累的虚函数表中用的是派生类的函数。<strong>3、对于多继承的情况</strong>，含有虚函数的基类有多少个，派生类就有多少个虚函数表；派生类有的而基类没有的，添加在派生类的第一个虚函数表中，虚函数表的结果是*表示还有下一个虚函数表，结果是0表示是最后一个虚函数表。</p>
-<p>参考文献： </p>
-<ul>
-<li><p><a href="https://www.zhihu.com/question/389546003/answer/1194780618">https://www.zhihu.com/question/389546003/answer/1194780618</a></p>
-</li>
-<li><p><a href="https://blog.csdn.net/weixin_30552635/article/details/99157190">https://blog.csdn.net/weixin_30552635&#x2F;article&#x2F;details&#x2F;99157190</a></p>
-</li>
-</ul>
-<h5 id="3-C-C-的内存分布"><a href="#3-C-C-的内存分布" class="headerlink" title="3. C&#x2F;C++的内存分布"></a><a href="#3-C-C-%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83"></a>3. <a href="#C/C++%E7%9A%84%E5%86%85%E5%AD%98%E5%88%86%E5%B8%83">C&#x2F;C++的内存分布</a></h5><table>
-<thead>
-<tr>
-<th>内存区</th>
-<th>用途</th>
-<th>申请释放方式</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>栈区</td>
-<td>存储局部和临时变量，函数调用时存储函数调用时，存储函数的返回指针用于控制函数的调用和返回</td>
-<td>程序开始是自动分配内存，结束自动释放</td>
-</tr>
-<tr>
-<td>堆区</td>
-<td>存储动态内存分配</td>
-<td>程序员手动申请，手动释放；若程序员不释放，在程序结束是，系统回收</td>
-</tr>
-<tr>
-<td>BSS段</td>
-<td>存储未初始化的变量数据，包括初始化为0的全局变量</td>
-<td>只占运行时内存空间不占文件空间。在程序整个周期内，BSS段的数据一致存在</td>
-</tr>
-<tr>
-<td>data区</td>
-<td>存储已经初始化的变量数据，为数据分配空间，数据保存在目标文件中</td>
-<td>—–</td>
-</tr>
-<tr>
-<td>代码段TXT</td>
-<td>存储程序代码的内存映射，以及函数体的二进制代码</td>
-<td>—–</td>
-</tr>
-<tr>
-<td>文字(只读)常量区</td>
-<td>存字符串常量放等</td>
-<td>程序结束后有系统释放</td>
-</tr>
-<tr>
-<td>全局区(静态区)</td>
-<td>全局变量和静态变量存储在一起，未初始化或者初始化为0的存在BSS，初始化不为0的全局变量或者静态变量存在此处</td>
-<td>程序结束后由系统释放</td>
-</tr>
-</tbody></table>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>语言特性</category>
-      </categories>
-      <tags>
-        <tag>C++</tag>
-        <tag>C</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从函数指针看C语言的面向对象实现</title>
-    <url>/2020/05/05/%E4%BB%8E%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9C%8BC%E8%AF%AD%E8%A8%80%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%AE%9E%E7%8E%B0/</url>
+    <url>/2020/05/05/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E7%9C%8BC%E8%AF%AD%E8%A8%80%E7%9A%84%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[<h5 id="1-什么是函数指针"><a href="#1-什么是函数指针" class="headerlink" title="1. 什么是函数指针"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88">什么是函数指针</a></h5><p><strong>指针函数</strong>：<br>指针函数本质是一个函数，只不过返回值为某一类型的指针（地址值）。函数返回值必须用同类型的变量来接受，也就是说，指针函数的返回值必须赋值给同类型的指针变量。<br><strong>函数指针</strong>：<br>函数指针本质是一个指针，只不过这个指针指向一个函数。指针变量通畅指向一个整形、字符型、或者数组等变量，而函数指针指向的是函数。<br>常见的函数都有其入口，比如 <code>main()</code> 函数是整个程序的入口，我们调用的其他函数都有其特定的入口，正如我们可以通过地址找到相应的变量一样，我们也可以通过地址找到相应的函数。而这个存储着函数地址的指针就是函数指针。可以通过指针访问相应的变量，函数指针也可以像函数一样用于调用函数、传递参数。<br><strong>回调函数</strong><br>函数指针作为某个函数的参数。理解回调函数，我们先要搞清楚回调函数有什么作用。比如老板、经理、你三个角色。老板通常是规则的指定着，经理按照规则指派相应的人去做事，而你就是任务的具体执行者。当老板要求经理去做一个事情，那么老板就是主调函数，经理就是回调函数，你按照规则去处理事情就是相应回调函数。你处理的结果会反馈给经理，经理拿着你的结果再反馈给老板。老板就可以使用这个结果去做相关的事情了。在这个环节中，你只需要按照指定的规则去做事，而经理不需要考虑事情是怎么做的，他只需要把相应的事情分配给对应的人去处理即可，然后将获取的结果反馈给老板。如果规则有变，只需要对应的员工知道哪里改变了，而经理不需要关注这些细节。<br><strong>函数指针的应用场景</strong> </p>
 <ul>
 <li><p>普通的函数指针，指向函数，实现比如勾子函数等</p>
@@ -1978,75 +1978,6 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
-    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
-    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
-    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
-<table>
-<thead>
-<tr>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-<th>软&amp;硬件信息</th>
-<th>型号</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>处理器</td>
-<td>英特尔 i5-8400</td>
-<td>主板</td>
-<td>Nvidia RTX 2060 SUPER</td>
-</tr>
-<tr>
-<td>主板</td>
-<td>华硕PRIME Z370-P</td>
-<td>电源</td>
-<td>爱国者GT-550 550W</td>
-</tr>
-<tr>
-<td>内存</td>
-<td>4*DDR4 2400MHz</td>
-<td>系统</td>
-<td>WIN10 2004</td>
-</tr>
-</tbody></table>
-<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
-<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
-<ul>
-<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
-</li>
-<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
-</li>
-<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
-</li>
-</ul>
-<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
-<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>环境搭建</category>
-      </categories>
-      <tags>
-        <tag>环境搭建</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>windows搭建git环境</title>
     <url>/2018/07/14/windows%E6%90%AD%E5%BB%BAgit%E7%8E%AF%E5%A2%83/</url>
     <content><![CDATA[<p>Git是一个开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。与常用的版本控制工具 CVS, Subversion等不同，它采用了分布式版本库的方式，不必服务器端软件支持.</p>
@@ -2085,6 +2016,52 @@ int main()&#123;
       <tags>
         <tag>环境搭建</tag>
         <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>卷积神经网络从0到1</title>
+    <url>/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/</url>
+    <content><![CDATA[<p>1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:</p>
+<blockquote>
+</blockquote>
+<p>“一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”  </p>
+<p>为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含一个隐藏的多层感知机网络，到现在已卷积神经网络为代表的深度卷积神经网络。<br>  本文以神经网络的发展为线索，从卷积神经网络的结构和应用两个方面进行简单阐述。</p>
+<h5 id="1-什么是卷积神经网络"><a href="#1-什么是卷积神经网络" class="headerlink" title="1. 什么是卷积神经网络"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h5><p>  认识卷积神经网络之前首先要了解两个基本的概念: 1、什么是卷积；2、什么是神经网络。</p>
+<h6 id="1-1-什么是卷积"><a href="#1-1-什么是卷积" class="headerlink" title="1.1 什么是卷积"></a><a href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"></a>1.1 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF">什么是卷积</a></h6><ul>
+<li><strong>从图像的角度来看卷积</strong>:  就是卷积模板在图像上滑动，把对应位置上的元素相城相加得到最终结果的过程。如果考虑翻转则就需要翻转卷积模板。</li>
+</ul>
+<p>  卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
+<h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a><a href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.2 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是神经网络</a></h6><p>   按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
+<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) &#x3D; 1&#x2F;(1+e^{-x})  \<br>tanh(x)&#x3D;\frac{1-e^{-2x}} {1+e^{-2x}}  \<br>relu(x)&#x3D;max(0,x)<br>\end{eqnarray}<br>$$</p>
+<p><img src="/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>  而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
+<p>$$<br>\begin{equation}<br>y&#x3D;f(w_1<em>x_1+w_2</em>x_2+b)<br>\end{equation}<br>$$</p>
+<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x&#x3D;(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
+<h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a><a href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.3 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h6><p>  卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg" alt="全连接与局部连接"><br>  上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/%E5%8D%B7%E7%A7%AF.png" alt="卷积"><br>  上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
+<h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a><a href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"></a>1.3 <a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">卷积神经网络的基本结构</a></h6><p>  经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>卷积神经网络</category>
+      </categories>
+      <tags>
+        <tag>CNN</tag>
+        <tag>神经网络，机器学习</tag>
       </tags>
   </entry>
   <entry>
@@ -2165,6 +2142,75 @@ int main()&#123;
       </tags>
   </entry>
   <entry>
+    <title>华硕主板配置NVIDIA显卡windwos10下采坑实录</title>
+    <url>/2020/06/06/%E5%8D%8E%E7%A1%95%E4%B8%BB%E6%9D%BF%E9%85%8D%E7%BD%AENVIDIA%E6%98%BE%E5%8D%A1windwos10%E4%B8%8B%E9%87%87%E5%9D%91%E5%AE%9E%E5%BD%95/</url>
+    <content><![CDATA[<p>崇拜信仰，笔者买了一个公版<code>2060Super</code>，刚挂起来，很久没用过独显了。以为直接可用；然而遇到了一些坑，前前后后，大概花了一周才搞定，期间还拿到店铺老板那，检测了一把；虽然问题很简单，这里需要记录一下，希望对后来的同学有用；笔者的配置情况如下表：</p>
+<table>
+<thead>
+<tr>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+<th>软&amp;硬件信息</th>
+<th>型号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>处理器</td>
+<td>英特尔 i5-8400</td>
+<td>主板</td>
+<td>Nvidia RTX 2060 SUPER</td>
+</tr>
+<tr>
+<td>主板</td>
+<td>华硕PRIME Z370-P</td>
+<td>电源</td>
+<td>爱国者GT-550 550W</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>4*DDR4 2400MHz</td>
+<td>系统</td>
+<td>WIN10 2004</td>
+</tr>
+</tbody></table>
+<h5 id="1-下载驱动"><a href="#1-下载驱动" class="headerlink" title="1.下载驱动"></a><a href="#1-%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8"></a><a href="#%E4%B8%8B%E8%BD%BD%E9%A9%B1%E5%8A%A8">1.下载驱动</a></h5><p><a href="https://www.geforce.cn/drivers/">NVIDIA官方</a>下载对应硬件的最新驱动，下载完成之后，安装即可；</p>
+<h5 id="2-安装OK，显卡无法驱动"><a href="#2-安装OK，显卡无法驱动" class="headerlink" title="2.安装OK，显卡无法驱动"></a><a href="#2-%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8"></a><a href="#%E5%AE%89%E8%A3%85OK%EF%BC%8C%E6%98%BE%E5%8D%A1%E6%97%A0%E6%B3%95%E9%A9%B1%E5%8A%A8">2.安装OK，显卡无法驱动</a></h5><p>安装完成之后检查，是否可用，用管理员权限进去CMD，输入<code>NVIDIA-SMI</code>看能否查询到显卡信息。笔者这里没查到显示：<code>Failed to initialize NVML: Unknown Erroe</code>; 这时候直接懵逼了，驱动安装成功了，咋会这样了？ 按图索骥，问度娘，貌似很多网友遇到类似的问题，简单归纳一下，主要有一下几类：</p>
+<ul>
+<li><p><strong>系统版本不不兼容</strong>，要使用1803以后的版本，这个时候主要表现的问题现象是，<strong>驱动与系统不兼容</strong>；升级系统版本解决或更换系统至企业版。</p>
+</li>
+<li><p><strong>驱动版本不对</strong>，不应该下载DCH版本，应该在标准版的；解决办法是下载标准版的驱动。</p>
+</li>
+<li><p><strong>驱动不兼容导致</strong>，需要卸载完系统自带的驱动，确保系统自带驱动失效且完全清楚，然后重新安装驱动。删除驱动，提供了<code>DDU v18.0.2.5.exe</code>来清楚系统自带驱动；</p>
+</li>
+</ul>
+<p>结合笔者的实际情况，挨个来看一下这3个问题，首先是系统不兼容，由于笔者系统本身是1803的win10，本着半信半疑的思想，将系统更新到了win10 2004版本；重新下载完所有NVIDIA驱动之后，重新安装，依旧是一样的现象；这个可以排除第一点和第三点；针对第二点的驱动版本不对，当前NVIDIA官方提供的已经没有所谓的标准驱动了，都是DCH的驱动，查询资料和相关介绍确认，win10 在1904版本之后，默认都是DCH且NVIDIA新卡只有当前都是DCH驱动。故排除第二点。</p>
+<h5 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3.问题解决"></a><a href="#3-%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3"></a><a href="#%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3">3.问题解决</a></h5><p>问题没解决，还要继续看，<strong>本着问题不解决誓不罢休的精神</strong>，笔者继续排查采坑；为了比对系统的差异，特性下载了ubuntu18.4和ubuntu20.4两个系统，安装驱动尝试能否启动；遗憾的是，不论哪个系统，安装完成之后，系统重启就挂掉了，在等待某个配置校验一样，具体原因没有深究。对比ubuntu和windows，发现不论哪个系统安装都会有问题，这里可以认为，不是系统的问题。<strong>可能是硬件的原因</strong>。继续排查、检索相关问题，偶然看到某个哥们在网上说，要设置启动模式关闭安全模式，然后接上显卡的电源线即可。根据这个提示，进入了华硕主板的bios，在启动中找到了CMS，选择关闭。F10保存记录，重启。<br><img src="/images/imglib/ausa_cms.png" alt="image"><br>重启又看到提示显卡的电源没接<code>please power down and connect the PCIe power cable(s) for this graphics card</code>;<br><img src="/images/imglib/nopower.png" alt="image"><br>拆开机箱，找到显卡的电源接口，街上电源和8pin的电源，然后上电重启，问题解决。CMD输入<code>NVIDIA-SMI</code>查看一下显卡的信息。<br><img src="/images/imglib/nvidia.png" alt="image"></p>
+<p>————-本文结束感谢您的阅读————-</p>
+<p>坚持创作，坚持分享！</p>
+<pre><code>打赏
+
+
+
+
+  
+
+    ![liurui 微信支付](/images/wechatpay.png)
+    
+</code></pre>
+<p>微信支付</p>
+<pre><code>    ![liurui 支付宝](/images/alipay.png)
+    
+</code></pre>
+<p>支付宝</p>
+]]></content>
+      <categories>
+        <category>环境搭建</category>
+      </categories>
+      <tags>
+        <tag>环境搭建</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>学习资源收集</title>
     <url>/2018/10/14/%E5%AD%A6%E4%B9%A0%E8%B5%84%E6%BA%90%E6%94%B6%E9%9B%86/</url>
     <content><![CDATA[<h5 id="1、Python"><a href="#1、Python" class="headerlink" title="1、Python"></a><a href="#1%E3%80%81Python"></a>1、Python</h5><p>1）<a href="https://mp.weixin.qq.com/s/OOBckD-FobvJJvkFk7MNng">Python_交互式的学习资源</a><br>2）<a href="https://mp.weixin.qq.com/s/_OG4yX2ZYTyN8URKuywMdw">Python生成动态图表</a><br>3）<a href="https://mp.weixin.qq.com/s/niH1N-khxwDJXtvRCngqSg">Python文章中精选Top10</a><br>4）<a href="https://zhuanlan.zhihu.com/p/46257877">忘了Python关键语句？这份备忘录拯救你的记忆</a><br>5）<a href="https://zhuanlan.zhihu.com/p/42171409">Python教程：17个冷门但实用的小技巧</a></p>
@@ -2197,52 +2243,6 @@ int main()&#123;
       </categories>
       <tags>
         <tag>coding，learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>卷积神经网络从0到1</title>
-    <url>/2018/07/25/%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%BB%8E0%E5%88%B01/</url>
-    <content><![CDATA[<p>1980年，心理学家William James出版了第一部论述人脑结构及功能的专著《心理学原理》，首次提出:</p>
-<blockquote>
-</blockquote>
-<p>“一个神经细胞受到刺激激活后可以把刺激传播到另一个神经细胞，并且神经细胞激活是所有细胞输入叠加的结果！”  </p>
-<p>为人们认识神经网络的活动打开了理论的天窗。基于这个理论假设，从1943年开始，神经网络经历的曲折荡漾的发展，经历了数次的大起大落；理论模型也从单一的神经元感知机开始，发展到包含一个隐藏的多层感知机网络，到现在已卷积神经网络为代表的深度卷积神经网络。<br>  本文以神经网络的发展为线索，从卷积神经网络的结构和应用两个方面进行简单阐述。</p>
-<h5 id="1-什么是卷积神经网络"><a href="#1-什么是卷积神经网络" class="headerlink" title="1. 什么是卷积神经网络"></a><a href="#1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1. <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h5><p>  认识卷积神经网络之前首先要了解两个基本的概念: 1、什么是卷积；2、什么是神经网络。</p>
-<h6 id="1-1-什么是卷积"><a href="#1-1-什么是卷积" class="headerlink" title="1.1 什么是卷积"></a><a href="#1-1-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF"></a>1.1 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF">什么是卷积</a></h6><ul>
-<li><strong>从图像的角度来看卷积</strong>:  就是卷积模板在图像上滑动，把对应位置上的元素相城相加得到最终结果的过程。如果考虑翻转则就需要翻转卷积模板。</li>
-</ul>
-<p>  卷积核的大小是奇数，如<code>3x3</code>,<code>5x5</code>,<code>7x7</code>等；在<code>cnn</code>的世界里，卷积就是通过不同的卷积核，在不同的图像尺度下，滑动来计算卷积特征的。通过修改卷积核的参数，可以实现对图像进行锐化、模糊等操作，从而检测出图像中的视觉特征；训练<code>cnn</code>的过程，其实也是学习这些卷积和参数的过程。在有限的范围内，使用的卷积核越多，可以学习到的图像特征也就越多。</p>
-<h6 id="1-2-什么是神经网络"><a href="#1-2-什么是神经网络" class="headerlink" title="1.2 什么是神经网络"></a><a href="#1-2-%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.2 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是神经网络</a></h6><p>   按照William James的观点，人工神经网络是基于神经元假设的一种数学描述，是从信息处理的角度将人脑神经元网络进行抽象，从而建立某种模型，可以让神经元按照不同的连接方式组成不同网络的一种数学方法。神经元由大量的节点连接，这个节点称之为激活函数。常见的激活函有: <code>sigmoid</code>、<code>tanh</code>和<code>Relu</code>;</p>
-<p>$$<br>\begin{eqnarray}<br>Sigmoid(x) &#x3D; 1&#x2F;(1+e^{-x})  \<br>tanh(x)&#x3D;\frac{1-e^{-2x}} {1+e^{-2x}}  \<br>relu(x)&#x3D;max(0,x)<br>\end{eqnarray}<br>$$</p>
-<p><img src="/images/cnn/%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0.png" alt="三种常用的激活函数"> 三种常用的激活函数<br>  而神经元数学模型就是输入向量<code>X</code>经过加权，通过激活函数f过滤，输出y，也就是：</p>
-<p>$$<br>\begin{equation}<br>y&#x3D;f(w_1<em>x_1+w_2</em>x_2+b)<br>\end{equation}<br>$$</p>
-<p>这就是感知机的数学表达。$f(x)$但是它只能解决线性问题，对于非线性问题，感知机就无从下手了，比如：异或问题。为了解决非线性问题，又在感知机的基础上提出了前馈神经网络<strong>多层感知机</strong> ；如图，给定一组特性向量:<br>$$x&#x3D;(x_1, x_2, x_3, ….)$$ 通过输入层输入到MLP网络，网络中的隐藏层，相对于增加感知机的决策平面，从而引入多个决策节点，通过级联这些神经元，就可以将原本单个感知机的线性表示表示成多个分段的线性表示，这样就将线性的问题转换成了非线性。也就是无线逼近的积分结果，这样就可以将学习特征用级联的线性表达学习复杂的非线性模式。</p>
-<h6 id="1-3-什么是卷积神经网络"><a href="#1-3-什么是卷积神经网络" class="headerlink" title="1.3 什么是卷积神经网络"></a><a href="#1-3-%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"></a>1.3 <a href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">什么是卷积神经网络</a></h6><p>  卷积区别于传统的前馈神经网络的重要是，多层感知机表达的前馈神经网络的每个神经元都和前一层的输入全部相连接，是一种完全连接的模式；而卷积神经网络通过卷积核与前一层的输入相连接，卷积核的尺寸(感受野)就是卷积神经网络的连接范围，是一种局部的连接的方式。<br><img src="/images/cnn/%E5%B1%80%E9%83%A8%E6%84%9F%E5%8F%97.jpg" alt="全连接与局部连接"><br>  上图中，假设输入图像是一个<code>1000*1000</code>的图像，左边全连接的网络有100w个隐层的神经元，每个神经元都与输入图像的每个像素相连，那么这个网络就有<code>1000*1000*100w = 10^12</code>个连接；右边局部连接的网络每个节点与输入图像有<code>10*10</code>（实际连接的卷积和尺寸是奇数）的连接，那么100w个隐层的神经元的连接个数是<code>10*10*100w = 10^8</code>，比全连接少了4个数量级。除此之外卷积神经网络还有另外一个特新就是权值共享。也就是在同一层的卷积核对应的参数是相同卷积核。<br><img src="/images/cnn/%E5%8D%B7%E7%A7%AF.png" alt="卷积"><br>  上图是一个卷积的示例，左边红色为<code>32*32*3</code>的输入数据，蓝色部分是一层卷积网络；右边为卷积网络的神经元数学表述，是和普通的前馈神经网络相同的模型；除了卷积和全连接的区别，卷积神经网络结构也差别很大，是由卷积核的宽度、高度和卷积层数表述的一种长、宽、深度的三维模型，这里的深度就是卷积神经网络的网络层数；</p>
-<h6 id="1-3-卷积神经网络的基本结构"><a href="#1-3-卷积神经网络的基本结构" class="headerlink" title="1.3 卷积神经网络的基本结构"></a><a href="#1-3-%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"></a>1.3 <a href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84">卷积神经网络的基本结构</a></h6><p>  经典的卷积神经网络是包含：输入层、卷积层、池化层、激活层、全连接层以及输出层构成的。如下图，为<code>LeNet-5</code>的CNN模型:<br><img src="/images/cnn/LeNet-5.jpg" alt="LeNet-5"></p>
-<p>————-本文结束感谢您的阅读————-</p>
-<p>坚持创作，坚持分享！</p>
-<pre><code>打赏
-
-
-
-
-  
-
-    ![liurui 微信支付](/images/wechatpay.png)
-    
-</code></pre>
-<p>微信支付</p>
-<pre><code>    ![liurui 支付宝](/images/alipay.png)
-    
-</code></pre>
-<p>支付宝</p>
-]]></content>
-      <categories>
-        <category>卷积神经网络</category>
-      </categories>
-      <tags>
-        <tag>CNN</tag>
-        <tag>神经网络，机器学习</tag>
       </tags>
   </entry>
   <entry>

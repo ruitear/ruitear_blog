@@ -23,7 +23,7 @@
     <meta name="description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。**lambda表达式**也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++函数对象与lambda表达式">
-<meta property="og:url" content="https://liurui.live/2020/06/13/C++%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:url" content="https://liurui.live/2020/06/13/C-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
 <meta property="og:site_name" content="liurui&#39;s blogs">
 <meta property="og:description" content="函数对象，一个类如果将()运算符重载，那么这个类就称为函数对象类，使用形式看起来像函数调用，实际执行了函数调用，因此坐函数对象。**lambda表达式**也称匿名函数，是无需定义标识符（函数名）的函数，如果函数只使用一次或者有限的次数，使用lambda表达式会比较方便。 1. 函数对象的如何实现?C++中将对象当做函数使用，是函数式编程的思想。这里不作深入讨论，只讨论如何使用；举个简单例子：【1】">
 <meta property="og:locale" content="zh_CN">
@@ -36,10 +36,10 @@
 <meta name="twitter:image" content="https://liurui.live/images/imglib/lambda.png">
 
 
-<link rel="canonical" href="https://liurui.live/2020/06/13/C++%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+<link rel="canonical" href="https://liurui.live/2020/06/13/C-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2020/06/13/C++%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/","path":"2020/06/13/C++函数对象与lambda表达式/","title":"C++函数对象与lambda表达式"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://liurui.live/2020/06/13/C-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/","path":"2020/06/13/C-函数对象与lambda表达式/","title":"C++函数对象与lambda表达式"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>C++函数对象与lambda表达式 | liurui's blogs</title>
@@ -210,7 +210,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://liurui.live/2020/06/13/C++%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+    <link itemprop="mainEntityOfPage" href="https://liurui.live/2020/06/13/C-%E5%87%BD%E6%95%B0%E5%AF%B9%E8%B1%A1%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
